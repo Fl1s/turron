@@ -1,0 +1,67 @@
+server:
+  port: 3000
+
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: ingestion-service
+        url: /aggregate/ingestion-service/v3/api-docs
+      - name: memory-core
+        url: /aggregate/memory-core/v3/api-docs
+      - name: purge-engine
+        url: /aggregate/purge-engine/v3/api-docs
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: gateway
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+      access: unrestricted
+    circuitbreakers:
+      enabled: true
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        wait-duration: 2s
+        max-attempts: 3
+  circuitbreaker:
+    configs:
+      default:
+        failure-rate-threshold: 50
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        wait-duration-in-open-state: 5000ms
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true
+        automatic-transition-from-open-to-half-open-enabled: true
+
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s

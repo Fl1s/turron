@@ -14,7 +14,7 @@ import org.turron.ingestion.producer.ThoughtEventProducer;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-@RestController("/api/v1/thoughts")
+@RestController("/api/v1/ingest")
 @RequiredArgsConstructor
 public class IngestionController {
     private final ThoughtEventProducer thoughtEventProducer;

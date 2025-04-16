@@ -14,10 +14,6 @@ import org.turron.ingestion.producer.ThoughtEventProducer;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.RequestBody;
-
 @RestController("/api/v1/thoughts")
 @RequiredArgsConstructor
 public class IngestionController {

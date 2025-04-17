@@ -21,10 +21,6 @@ spring:
       properties:
         spring.serializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonSerializer
 
-  data:
-    mongodb:
-      uri: mongodb://admin:secret@localhost:27017/thoughts
-
 eureka:
   instance:
     hostname: localhost

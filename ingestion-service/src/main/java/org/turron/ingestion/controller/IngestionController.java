@@ -1,10 +1,12 @@
 package org.turron.ingestion.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
+import org.turron.ingestion.config.SagaOrchestrator;
 import org.turron.ingestion.dto.ThoughtDto;
 import org.turron.ingestion.mapper.ThoughtEventMapper;
 import org.turron.ingestion.producer.ThoughtEventProducer;
@@ -14,26 +16,33 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/v1/ingest")
 @RequiredArgsConstructor
+@Slf4j
 public class IngestionController {
-    private final ThoughtEventProducer thoughtEventProducer;
-    private final ThoughtEventMapper thoughtEventMapper;
+    private final SagaOrchestrator sagaOrchestrator;
 
+    @PostMapping
     @Async
-    @PostMapping()
     public CompletableFuture<ResponseEntity<String>> createThought(@RequestBody ThoughtDto thoughtDto) {
-        thoughtEventProducer.sendThoughtEvent(thoughtEventMapper.toEventFromDto(thoughtDto));
-        return CompletableFuture.completedFuture(ResponseEntity.status(HttpStatus.CREATED).body("Thought created!"));
+        log.info("[IngestionController] Received request to create single thought.");
+        sagaOrchestrator.startSaga(thoughtDto);
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.CREATED).body("Saga started: Thought processing initiated")
+        );
     }
 
     @Async
     @PostMapping("/bulk")
     public CompletableFuture<ResponseEntity<String>> createThoughtBulk(@RequestBody List<ThoughtDto> thoughtDtos) {
-        thoughtDtos.forEach(thoughtDto -> thoughtEventProducer.sendThoughtEvent(thoughtEventMapper.toEventFromDto(thoughtDto)));
-        return CompletableFuture.completedFuture(ResponseEntity.status(HttpStatus.CREATED).body("Bulk thoughts created"));
+        log.info("[IngestionController] Received bulk request. Size={}", thoughtDtos.size());
+        thoughtDtos.forEach(sagaOrchestrator::startSaga);
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.CREATED).body("Saga started: Thought bulk processing initiated")
+        );
     }
 
     @GetMapping("/ping")
     public ResponseEntity<String> pingThought() {
+        log.debug("[IngestionController] Ping endpoint called.");
         return ResponseEntity.ok().body("Thought ping");
     }
 }

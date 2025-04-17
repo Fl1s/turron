@@ -22,4 +22,7 @@ public class ThoughtEvent {
     private Instant expiresAt;
 
     private Integer importance;
+
+    private String status;
+    private String step;
 }

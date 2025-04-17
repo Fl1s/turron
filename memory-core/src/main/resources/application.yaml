@@ -1,14 +1,41 @@
+server:
+  port: 8092
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 spring:
+  threads:
+    virtual:
+      enabled: true
   application:
     name: memory-core
 
   kafka:
+    bootstrap-servers: localhost:9092
+
     producer:
-      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.serializer.ErrorHandlingSerializer
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: ingestion-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.serializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonSerializer
+
+  data:
+    mongodb:
+      uri: mongodb://admin:secret@localhost:27017/thoughts
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

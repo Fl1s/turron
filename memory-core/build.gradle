@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.6.3'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

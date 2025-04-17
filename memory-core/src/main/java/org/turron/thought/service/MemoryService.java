@@ -1,14 +1,14 @@
-package org.turron.memory.service;
+package org.turron.thought.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.turron.memory.dto.ThoughtDto;
-import org.turron.memory.event.ThoughtEvent;
-import org.turron.memory.mapper.ThoughtMapper;
-import org.turron.memory.producer.ThoughtResultProducer;
-import org.turron.memory.repository.MemoryRepository;
+import org.turron.thought.dto.ThoughtDto;
+import org.turron.thought.event.ThoughtEvent;
+import org.turron.thought.mapper.ThoughtMapper;
+import org.turron.thought.producer.ThoughtResultProducer;
+import org.turron.thought.repository.MemoryRepository;
 
 import java.util.List;
 import java.util.Optional;

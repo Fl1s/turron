@@ -1,17 +1,20 @@
-package org.turron.memory.event;
+package org.turron.thought.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.List;
 
+@Document(collection = "thoughts")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThoughtEvent {
-    private String correlationId;
+public class ThoughtEntity {
+    @Id
+    private String thoughtId;
     private String source;
     private String type;
     private String content;
@@ -22,7 +25,5 @@ public class ThoughtEvent {
     private Instant expiresAt;
 
     private Integer importance;
-
-    private String status;
-    private String step;
 }
+

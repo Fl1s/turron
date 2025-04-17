@@ -1,4 +1,4 @@
-package org.turron.memory.dto;
+package org.turron.thought.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThoughtDto {
+public class ThoughtEvent {
+    private String correlationId;
     private String source;
     private String type;
     private String content;
@@ -21,4 +22,7 @@ public class ThoughtDto {
     private Instant expiresAt;
 
     private Integer importance;
+
+    private String status;
+    private String step;
 }

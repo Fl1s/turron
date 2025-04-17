@@ -1,20 +1,16 @@
-package org.turron.memory.entity;
+package org.turron.thought.dto;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
 
-@Document(collection = "thoughts")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThoughtEntity {
-    @Id
-    private String thoughtId;
+public class ThoughtDto {
     private String source;
     private String type;
     private String content;
@@ -26,4 +22,3 @@ public class ThoughtEntity {
 
     private Integer importance;
 }
-

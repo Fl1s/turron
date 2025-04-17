@@ -1,4 +1,4 @@
-package org.turron.ingestion.config;
+package org.turron.memory.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "ingestion-service",
+                title = "memory-core",
                 version = "v1",
-                description = "Responsible for thought-ingestion logic and deploy to the memory-core."
+                description = "Responsible for thought-storage crud operations."
         )
 )
 public class SwaggerConfig {

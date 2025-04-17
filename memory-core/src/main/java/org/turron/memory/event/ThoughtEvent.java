@@ -1,20 +1,17 @@
-package org.turron.ingestion.entity;
+package org.turron.memory.event;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
 
-@Document(collection = "thoughts")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThoughtEntity {
-    @Id
-    private String _id;
+public class ThoughtEvent {
+    private String correlationId;
     private String source;
     private String type;
     private String content;

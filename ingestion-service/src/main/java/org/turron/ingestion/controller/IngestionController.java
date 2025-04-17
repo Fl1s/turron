@@ -4,17 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.turron.ingestion.dto.ThoughtDto;
 import org.turron.ingestion.mapper.ThoughtEventMapper;
 import org.turron.ingestion.producer.ThoughtEventProducer;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-@RestController("/api/v1/ingest")
+@RestController
+@RequestMapping("/api/v1/ingest")
 @RequiredArgsConstructor
 public class IngestionController {
     private final ThoughtEventProducer thoughtEventProducer;

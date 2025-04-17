@@ -3,6 +3,10 @@ spring:
     name: memory-core
 
   kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.serializer.ErrorHandlingSerializer
     consumer:
       bootstrap-servers: localhost:9092
       group-id: ingestion-service-group

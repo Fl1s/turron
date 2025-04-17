@@ -1,12 +1,10 @@
-package org.turron.ingestion.producer;
+package org.turron.thought.producer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.turron.ingestion.event.ThoughtEvent;
-
-import java.util.UUID;
+import org.turron.thought.event.ThoughtEvent;
 
 @Service
 @RequiredArgsConstructor

@@ -1,11 +1,11 @@
-package org.turron.ingestion.listener;
+package org.turron.thought.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import org.turron.ingestion.config.SagaOrchestrator;
-import org.turron.ingestion.event.ThoughtEvent;
+import org.turron.thought.config.SagaOrchestrator;
+import org.turron.thought.event.ThoughtEvent;
 
 @Service
 @RequiredArgsConstructor

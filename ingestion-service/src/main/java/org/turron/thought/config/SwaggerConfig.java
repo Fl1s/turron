@@ -1,4 +1,4 @@
-package org.turron.ingestion.config;
+package org.turron.thought.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

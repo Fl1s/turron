@@ -1,4 +1,4 @@
-package org.turron.ingestion.controller;
+package org.turron.thought.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,10 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
-import org.turron.ingestion.config.SagaOrchestrator;
-import org.turron.ingestion.dto.ThoughtDto;
-import org.turron.ingestion.mapper.ThoughtEventMapper;
-import org.turron.ingestion.producer.ThoughtEventProducer;
+import org.turron.thought.config.SagaOrchestrator;
+import org.turron.thought.dto.ThoughtDto;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

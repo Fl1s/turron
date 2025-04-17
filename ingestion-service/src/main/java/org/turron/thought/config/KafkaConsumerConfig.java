@@ -1,4 +1,4 @@
-package org.turron.ingestion.config;
+package org.turron.thought.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -12,7 +12,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.turron.ingestion.event.ThoughtEvent;
+import org.turron.thought.event.ThoughtEvent;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,11 +1,11 @@
-package org.turron.ingestion.config;
+package org.turron.thought.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.turron.ingestion.dto.ThoughtDto;
-import org.turron.ingestion.event.ThoughtEvent;
-import org.turron.ingestion.producer.ThoughtEventProducer;
+import org.turron.thought.dto.ThoughtDto;
+import org.turron.thought.event.ThoughtEvent;
+import org.turron.thought.producer.ThoughtEventProducer;
 
 import java.util.UUID;
 

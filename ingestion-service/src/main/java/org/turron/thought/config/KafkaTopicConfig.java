@@ -1,4 +1,4 @@
-package org.turron.ingestion.config;
+package org.turron.thought.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;

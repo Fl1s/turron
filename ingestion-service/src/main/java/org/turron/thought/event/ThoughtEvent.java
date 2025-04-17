@@ -1,4 +1,4 @@
-package org.turron.ingestion.event;
+package org.turron.thought.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

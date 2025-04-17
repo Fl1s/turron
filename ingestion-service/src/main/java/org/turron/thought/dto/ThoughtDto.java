@@ -1,4 +1,4 @@
-package org.turron.ingestion.dto;
+package org.turron.thought.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

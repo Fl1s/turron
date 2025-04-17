@@ -1,12 +1,12 @@
-package org.turron.memory.controller;
+package org.turron.thought.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.turron.memory.dto.ThoughtDto;
-import org.turron.memory.service.MemoryService;
+import org.turron.thought.dto.ThoughtDto;
+import org.turron.thought.service.MemoryService;
 
 import java.util.List;
 

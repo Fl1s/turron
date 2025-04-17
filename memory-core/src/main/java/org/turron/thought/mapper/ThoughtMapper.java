@@ -1,9 +1,9 @@
-package org.turron.memory.mapper;
+package org.turron.thought.mapper;
 
 import org.mapstruct.Mapper;
-import org.turron.memory.dto.ThoughtDto;
-import org.turron.memory.entity.ThoughtEntity;
-import org.turron.memory.event.ThoughtEvent;
+import org.turron.thought.dto.ThoughtDto;
+import org.turron.thought.entity.ThoughtEntity;
+import org.turron.thought.event.ThoughtEvent;
 
 @Mapper(
         componentModel = "spring"

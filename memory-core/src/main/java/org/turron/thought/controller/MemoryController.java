@@ -24,6 +24,7 @@ public class MemoryController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/search")
     public ResponseEntity<List<ThoughtDto>> searchThoughts(
             @RequestParam List<String> tags,

@@ -55,5 +55,5 @@ jobs:
         run: |
           cd ${{ matrix.service }}
           service_name=$(basename $PWD)
-          docker build -no-cache -t ghcr.io/fl1s/$service_name:latest .
+          docker build --no-cache -t ghcr.io/fl1s/$service_name:latest .
           docker push ghcr.io/fl1s/$service_name:latest

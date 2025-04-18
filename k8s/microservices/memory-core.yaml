@@ -18,6 +18,8 @@ spec:
           image: ghcr.io/fl1s/memory-core:latest
           ports:
             - containerPort: 8092
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service

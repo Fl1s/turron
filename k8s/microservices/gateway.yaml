@@ -18,6 +18,8 @@ spec:
           image: ghcr.io/fl1s/api-gateway:latest
           ports:
             - containerPort: 3000
+      imagePullSecrets:
+        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service

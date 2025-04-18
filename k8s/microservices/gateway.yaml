@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: ghcr.io/fl1s/api-gateway:latest
+          image: ghcr.io/fl1s/gateway:latest
           ports:
             - containerPort: 3000
       imagePullSecrets:

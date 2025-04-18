@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         service:
-          - api-gateway
+          - gateway
           - eureka-server
           - ingestion-service
           - memory-core

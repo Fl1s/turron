@@ -12,4 +12,4 @@ COPY --from=builder /extracted/snapshot-dependencies/ ./
 COPY --from=builder /extracted/application/ ./
 
 EXPOSE 3000
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "-jar", "/application/app.jar"]

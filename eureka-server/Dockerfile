@@ -1,7 +1,7 @@
 FROM eclipse-temurin:21-jre AS builder
 WORKDIR /extracted
 
-COPY build/libs/*.jar app.jar
+COPY build/libs/eureka-server-0.8.jar app.jar
 
 RUN java -Djarmode=layertools -jar app.jar extract
 

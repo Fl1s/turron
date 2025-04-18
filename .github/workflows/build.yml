@@ -42,7 +42,8 @@ jobs:
       - name: Build ${{ matrix.service }}
         run: |
           cd ${{ matrix.service }}
-          ./gradlew clean build -Dspring.profiles.active=prod
+          ./gradlew clean bootJar
+#          -Dspring.profiles.active=prod
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3

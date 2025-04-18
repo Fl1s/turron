@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'org.turron'
+group = 'org.turron.gateway'
 version = '0.8'
 
 java {
@@ -58,4 +58,8 @@ bootJar {
                 'Main-Class': 'org.springframework.boot.loader.JarLauncher'
         )
     }
+}
+
+jar {
+    enabled = false
 }

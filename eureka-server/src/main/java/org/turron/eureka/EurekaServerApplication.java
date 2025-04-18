@@ -1,4 +1,4 @@
-package org.turron.eurekaserver;
+package org.turron.eureka;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

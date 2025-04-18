@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-server
+  namespace: turron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-server
+  template:
+    metadata:
+      labels:
+        app: eureka-server
+    spec:
+      containers:
+        - name: eureka-server
+          image: ghcr.io/fl1s/eureka-server:latest
+          ports:
+            - containerPort: 8095
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-server
+  namespace: turron
+spec:
+  selector:
+    app: eureka-server
+  ports:
+    - port: 8095
+      targetPort: 8095

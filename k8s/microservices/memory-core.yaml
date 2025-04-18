@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-core
+  namespace: turron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-core
+  template:
+    metadata:
+      labels:
+        app: memory-core
+    spec:
+      containers:
+        - name: memory-core
+          image: ghcr.io/fl1s/memory-core:latest
+          ports:
+            - containerPort: 8092
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memory-core
+  namespace: turron
+spec:
+  selector:
+    app: memory-core
+  ports:
+    - port: 8092
+      targetPort: 8092

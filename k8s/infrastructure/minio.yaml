@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: turron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          env:
+            - name: MINIO_ROOT_USER
+              value: "admin"
+            - name: MINIO_ROOT_PASSWORD
+              value: "secret123"
+          volumeMounts:
+            - name: minio-data
+              mountPath: /data
+          command: ["server", "--console-address", ":9001", "/data"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: turron
+spec:
+  ports:
+    - port: 9000
+      targetPort: 9000
+    - port: 9001
+      targetPort: 9001
+  selector:
+    app: minio
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: turron
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

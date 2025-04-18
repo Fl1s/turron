@@ -51,3 +51,11 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.springframework.boot.loader.JarLauncher'
+        )
+    }
+}

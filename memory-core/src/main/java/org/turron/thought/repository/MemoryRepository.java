@@ -4,9 +4,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import org.turron.thought.entity.ThoughtEntity;
 
+import java.time.Instant;
 import java.util.List;
 
 @Repository
 public interface MemoryRepository extends MongoRepository<ThoughtEntity, String> {
     List<ThoughtEntity> findByTagsOrTypeOrImportance(List<String> tags, String type, Integer importance);
+    List<ThoughtEntity> findByExpiresAtBefore(Instant now);
+    long countByExpiresAtBefore(Instant now);
 }

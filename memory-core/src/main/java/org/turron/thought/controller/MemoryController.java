@@ -2,7 +2,6 @@ package org.turron.thought.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.turron.thought.dto.ThoughtDto;
@@ -22,24 +21,23 @@ public class MemoryController {
         log.debug("[MemoryController] Fetching thought with ID={}", thoughtId);
         return memoryService.getThought(thoughtId)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<ThoughtDto>> searchThoughts(
-            @RequestParam(value = "tags") List<String> tags,
-            @RequestParam(value = "type") String type,
-            @RequestParam(value = "importance") Integer importance) {
-        log.debug("[MemoryController] Searching thoughts with tags={}, type={}, importance={}", tags, type, importance);
-        List<ThoughtDto> thoughts = memoryService.searchThoughts(tags, type, importance);
-
-        return thoughts.isEmpty()
+            @RequestParam List<String> tags,
+            @RequestParam String type,
+            @RequestParam Integer importance) {
+        log.debug("[MemoryController] Searching thoughts tags={}, type={}, importance={}", tags, type, importance);
+        var list = memoryService.searchThoughts(tags, type, importance);
+        return list.isEmpty()
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(thoughts);
+                : ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/forget/{thoughtId}")
-    public ResponseEntity<String> forgetThought(@PathVariable String thoughtId) {
+    public ResponseEntity<Void> forgetThought(@PathVariable String thoughtId) {
         log.info("[MemoryController] Forgetting thought with ID={}", thoughtId);
         memoryService.forgetThought(thoughtId);
         return ResponseEntity.ok().build();

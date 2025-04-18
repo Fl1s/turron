@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.turron.thought.dto.ThoughtDto;
+import org.turron.thought.entity.ThoughtEntity;
 import org.turron.thought.event.ThoughtEvent;
 import org.turron.thought.mapper.ThoughtMapper;
 import org.turron.thought.producer.ThoughtResultProducer;
 import org.turron.thought.repository.MemoryRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +22,25 @@ public class MemoryService {
     private final MemoryRepository memoryRepository;
     private final ThoughtMapper thoughtMapper;
     private final ThoughtResultProducer thoughtResultProducer;
+    private final TtlDecayService ttlDecayService;
 
     @Transactional
-    public void storeThought(ThoughtEvent thoughtEvent){
+    public void storeThought(ThoughtEvent thoughtEvent) {
         try {
-            memoryRepository.save(thoughtMapper.toEntity(thoughtEvent));
+            thoughtResultProducer.sendResult(thoughtEvent, true);
+            ThoughtEntity entity = thoughtMapper.toEntity(thoughtEvent);
+
+            Instant created = Optional.ofNullable(thoughtEvent.getCreatedAt())
+                    .orElse(Instant.now());
+            entity.setCreatedAt(created);
+
+            Instant expires = created.plus(ttlDecayService.calculateTtl(thoughtEvent.getImportance()));
+            entity.setExpiresAt(expires);
+
+            log.info("[Memory] Saving thought. correlationId={}, expiresAt={}",
+                    thoughtEvent.getCorrelationId(), expires);
+            memoryRepository.save(entity);
+
             log.info("[Memory] Thought stored successfully. correlationId={}", thoughtEvent.getCorrelationId());
             thoughtResultProducer.sendResult(thoughtEvent, true);
         } catch (Exception e) {
@@ -46,7 +62,7 @@ public class MemoryService {
 
     public void forgetThought(String thoughtId) {
         if (!memoryRepository.existsById(thoughtId)) {
-            throw new IllegalArgumentException("[ Thought not found... ]");
+            throw new IllegalArgumentException("[Memory] Thought not found...");
         }
         memoryRepository.deleteById(thoughtId);
     }

@@ -17,8 +17,19 @@ metadata:
   namespace: turron
 type: Opaque
 stringData:
-  username: "admin"
-  password: "secret"
+  username: admin
+  password: secret
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-initdb
+  namespace: turron
+data:
+  init-thoughts.js: |
+    db = db.getSiblingDB('thoughts');
+    db.createCollection('thoughts');
+    db.thoughts.insertOne({ initialized: true });
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,37 +46,6 @@ spec:
       labels:
         app: mongodb
     spec:
-      initContainers:
-        - name: init-mongodb
-          image: mongo:latest
-          command:
-            - mongosh
-            - --host
-            - mongodb
-            - --port
-            - "27017"
-            - -u
-            - "$(MONGO_INITDB_ROOT_USERNAME)"
-            - -p
-            - "$(MONGO_INITDB_ROOT_PASSWORD)"
-            - --authenticationDatabase
-            - admin
-            - --eval
-            - |
-              db = db.getSiblingDB('thoughts');
-              db.createCollection('thoughts');
-              db.thoughts.insertOne({ initialized: true });
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mongodb-creds
-                  key: username
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mongodb-creds
-                  key: password
       containers:
         - name: mongodb
           image: mongo:latest
@@ -85,10 +65,24 @@ spec:
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
+            - name: mongodb-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          readinessProbe:
+            exec:
+              command:
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 6
       volumes:
         - name: mongodb-data
           persistentVolumeClaim:
             claimName: mongodb-pvc
+        - name: mongodb-initdb
+          configMap:
+            name: mongodb-initdb
 ---
 apiVersion: v1
 kind: Service

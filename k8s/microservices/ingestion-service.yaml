@@ -19,7 +19,7 @@ spec:
           command:
             - sh
             - -c
-            - 'until curl -s http://eureka:8095/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
+            - 'until curl -s http://eureka-server:8095/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
       containers:
         - name: ingestion-service
           image: ghcr.io/fl1s/ingestion-service:latest

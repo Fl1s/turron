@@ -18,6 +18,9 @@ spec:
           image: ghcr.io/fl1s/gateway:latest
           ports:
             - containerPort: 3000
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
       imagePullSecrets:
         - name: ghcr-secret
 ---

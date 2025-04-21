@@ -18,6 +18,9 @@ spec:
           image: ghcr.io/fl1s/memory-core:latest
           ports:
             - containerPort: 8092
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
       imagePullSecrets:
         - name: ghcr-secret
 ---

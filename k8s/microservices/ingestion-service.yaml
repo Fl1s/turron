@@ -18,6 +18,9 @@ spec:
           image: ghcr.io/fl1s/ingestion-service:latest
           ports:
             - containerPort: 8091
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
       imagePullSecrets:
         - name: ghcr-secret
 ---

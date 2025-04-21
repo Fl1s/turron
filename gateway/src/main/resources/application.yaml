@@ -15,6 +15,12 @@ springdoc:
         url: /aggregate/purge-engine/v3/api-docs
 
 spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
   threads:
     virtual:
       enabled: true

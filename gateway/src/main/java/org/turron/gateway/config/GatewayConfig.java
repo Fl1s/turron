@@ -20,40 +20,39 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-
                 // Swagger
                 .route("ingestion_service_docs", r -> r.path("/aggregate/ingestion-service/v3/api-docs")
                         .filters(f -> f.rewritePath("/aggregate/ingestion-service/v3/api-docs", "/v3/api-docs"))
-                        .uri("http://localhost:8091"))
+                        .uri("lb://ingestion-service"))
 
                 .route("memory_core_docs", r -> r.path("/aggregate/memory-core/v3/api-docs")
                         .filters(f -> f.rewritePath("/aggregate/memory-core/v3/api-docs", "/v3/api-docs"))
-                        .uri("http://localhost:8092"))
+                        .uri("lb://memory-core"))
 
                 .route("purge_engine_docs", r -> r.path("/aggregate/purge-engine/v3/api-docs")
                         .filters(f -> f.rewritePath("/aggregate/purge-engine/v3/api-docs", "/v3/api-docs"))
-                        .uri("http://localhost:8093"))
+                        .uri("lb://purge-engine"))
 
                 // Main
                 .route("ingestion_service", r -> r.path("/api/v1/ingest/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("ingestionCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
-                        .uri("http://localhost:8091"))
+                        .uri("lb://ingestion-service"))
 
                 .route("memory_core", r -> r.path("/api/v1/memory/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("memoryCoreCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
-                        .uri("http://localhost:8092"))
+                        .uri("lb://memory-core"))
 
                 .route("purge_engine", r -> r.path("/api/v1/purge/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("purgeEngineCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
-                        .uri("http://localhost:8093"))
+                        .uri("lb://purge-engine"))
 
                 .route("metrics_service", r -> r.path("/api/v1/metrics/**")
                         .filters(f -> f.circuitBreaker(c -> c.setName("metricsCircuitBreaker")
                                 .setFallbackUri("forward:/fallbackRoute")))
-                        .uri("http://localhost:8094"))
+                        .uri("lb://metrics-service"))
 
                 .route("fallbackRoute", r -> r.path("/fallbackRoute")
                         .filters(f -> f.rewritePath("/fallbackRoute", "/"))

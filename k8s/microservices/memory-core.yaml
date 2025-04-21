@@ -22,6 +22,7 @@ spec:
             - 'until curl -s http://eureka-server:8095/eureka/apps > /dev/null; do echo "Waiting for Eureka Server..."; sleep 5; done'
       containers:
         - name: memory-core
+          imagePullPolicy: Always
           image: ghcr.io/fl1s/memory-core:latest
           ports:
             - containerPort: 8092

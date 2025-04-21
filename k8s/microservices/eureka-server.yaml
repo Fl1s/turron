@@ -15,6 +15,7 @@ spec:
     spec:
       containers:
         - name: eureka-server
+          imagePullPolicy: Always
           image: ghcr.io/fl1s/eureka-server:latest
           ports:
             - containerPort: 8095

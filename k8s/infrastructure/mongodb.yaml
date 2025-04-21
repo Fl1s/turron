@@ -17,8 +17,8 @@ metadata:
   namespace: turron
 type: Opaque
 stringData:
-  username: admin
-  password: secret
+  username: "admin"
+  password: "secret"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -30,6 +30,13 @@ data:
     db = db.getSiblingDB('thoughts');
     db.createCollection('thoughts');
     db.thoughts.insertOne({ initialized: true });
+    db.createUser({
+        user: 'admin',
+        pwd: 'secret',
+        roles: [
+            { role: 'dbOwner', db: 'thoughts' }
+        ]
+    });
 ---
 apiVersion: apps/v1
 kind: Deployment

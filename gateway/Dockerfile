@@ -14,4 +14,4 @@ COPY --from=builder /extracted/spring-boot-loader/ ./
 COPY --from=builder /extracted/application/ ./
 
 EXPOSE 3000
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

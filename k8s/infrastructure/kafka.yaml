@@ -18,6 +18,8 @@ spec:
           image: bitnami/kafka:latest
           ports:
             - containerPort: 9092
+            - containerPort: 29092
+            - containerPort: 29093
           env:
             - name: KAFKA_CFG_NODE_ID
               value: "1"
@@ -28,11 +30,11 @@ spec:
             - name: KAFKA_CFG_LISTENERS
               value: "INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:29093"
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+              value: "INTERNAL://kafka:29092,EXTERNAL://kafka:9092"
             - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
               value: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
             - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-              value: "1@localhost:29093"
+              value: "1@kafka:29093"
             - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
               value: "INTERNAL"
             - name: ALLOW_PLAINTEXT_LISTENER
@@ -45,8 +47,16 @@ metadata:
   name: kafka
   namespace: turron
 spec:
+  selector:
+    app: kafka
   ports:
     - port: 9092
       targetPort: 9092
-  selector:
-    app: kafka
+      name: external
+    - port: 29092
+      targetPort: 29092
+      name: internal
+    - port: 29093
+      targetPort: 29093
+      name: controller
+  type: ClusterIP

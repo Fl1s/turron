@@ -1,7 +1,6 @@
 server:
   port: 3000
 
-
 springdoc:
   api-docs:
     path: /api-docs
@@ -21,15 +20,6 @@ spring:
       enabled: true
   application:
     name: gateway
-
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8095/eureka/
 
 management:
   endpoints:
@@ -60,7 +50,6 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
         register-health-indicator: true
         automatic-transition-from-open-to-half-open-enabled: true
-
   timelimiter:
     configs:
       default:

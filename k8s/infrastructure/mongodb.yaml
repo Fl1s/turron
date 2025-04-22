@@ -27,16 +27,11 @@ metadata:
   namespace: turron
 data:
   init-thoughts.js: |
+    print('Starting initialization of thoughts database');
     db = db.getSiblingDB('thoughts');
     db.createCollection('thoughts');
-    db.thoughts.insertOne({ initialized: true });
-    db.createUser({
-        user: 'admin',
-        pwd: 'secret',
-        roles: [
-            { role: 'dbOwner', db: 'thoughts' }
-        ]
-    });
+    db.thoughts.insertOne({initialized: true});
+    print('Thoughts database initialized');
 ---
 apiVersion: apps/v1
 kind: Deployment

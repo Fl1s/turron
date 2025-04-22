@@ -3,7 +3,7 @@ spring:
     bootstrap-servers: kafka:9092
   data:
     mongodb:
-      uri: mongodb://admin:secret@mongodb:27017/thoughts
+      uri: mongodb://admin:secret@mongodb:27017/thoughts?authSource=admin
 
 eureka:
   instance:

@@ -1,0 +1,22 @@
+server:
+  port: 8091
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  application:
+    name: upload-service
+  threads:
+    virtual:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

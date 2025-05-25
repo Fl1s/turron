@@ -1,0 +1,12 @@
+eureka:
+  instance:
+    hostname: ${EUREKA.INSTANCE.HOSTNAME}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
+
+spring:
+  config:
+    import: file:api-gateway/.env.prod[.properties]

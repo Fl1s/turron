@@ -1,0 +1,27 @@
+eureka:
+  instance:
+    hostname: ${EUREKA.INSTANCE.HOSTNAME}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
+
+spring:
+  config:
+    import: file:upload-service/.env.dev[.properties]
+  kafka:
+    bootstrap-servers: ${KAFKA.BOOTSTRAP_SERVERS}
+
+  datasource:
+    url: ${POSTGRES.DB_URL}
+    username: ${POSTGRES.PG_USERNAME}
+    password: ${POSTGRES.PG_PASSWORD}
+    driver-class-name: ${POSTGRES.PG_DRIVER}
+
+minio:
+  bucket:
+    name: ${MINIO.BUCKET.NAME}
+  url: ${MINIO.URL}
+  root-user: ${MINIO.ROOT_USER}
+  root-password: ${MINIO.ROOT_PASSWORD}

@@ -1,0 +1,9 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: eureka-server
+  threads:
+    virtual:
+      enabled: true

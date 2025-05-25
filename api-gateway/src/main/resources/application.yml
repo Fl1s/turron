@@ -1,0 +1,64 @@
+server:
+  port: 3000
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: upload-service
+        url: /aggregate/upload-service/v3/api-docs
+      - name: extraction-service
+        url: /aggregate/extraction-service/v3/api-docs
+      - name: hashing-service
+        url: /aggregate/hashing-service/v3/api-docs
+      - name: search-service
+        url: /aggregate/search-service/v3/api-docs
+
+spring:
+  application:
+    name: api-gateway
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        wait-duration: 2s
+        max-attempts: 3
+  circuitbreaker:
+    configs:
+      default:
+        failure-rate-threshold: 50
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        wait-duration-in-open-state: 5000ms
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true
+        automatic-transition-from-open-to-half-open-enabled: true
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+      access: unrestricted
+    circuitbreakers:
+      enabled: true

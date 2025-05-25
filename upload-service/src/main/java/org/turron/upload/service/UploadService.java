@@ -1,0 +1,40 @@
+package org.turron.upload.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.turron.upload.dto.VideoDto;
+import org.turron.upload.entity.VideoEntity;
+import org.turron.upload.mapper.VideoMapper;
+import org.turron.upload.repository.UploadRepository;
+
+import java.util.UUID;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UploadService {
+
+    private final UploadRepository uploadRepository;
+    private final MinioService minioService;
+    private final VideoMapper videoMapper;
+
+    @Transactional
+    public VideoDto upload(MultipartFile file) {
+        log.info("Starting upload of video: {}", file.getOriginalFilename());
+
+        String videoId = UUID.randomUUID().toString();
+        String path = minioService.uploadVideo(videoId, file);
+
+        VideoEntity entity = new VideoEntity();
+        entity.setVideoId(videoId);
+        entity.setSourceUrl(path);
+
+        VideoEntity saved = uploadRepository.save(entity);
+        log.info("Video metadata saved in db with videoId: {}", saved.getVideoId());
+
+        return videoMapper.toDto(saved);
+    }
+}

@@ -1,0 +1,37 @@
+name: docker-build-push
+
+description: Builds and pushes docker image to ghcr
+
+inputs:
+  service:
+    description: service-required
+    required: true
+  registry:
+    description: registry
+    default: ghcr.io
+  project:
+    description: project-name
+    default: turron
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set image tags
+      shell: bash
+      run: |
+        echo "IMAGE_NAME=${{ inputs.registry }}/fl1s/${{ inputs.project }}/${{ inputs.service }}" >> $GITHUB_ENV
+        echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        echo "DATE_TAG=$(date +%Y%m%d)" >> $GITHUB_ENV
+
+    - name: Docker build
+      shell: bash
+      run: |
+        cd ${{ inputs.service }}
+        docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$SHORT_SHA -t $IMAGE_NAME:$DATE_TAG .
+
+    - name: Docker push
+      shell: bash
+      run: |
+        docker push $IMAGE_NAME:latest
+        docker push $IMAGE_NAME:$SHORT_SHA
+        docker push $IMAGE_NAME:$DATE_TAG

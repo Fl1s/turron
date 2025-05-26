@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.turron.upload.dto.VideoDto;
 import org.turron.upload.entity.VideoEntity;
 import org.turron.upload.mapper.VideoMapper;
+import org.turron.upload.producer.UploadProducer;
 import org.turron.upload.repository.UploadRepository;
 
 import java.util.UUID;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class UploadService {
 
     private final UploadRepository uploadRepository;
+    private final UploadProducer uploadProducer;
     private final MinioService minioService;
     private final VideoMapper videoMapper;
 
@@ -35,6 +37,7 @@ public class UploadService {
         VideoEntity saved = uploadRepository.save(entity);
         log.info("Video metadata saved in db with videoId: {}", saved.getVideoId());
 
+        uploadProducer.sendUploadedEvent(saved);
         return videoMapper.toDto(saved);
     }
 }

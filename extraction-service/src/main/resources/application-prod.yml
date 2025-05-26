@@ -9,7 +9,7 @@ eureka:
 
 spring:
   config:
-    import: file:upload-service/.env.prod[.properties]
+    import: file:extraction-service/.env.prod[.properties]
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
@@ -20,8 +20,9 @@ spring:
     driver-class-name: ${POSTGRES_PG_DRIVER}
 
 minio:
-  bucket:
-    name: ${MINIO_BUCKET_NAME}
+  buckets:
+    videos: ${MINIO_BUCKETS_VIDEOS}
+    frames: ${MINIO_BUCKETS_FRAMES}
   url: ${MINIO_URL}
   root-user: ${MINIO_ROOT_USER}
   root-password: ${MINIO_ROOT_PASSWORD}

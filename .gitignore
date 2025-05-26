@@ -23,7 +23,7 @@ bin/
 *.iml
 *.ipr
 out/
-!/grafana/**
+/monitoring/grafana/**
 !**/src/main/**/out/
 !**/src/test/**/out/
 

@@ -44,7 +44,7 @@ public class MinioService {
             uploadFileToMinio(path, tempFile, videoFile.getContentType());
 
             log.info("Video successfully uploaded to MinIO at path: {}", path);
-            return "/" + bucketName + "/" + path;
+            return "minio://" + bucketName + "/" + path;
 
         } catch (IOException e) {
             log.error("Failed to process video file", e);

@@ -1,11 +1,11 @@
 eureka:
   instance:
-    hostname: ${EUREKA.INSTANCE.HOSTNAME}
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: ${EUREKA.CLIENT.SERVICE_URL.DEFAULT_ZONE}
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
 
 spring:
   config:

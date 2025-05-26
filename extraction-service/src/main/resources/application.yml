@@ -1,5 +1,5 @@
 server:
-  port: 8091
+  port: 8092
 
 springdoc:
   swagger-ui:
@@ -7,7 +7,7 @@ springdoc:
 
 spring:
   application:
-    name: upload-service
+    name: extraction-service
   threads:
     virtual:
       enabled: true

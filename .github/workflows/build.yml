@@ -18,6 +18,8 @@ jobs:
         service:
           - eureka-server
           - upload-service
+          - extraction-service
+          - hashing-service
           - api-gateway
     steps:
       - name: Checkout code

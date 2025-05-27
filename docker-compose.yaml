@@ -63,7 +63,7 @@ services:
       - redis_data:/data/cache
     ports:
       - "6379:6379"
-    command: [ "redis-server"]
+    command: [ "redis-server" ]
 
   prometheus:
     image: prom/prometheus:latest

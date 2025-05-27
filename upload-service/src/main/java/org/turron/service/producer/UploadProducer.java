@@ -32,7 +32,7 @@ public class UploadProducer {
         );
 
         uploadedEventTemplate
-                .send("video.uploaded",event)
+                .send("video.uploaded", event)
                 .thenAccept(sendResult -> log.info("VideoUploadedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send VideoUploadedEvent [videoId={}, correlationId={}]: {}",

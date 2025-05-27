@@ -25,6 +25,7 @@ import java.util.Map;
 public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
+
     @Bean
     public ConsumerFactory<String, FrameExtractedEvent> consumerFrameExtractedFactory() {
         JsonDeserializer<FrameExtractedEvent> deserializer = new JsonDeserializer<>(FrameExtractedEvent.class);

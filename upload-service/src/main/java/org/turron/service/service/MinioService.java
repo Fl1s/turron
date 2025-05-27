@@ -24,6 +24,32 @@ public class MinioService {
     @Value("${minio.bucket.name}")
     private String bucketName;
 
+    private static @NotNull Process getProcess(File tempFile) throws IOException {
+        ProcessBuilder pb = new ProcessBuilder(
+                "ffprobe",
+                "-v", "error",
+                "-show_entries", "format=duration",
+                "-of", "default=noprint_wrappers=1:nokey=1",
+                tempFile.getAbsolutePath()
+        );
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String durationStr = reader.readLine();
+            if (durationStr == null) {
+                throw new IllegalArgumentException("Could not determine video duration.");
+            }
+            double duration = Double.parseDouble(durationStr);
+            log.debug("Video duration: {} seconds", duration);
+            if (duration > 5.0) {
+                throw new IllegalArgumentException("Video is longer than 5 seconds.");
+            }
+        }
+
+        return process;
+    }
+
     public String uploadVideo(String filename, MultipartFile videoFile) {
         log.info("Uploading video: originalFilename={}, contentType={}", videoFile.getOriginalFilename(), videoFile.getContentType());
 
@@ -73,32 +99,6 @@ public class MinioService {
             log.error("Video validation failed", e);
             throw new RuntimeException("Video validation failed.", e);
         }
-    }
-
-    private static @NotNull Process getProcess(File tempFile) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(
-                "ffprobe",
-                "-v", "error",
-                "-show_entries", "format=duration",
-                "-of", "default=noprint_wrappers=1:nokey=1",
-                tempFile.getAbsolutePath()
-        );
-        pb.redirectErrorStream(true);
-        Process process = pb.start();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String durationStr = reader.readLine();
-            if (durationStr == null) {
-                throw new IllegalArgumentException("Could not determine video duration.");
-            }
-            double duration = Double.parseDouble(durationStr);
-            log.debug("Video duration: {} seconds", duration);
-            if (duration > 5.0) {
-                throw new IllegalArgumentException("Video is longer than 5 seconds.");
-            }
-        }
-
-        return process;
     }
 
     private void uploadFileToMinio(String filePath, File file, String contentType) {

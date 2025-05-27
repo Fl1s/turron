@@ -10,5 +10,6 @@ import org.turron.service.event.VideoUploadedEvent;
 )
 public interface VideoMapper {
     VideoUploadedEvent toVideoUploadedEvent(VideoEntity videoEntity);
+
     VideoDto toDto(VideoEntity entity);
 }

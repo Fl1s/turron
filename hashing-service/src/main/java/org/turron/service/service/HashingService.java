@@ -1,12 +1,10 @@
 package org.turron.service.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.turron.service.entity.HashEntity;
 import org.turron.service.event.FrameExtractedEvent;
-import org.turron.service.event.FrameHashedEvent;
 import org.turron.service.producer.HashingProducer;
 import org.turron.service.repository.HashRepository;
 
@@ -26,8 +24,8 @@ public class HashingService {
             BufferedImage image = minioService.downloadImage(event.getFrameUrl());
 
             String hash = PerceptualHash.compute(image);
-
             String hashId = UUID.randomUUID().toString();
+
             HashEntity entity = new HashEntity(
                     hashId,
                     event.getVideoId(),
@@ -35,17 +33,9 @@ public class HashingService {
                     event.getFrameUrl(),
                     hash
             );
+
             hashRepository.save(entity);
-
-            FrameHashedEvent hashedEvent = new FrameHashedEvent(
-                    event.getCorrelationId(),
-                    hashId,
-                    event.getVideoId(),
-                    event.getFrameId(),
-                    hash
-            );
-            hashingProducer.sendFramesHashedEvent(hashedEvent);
-
+            hashingProducer.sendFramesHashedEvent(event.getCorrelationId(), entity);
             log.info("Frame hashed and saved: {}", entity);
         } catch (Exception e) {
             log.error("Failed to process frame: {}", event, e);

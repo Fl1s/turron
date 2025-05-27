@@ -20,6 +20,7 @@ public class MinioService {
 
     @Value("${minio.buckets.frames}")
     private String framesBucket;
+
     public BufferedImage downloadImage(String sourceUrl) {
         try {
             String prefix = "minio://" + framesBucket + "/";

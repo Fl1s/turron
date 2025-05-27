@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.turron.service.entity.FrameEntity;
-import org.turron.service.event.FrameExtractedEvent;
 import org.turron.service.event.VideoUploadedEvent;
 import org.turron.service.producer.ExtractionProducer;
 import org.turron.service.repository.FrameRepository;
 
-import java.awt.*;
 import java.io.File;
 import java.util.List;
 

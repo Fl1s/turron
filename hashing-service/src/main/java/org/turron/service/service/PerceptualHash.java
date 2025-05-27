@@ -3,12 +3,9 @@ package org.turron.service.service;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 @Slf4j
@@ -118,7 +115,7 @@ public class PerceptualHash {
         return count;
     }
 
-    public boolean isSimilar(String hash1, String hash2, int threshold) {
+/*    public boolean isSimilar(String hash1, String hash2, int threshold) {
         return hammingDistance(hash1, hash2) <= threshold;
     }
 
@@ -129,5 +126,5 @@ public class PerceptualHash {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read image from bytes", e);
         }
-    }
+    }*/
 }

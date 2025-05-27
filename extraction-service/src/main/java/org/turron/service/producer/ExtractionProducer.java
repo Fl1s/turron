@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.turron.service.entity.FrameEntity;
 import org.turron.service.event.FrameExtractedEvent;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.turron.service.entity.HashEntity;
 import org.turron.service.event.FrameHashedEvent;
-
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -14,8 +13,17 @@ import java.util.UUID;
 public class HashingProducer {
     private final KafkaTemplate<String, FrameHashedEvent> extractedEventTemplate;
 
-    public void sendFramesHashedEvent(FrameHashedEvent event) {
-        log.info("Sending VideoUploadedEvent [videoId={}, frameId={}, frameHash={}, correlationId={}] to topic 'video.frames.hashed'",
+    public void sendFramesHashedEvent(String correlationId, HashEntity entity) {
+        FrameHashedEvent event = new FrameHashedEvent(
+                correlationId,
+                entity.getHashId(),
+                entity.getVideoId(),
+                entity.getFrameId(),
+                entity.getFrameHash()
+        );
+
+        log.info("Sending VideoUploadedEvent [hashId={}, videoId={}, frameId={}, frameHash={}, correlationId={}] to topic 'video.frames.hashed'",
+                event.getHashId(),
                 event.getVideoId(),
                 event.getFrameId(),
                 event.getFrameHash(),

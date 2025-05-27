@@ -91,7 +91,7 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 
 - **Eureka Server**: Manages service discovery using Netflix Eureka with `@DiscoveryClient`.
 
-- **Upload Service**: Accepts short videos via REST API, stores them in MongoDB GridFS, and sends processing tasks to Kafka.
+- **Upload Service**: Accepts short videos via REST API, stores them in MinIO, and sends processing tasks to Kafka.
 - **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness, and forwards frames to Kafka for hashing.
 - **Hashing Service**: Computes pHashes for keyframes and stores it in PostgreSQL.
 - **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in Redis.

@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.turron.service.entity.FrameEntity;
 import org.turron.service.event.FrameExtractedEvent;
 import org.turron.service.event.VideoUploadedEvent;
 import org.turron.service.producer.ExtractionProducer;
+import org.turron.service.repository.FrameRepository;
 
+import java.awt.*;
 import java.io.File;
 import java.util.List;
 
@@ -19,6 +22,7 @@ public class ExtractionService {
     private final MinioService minioService;
     private final FrameExtractor frameExtractor;
     private final ExtractionProducer producer;
+    private final FrameRepository frameRepository;
 
     public void extractFramesFromVideo(VideoUploadedEvent event) {
         MDC.put("correlationId", event.getCorrelationId());
@@ -33,15 +37,14 @@ public class ExtractionService {
             String frameId = event.getVideoId() + "-frame-" + String.format("%02d", i + 1);
             minioService.uploadFrame(event.getVideoId(), frames.get(i), i + 1);
 
-            FrameExtractedEvent frameEvent = new FrameExtractedEvent(
-                    event.getCorrelationId(),
-                    event.getVideoId(),
-                    frameId,
-                    "minio://frames/" + event.getVideoId() + "/" + (i + 1) + ".png"
-            );
+            FrameEntity entity = new FrameEntity();
+            entity.setFrameId(frameId);
+            entity.setVideoId(event.getVideoId());
+            entity.setFrameUrl("minio://frames/" + event.getVideoId() + "/" + (i + 1) + ".png");
 
-            producer.sendFramesExtractedEvent(frameEvent);
-            log.debug("Published FrameExtractedEvent: {}", frameEvent);
+            FrameEntity saved = frameRepository.save(entity);
+
+            producer.sendFramesExtractedEvent(event.getCorrelationId(), saved);
         }
 
         cleanup(tempVideo, frames);

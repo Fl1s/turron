@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.turron.service.entity.FrameEntity;
 import org.turron.service.event.FrameExtractedEvent;
 
 import java.util.UUID;
@@ -14,7 +15,13 @@ import java.util.UUID;
 public class ExtractionProducer {
     private final KafkaTemplate<String, FrameExtractedEvent> extractedEventTemplate;
 
-    public void sendFramesExtractedEvent(FrameExtractedEvent event) {
+    public void sendFramesExtractedEvent(String correlationId, FrameEntity extractedFrame) {
+        FrameExtractedEvent event = new FrameExtractedEvent(
+                correlationId,
+                extractedFrame.getFrameId(),
+                extractedFrame.getVideoId(),
+                extractedFrame.getFrameUrl()
+        );
 
         log.info("Sending VideoUploadedEvent [frameId={}, videoId={}, imageUrl={}, correlationId={}] to topic 'video.frames.extracted'",
                 event.getFrameId(),
@@ -22,6 +29,7 @@ public class ExtractionProducer {
                 event.getFrameUrl(),
                 event.getCorrelationId()
         );
+        log.debug("Published FrameExtractedEvent: {}", event);
 
         extractedEventTemplate
                 .send("video.frames.extracted", event)

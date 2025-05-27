@@ -25,8 +25,8 @@ public class FrameEntity {
 
     @PrePersist
     public void prePersist() {
-        if (videoId == null || videoId.isEmpty()) {
-            videoId = UUID.randomUUID().toString();
+        if (frameId == null || frameId.isEmpty()) {
+            frameId = UUID.randomUUID().toString();
         }
     }
 }

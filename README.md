@@ -70,11 +70,16 @@
 </details>
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
-A video recognition system that works like Shazam — but for video. It analyzes short snippets (3–5 seconds), breaks them into keyframes, and uses perceptual hashing to identify the exact or near-exact source, even if the clip has been edited or altered. This preserves the full context of the snippet and enables reliable tracking of original video content across platforms.
+A video recognition system that works like Shazam — but for video. It analyzes short snippets (3–5 seconds), breaks them
+into keyframes, and uses perceptual hashing to identify the exact or near-exact source, even if the clip has been edited
+or altered. This preserves the full context of the snippet and enables reliable tracking of original video content
+across platforms.
 
 Key features:
+
 * Upload full video snippets, not just images — automatic extraction of keyframes for context-aware matching.
 * Accurate source identification via perceptual hashing tolerant to modifications.
 * Optimized for quick, precise matching of short video fragments.
@@ -92,15 +97,19 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 - **Eureka Server**: Manages service discovery using Netflix Eureka with `@DiscoveryClient`.
 
 - **Upload Service**: Accepts short videos via REST API, stores them in MinIO, and sends processing tasks to Kafka.
-- **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness, and forwards frames to Kafka for hashing.
+- **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness,
+  and forwards frames to Kafka for hashing.
 - **Hashing Service**: Computes pHashes for keyframes and stores it in PostgreSQL.
-- **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in Redis.
+- **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in
+  Redis.
 - **API Gateway**: Centralized REST API endpoint managing requests, authentication, and response aggregation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Infrastructure
+
 #### Nah...Later.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
@@ -119,6 +128,7 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 <p align="right"> Built With(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 Set up Turron locally using Docker Compose for the dev environment or deploy to Kubernetes for production.
@@ -126,6 +136,7 @@ Set up Turron locally using Docker Compose for the dev environment or deploy to 
 ### Prerequisites
 
 Ensure you have the following installed:
+
 * Java 21
 * Gradle
 * Docker and Docker Compose
@@ -167,17 +178,23 @@ Ensure you have the following installed:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- API ENDPOINTS -->
+
 ## API Endpoints
+
 #### ~Later-r.
 
 ## CI/CD
+
 #### ...I'll do it later.
 
 <!-- MONITORING -->
+
 ## Monitoring
+
 #### ...Umm, skip-skip-skip. Definitely not today!
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are welcome to enhance Turron! Follow these steps:
@@ -208,6 +225,7 @@ Read our [Contributing Guidelines](CONTRIBUTING.md) for more details(I also do i
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the Apache 2.0 License. See [LICENSE](LICENSE) for more information.
@@ -215,6 +233,7 @@ Distributed under the Apache 2.0 License. See [LICENSE](LICENSE) for more inform
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
+
 ## Contact
 
 fl1s - [GitHub](https://github.com/fl1s)
@@ -224,34 +243,65 @@ Project Link: [https://github.com/fl1s/turron](https://github.com/fl1s/turron)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/fl1s/turron.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/fl1s/turron/graphs/contributors
+
 [forks-shield]: https://img.shields.io/github/forks/fl1s/turron.svg?style=for-the-badge
+
 [forks-url]: https://github.com/fl1s/turron/network/members
+
 [stars-shield]: https://img.shields.io/github/stars/fl1s/turron.svg?style=for-the-badge
+
 [stars-url]: https://github.com/fl1s/turron/stargazers
+
 [issues-shield]: https://img.shields.io/github/issues/fl1s/turron.svg?style=for-the-badge
+
 [issues-url]: https://github.com/fl1s/turron/issues
+
 [license-shield]: https://img.shields.io/github/license/fl1s/turron.svg?style=for-the-badge
+
 [license-url]: https://github.com/fl1s/turron/blob/main/LICENSE
+
 [product-screenshot]: images/screenshot.png
+
 [Java]: https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white
+
 [Java-url]: https://www.java.com/
+
 [Spring]: https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white
+
 [Spring-url]: https://spring.io/projects/spring-boot
+
 [PostgreSQL]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
+
 [PostgreSQL-url]: https://www.postgresql.org/
+
 [Kafka]: https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white
+
 [Kafka-url]: https://kafka.apache.org/
+
 [Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
+
 [Redis-url]: https://redis.io/
+
 [Docker]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
+
 [Docker-url]: https://www.docker.com/
+
 [Kubernetes]: https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white
+
 [Kubernetes-url]: https://kubernetes.io/
+
 [Prometheus]: https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white
+
 [Prometheus-url]: https://prometheus.io/
+
 [Grafana]: https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white
+
 [Grafana-url]: https://grafana.com/
+
 [Gradle]: https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white
+
 [Gradle-url]: https://gradle.org/

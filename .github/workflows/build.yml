@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build-and-push:
@@ -18,6 +18,8 @@ jobs:
         service:
           - eureka-server
           - upload-service
+          - extraction-service
+          - hashing-service
           - api-gateway
     steps:
       - name: Checkout code

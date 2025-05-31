@@ -16,7 +16,7 @@ public class HashingListener {
     @KafkaListener(topics = "video.frames.extracted", groupId = "extraction-service",
             containerFactory = "kafkaListenerContainerFactoryFrameExtracted")
     public void finalizeRegistration(FrameExtractedEvent event) {
-        log.info("Received video.uploaded event: {}", event);
+        log.info("Received video.frames.extracted event: {}", event);
         hashingService.frameHash(event);
     }
 }

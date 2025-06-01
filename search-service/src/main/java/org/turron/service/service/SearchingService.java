@@ -61,13 +61,13 @@ public class SearchingService {
                 List<String> dbHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(dbVideoId))
                         .orElse(Collections.emptyList());
 
-                if (dbHashes.isEmpty()) {
-                    log.debug("No hashes found for video {}. Skipping.", dbVideoId);
+                if (dbHashes.isEmpty() || dbHashes.size() < uploadedVideoHashes.size()) {
+                    log.debug("Insufficient hashes for video {}. Skipping.", dbVideoId);
                     continue;
                 }
 
-                List<Double> distances = HammingDistance.calculateAllDistances(uploadedVideoHashes, dbHashes);
-                matchScores.put(dbVideoId, distances);
+                List<Double> slidingDistances = calculateSlidingDistance(uploadedVideoHashes, dbHashes);
+                matchScores.put(dbVideoId, slidingDistances);
             }
 
             Optional<VideoMatchScoring.MatchResult> bestMatch = VideoMatchScoring.findBestMatch(matchScores);
@@ -92,4 +92,30 @@ public class SearchingService {
             log.info("Search finished in {} ms", duration.toMillis());
         }
     }
+
+    private List<Double> calculateSlidingDistance(List<String> fragmentHashes, List<String> sourceHashes) {
+        int windowSize = fragmentHashes.size();
+        int maxOffset = sourceHashes.size() - windowSize;
+
+        if (maxOffset < 0) {
+            return Collections.singletonList(Double.MAX_VALUE);
+        }
+
+        double bestScore = Double.MAX_VALUE;
+        List<Double> bestDistances = Collections.emptyList();
+
+        for (int offset = 0; offset <= maxOffset; offset++) {
+            List<String> window = sourceHashes.subList(offset, offset + windowSize);
+            List<Double> distances = HammingDistance.calculateAllDistances(fragmentHashes, window);
+            double score = VideoMatchScoring.computeTrimmedMean(distances);
+
+            if (score < bestScore) {
+                bestScore = score;
+                bestDistances = distances;
+            }
+        }
+
+        return bestDistances;
+    }
+
 }

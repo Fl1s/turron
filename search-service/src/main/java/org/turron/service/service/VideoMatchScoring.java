@@ -17,7 +17,7 @@ public class VideoMatchScoring {
                 .sorted(Comparator.comparingDouble(MatchResult::score))
                 .findFirst();
     }
-    private double computeTrimmedMean(List<Double> scores) {
+    public double computeTrimmedMean(List<Double> scores) {
         if (scores.size() <= 2)
             return scores.stream().mapToDouble(Double::doubleValue).average().orElse(Double.MAX_VALUE);
         scores.sort(Double::compareTo);

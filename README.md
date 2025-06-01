@@ -97,11 +97,23 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 - **Eureka Server**: Manages service discovery using Netflix Eureka with `@DiscoveryClient`.
 
 - **Upload Service**: Accepts short videos via REST API, stores them in MinIO, and sends processing tasks to Kafka.
-- **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness,
-  and forwards frames to Kafka for hashing.
+<img width="900" alt="upload-service" src="https://github.com/user-attachments/assets/d0a6a177-1623-4d1b-b42d-4060a39a95cd" />
+
+- **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness, and forwards frames to Kafka for hashing.
+<img width="800" alt="extraction-service" src="https://github.com/user-attachments/assets/60460e7b-3aa0-4f88-8a5f-01c0d1a7ff4e" />
+
+
 - **Hashing Service**: Computes pHashes for keyframes and stores it in PostgreSQL.
+<img width="500" alt="hashing-service" src="https://github.com/user-attachments/assets/278febdb-8aba-48ea-a765-ac4b085a9c8b" />
+
+
 - **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in
   Redis.
+<img width="500" alt="1and2" src="https://github.com/user-attachments/assets/e1596cbf-5db4-45e6-a962-1e36a562cf90" />
+<img width="500" alt="2and2" src="https://github.com/user-attachments/assets/51446018-c8ec-4c99-9c62-9b25c36bfdbb" />
+<img width="500" alt="empty_db" src="https://github.com/user-attachments/assets/2ef69754-328d-4150-b60d-e871a189f018" />
+<img width="500" alt="matches" src="https://github.com/user-attachments/assets/de26c5d6-1e2b-4c89-951d-6db08f4bb6f7" />
+
 - **API Gateway**: Centralized REST API endpoint managing requests, authentication, and response aggregation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

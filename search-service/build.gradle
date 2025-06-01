@@ -26,7 +26,6 @@ repositories {
 ext {
     set('springCloudVersion', '2024.0.0')
 }
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

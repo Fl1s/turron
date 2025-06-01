@@ -9,7 +9,7 @@ import org.turron.service.entity.HashEntity;
 import java.util.List;
 
 @Repository
-public interface SearchRepository extends JpaRepository<HashEntity, Long> {
+public interface HashRepository extends JpaRepository<HashEntity, String> {
     @Query("SELECT DISTINCT f.videoId FROM HashEntity f")
     List<String> findDistinctVideoIds();
 

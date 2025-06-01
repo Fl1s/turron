@@ -3,11 +3,12 @@ package org.turron.service.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.turron.service.entity.HashEntity;
+import org.turron.service.entity.MatchEntity;
 import org.turron.service.event.FrameHashedEvent;
-import org.turron.service.event.VideoMatchedEvent;
-import org.turron.service.repository.SearchRepository;
+import org.turron.service.repository.MatchRepository;
+import org.turron.service.repository.HashRepository;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,19 +20,26 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SearchingService {
+    private final HashRepository hashRepository;
+    private final MatchRepository matchRepository;
 
-    private final SearchRepository searchRepository;
-    private final KafkaTemplate<String, VideoMatchedEvent> kafkaTemplate;
+    public void storeHash(FrameHashedEvent event) {
+        HashEntity hashEntity = new HashEntity();
+
+        hashEntity.setVideoId(event.getVideoId());
+        hashEntity.setFrameId(event.getFrameId());
+        hashEntity.setFrameHash(event.getFrameHash());
+
+        hashRepository.save(hashEntity);
+    }
 
     public void findMostSimilarVideo(FrameHashedEvent event) {
-        String correlationId = event.getCorrelationId();
         String videoId = event.getVideoId();
 
-        MDC.put("correlationId", correlationId);
         Instant start = Instant.now();
-
+        MatchEntity entity = new MatchEntity();
         try {
-            List<String> uploadedVideoHashes = Optional.ofNullable(searchRepository.findHashesByVideoId(videoId))
+            List<String> uploadedVideoHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(videoId))
                     .orElse(Collections.emptyList());
 
             log.info("Start searching most similar video. Uploaded hashes count: {}", uploadedVideoHashes.size());
@@ -41,7 +49,7 @@ public class SearchingService {
                 return;
             }
 
-            List<String> allVideoIds = Optional.ofNullable(searchRepository.findDistinctVideoIds())
+            List<String> allVideoIds = Optional.ofNullable(hashRepository.findDistinctVideoIds())
                     .orElse(Collections.emptyList());
 
             if (allVideoIds.isEmpty()) {
@@ -55,7 +63,7 @@ public class SearchingService {
             for (String dbVideoId : allVideoIds) {
                 if (dbVideoId.equals(videoId)) continue;
 
-                List<String> dbHashes = Optional.ofNullable(searchRepository.findHashesByVideoId(dbVideoId))
+                List<String> dbHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(dbVideoId))
                         .orElse(Collections.emptyList());
 
                 if (dbHashes.isEmpty()) {
@@ -74,9 +82,12 @@ public class SearchingService {
 
             if (bestVideoId != null) {
                 log.info("Best match found: videoId={}, distance={}", bestVideoId, bestScore);
-                VideoMatchedEvent matchedEvent = new VideoMatchedEvent(correlationId, bestVideoId, bestScore);
-                kafkaTemplate.send("video.match.found", matchedEvent);
-                log.info("Sent VideoMatchedEvent to Kafka topic video.match.found");
+                entity.setVideoId(event.getVideoId());
+                entity.setMatchedVideoId(bestVideoId);
+                entity.setScore(bestScore);
+
+                matchRepository.save(entity);
+                log.info("Matched result saved!");
             } else {
                 log.info("No suitable match found.");
             }
@@ -86,7 +97,6 @@ public class SearchingService {
         } finally {
             Duration duration = Duration.between(start, Instant.now());
             log.info("Search finished in {} ms", duration.toMillis());
-            MDC.clear();
         }
     }
 }

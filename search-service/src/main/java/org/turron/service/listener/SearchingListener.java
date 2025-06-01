@@ -18,6 +18,8 @@ public class SearchingListener {
             containerFactory = "kafkaListenerContainerFactoryFrameHashed")
     public void onFrameHashedEvent(FrameHashedEvent event) {
         log.info("Received video.frames.hashed event: {}", event);
+
+        searchingService.storeHash(event);
         searchingService.findMostSimilarVideo(event);
     }
 }

@@ -1,0 +1,14 @@
+package org.turron.service.event;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class VideoMatchedEvent {
+    private String correlationId;
+    private String videoId;
+    private double similarityScore;
+}

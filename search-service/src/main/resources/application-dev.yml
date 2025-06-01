@@ -9,7 +9,7 @@ eureka:
 
 spring:
   config:
-    import: file:hashing-service/.env.dev[.properties]
+    import: file:search-service/.env.dev[.properties]
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 

@@ -109,10 +109,10 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 
 - **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in
   Redis.
-<img width="500" alt="1and2" src="https://github.com/user-attachments/assets/e1596cbf-5db4-45e6-a962-1e36a562cf90" />
-<img width="500" alt="2and2" src="https://github.com/user-attachments/assets/51446018-c8ec-4c99-9c62-9b25c36bfdbb" />
-<img width="500" alt="empty_db" src="https://github.com/user-attachments/assets/2ef69754-328d-4150-b60d-e871a189f018" />
-<img width="500" alt="matches" src="https://github.com/user-attachments/assets/de26c5d6-1e2b-4c89-951d-6db08f4bb6f7" />
+<img width="400" alt="1and2" src="https://github.com/user-attachments/assets/e1596cbf-5db4-45e6-a962-1e36a562cf90" />
+<img width="400" alt="2and2" src="https://github.com/user-attachments/assets/51446018-c8ec-4c99-9c62-9b25c36bfdbb" />
+<img width="400" alt="empty_db" src="https://github.com/user-attachments/assets/2ef69754-328d-4150-b60d-e871a189f018" />
+<img width="400" alt="matches" src="https://github.com/user-attachments/assets/de26c5d6-1e2b-4c89-951d-6db08f4bb6f7" />
 
 - **API Gateway**: Centralized REST API endpoint managing requests, authentication, and response aggregation.
 

@@ -2,7 +2,6 @@ package org.turron.service.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.turron.service.entity.HashEntity;
 import org.turron.service.entity.MatchEntity;
@@ -12,9 +11,7 @@ import org.turron.service.repository.HashRepository;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -35,15 +32,14 @@ public class SearchingService {
 
     public void findMostSimilarVideo(FrameHashedEvent event) {
         String videoId = event.getVideoId();
-
         Instant start = Instant.now();
         MatchEntity entity = new MatchEntity();
+
         try {
             List<String> uploadedVideoHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(videoId))
                     .orElse(Collections.emptyList());
 
             log.info("Start searching most similar video. Uploaded hashes count: {}", uploadedVideoHashes.size());
-
             if (uploadedVideoHashes.isEmpty()) {
                 log.warn("Uploaded hashes list is empty or null. Aborting search.");
                 return;
@@ -57,8 +53,7 @@ public class SearchingService {
                 return;
             }
 
-            String bestVideoId = null;
-            double bestScore = Double.MAX_VALUE;
+            Map<String, List<Double>> matchScores = new HashMap<>();
 
             for (String dbVideoId : allVideoIds) {
                 if (dbVideoId.equals(videoId)) continue;
@@ -71,21 +66,19 @@ public class SearchingService {
                     continue;
                 }
 
-                double avgDistance = HammingDistance.calculateAverageHammingDistance(uploadedVideoHashes, dbHashes);
-                log.debug("Video {} average Hamming distance: {}", dbVideoId, avgDistance);
-
-                if (avgDistance < bestScore) {
-                    bestScore = avgDistance;
-                    bestVideoId = dbVideoId;
-                }
+                List<Double> distances = HammingDistance.calculateAllDistances(uploadedVideoHashes, dbHashes);
+                matchScores.put(dbVideoId, distances);
             }
 
-            if (bestVideoId != null) {
-                log.info("Best match found: videoId={}, distance={}", bestVideoId, bestScore);
-                entity.setVideoId(event.getVideoId());
-                entity.setMatchedVideoId(bestVideoId);
-                entity.setScore(bestScore);
+            Optional<VideoMatchScoring.MatchResult> bestMatch = VideoMatchScoring.findBestMatch(matchScores);
 
+            if (bestMatch.isPresent()) {
+                VideoMatchScoring.MatchResult result = bestMatch.get();
+                log.info("Best match found: videoId={}, distance={}", result.videoId(), result.score());
+
+                entity.setVideoId(videoId);
+                entity.setMatchedVideoId(result.videoId());
+                entity.setScore(result.score());
                 matchRepository.save(entity);
                 log.info("Matched result saved!");
             } else {

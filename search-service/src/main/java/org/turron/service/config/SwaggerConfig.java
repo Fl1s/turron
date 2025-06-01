@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "hashing-service",
+                title = "search-service",
                 version = "v1",
-                description = "Responsible for hashing keyframes logic."
+                description = "Responsible for the finding similar videos logic."
         )
 )
 public class SwaggerConfig {

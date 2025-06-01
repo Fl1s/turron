@@ -26,13 +26,13 @@ public class HashingService {
             String hash = PerceptualHash.compute(image);
             String hashId = UUID.randomUUID().toString();
 
-            HashEntity entity = new HashEntity(
-                    hashId,
-                    event.getVideoId(),
-                    event.getFrameId(),
-                    event.getFrameUrl(),
-                    hash
-            );
+            HashEntity entity = new HashEntity();
+
+            entity.setHashId(hashId);
+            entity.setVideoId(event.getVideoId());
+            entity.setFrameId(event.getFrameId());
+            entity.setFrameUrl(event.getFrameUrl());
+            entity.setFrameHash(hash);
 
             hashRepository.save(entity);
             hashingProducer.sendFramesHashedEvent(event.getCorrelationId(), entity);

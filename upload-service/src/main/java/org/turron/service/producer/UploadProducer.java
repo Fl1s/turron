@@ -9,9 +9,9 @@ import org.turron.service.event.VideoUploadedEvent;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UploadProducer {
 
     private final KafkaTemplate<String, VideoUploadedEvent> uploadedEventTemplate;

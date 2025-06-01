@@ -22,7 +22,7 @@ public class HashingProducer {
                 entity.getFrameHash()
         );
 
-        log.info("Sending VideoUploadedEvent [hashId={}, videoId={}, frameId={}, frameHash={}, correlationId={}] to topic 'video.frames.hashed'",
+        log.info("Sending FrameHashedEvent [hashId={}, videoId={}, frameId={}, frameHash={}, correlationId={}] to topic 'video.frames.hashed'",
                 event.getHashId(),
                 event.getVideoId(),
                 event.getFrameId(),

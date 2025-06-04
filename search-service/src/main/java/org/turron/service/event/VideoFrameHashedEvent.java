@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VideoMatchedEvent {
-    private String correlationId;
+public class VideoFrameHashedEvent {
+    private String hashId;
     private String videoId;
-    private double similarityScore;
+    private String frameId;
+    private String frameHash;
+    private String correlationId;
 }

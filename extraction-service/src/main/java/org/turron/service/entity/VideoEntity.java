@@ -15,20 +15,20 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "hashes")
-public class HashEntity {
+@Table(name = "videos")
+public class VideoEntity {
     @Id
-    private String hashId;
+    private String frameId;
 
     private String videoId;
-    private String frameId;
-    private String frameHash;
 
+    private String frameUrl;
     private LocalDateTime createdAt;
+
     @PrePersist
     public void prePersist() {
-        if (hashId == null || hashId.isEmpty()) {
-            hashId = UUID.randomUUID().toString();
+        if (frameId == null || frameId.isEmpty()) {
+            frameId = UUID.randomUUID().toString();
         }
         createdAt = LocalDateTime.now();
     }

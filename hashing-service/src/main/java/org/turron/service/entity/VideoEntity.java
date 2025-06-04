@@ -15,8 +15,8 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "hashes")
-public class HashEntity {
+@Table(name = "videos")
+public class VideoEntity {
     @Id
     private String hashId;
 
@@ -31,8 +31,8 @@ public class HashEntity {
 
     @PrePersist
     public void prePersist() {
-        if (videoId == null || videoId.isEmpty()) {
-            videoId = UUID.randomUUID().toString();
+        if (hashId == null || hashId.isEmpty()) {
+            hashId = UUID.randomUUID().toString();
         }
         createdAt = LocalDateTime.now();
     }

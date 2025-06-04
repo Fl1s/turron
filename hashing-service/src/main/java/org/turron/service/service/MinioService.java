@@ -49,5 +49,4 @@ public class MinioService {
             throw new RuntimeException("Failed to download image from MinIO", e);
         }
     }
-
 }

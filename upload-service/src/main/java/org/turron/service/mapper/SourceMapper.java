@@ -1,13 +1,14 @@
 package org.turron.service.mapper;
 
 import org.mapstruct.Mapper;
+import org.turron.service.dto.SourceDto;
 import org.turron.service.dto.VideoDto;
+import org.turron.service.entity.SourceEntity;
 import org.turron.service.entity.VideoEntity;
-import org.turron.service.event.VideoUploadedEvent;
 
 @Mapper(
         componentModel = "spring"
 )
-public interface VideoMapper {
-    VideoDto toDto(VideoEntity entity);
+public interface SourceMapper {
+    SourceDto toDto(SourceEntity entity);
 }

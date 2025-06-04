@@ -14,7 +14,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.turron.service.event.FrameExtractedEvent;
+import org.turron.service.event.SourceFrameExtractedEvent;
+import org.turron.service.event.VideoFrameExtractedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,27 +27,33 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Bean
-    public ConsumerFactory<String, FrameExtractedEvent> consumerFrameExtractedFactory() {
-        JsonDeserializer<FrameExtractedEvent> deserializer = new JsonDeserializer<>(FrameExtractedEvent.class);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(false);
+    private <T> ConsumerFactory<String, T> createConsumerFactory(Class<T> clazz) {
+        JsonDeserializer<T> jsonDeserializer = new JsonDeserializer<>(clazz);
+        jsonDeserializer.addTrustedPackages("*");
+        jsonDeserializer.setUseTypeMapperForKey(false);
 
-        ErrorHandlingDeserializer<FrameExtractedEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(deserializer);
+        ErrorHandlingDeserializer<T> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(jsonDeserializer);
 
-        Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, errorHandlingDeserializer);
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, errorHandlingDeserializer);
 
-        return new DefaultKafkaConsumerFactory<>(consumerConfig, new StringDeserializer(), errorHandlingDeserializer);
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    private <T> KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, T>> createFactory(Class<T> clazz) {
+        ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(createConsumerFactory(clazz));
+        return factory;
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, FrameExtractedEvent>> kafkaListenerContainerFactoryFrameExtracted(
-            ConsumerFactory<String, FrameExtractedEvent> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, FrameExtractedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory);
-        return factory;
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, VideoFrameExtractedEvent>> kafkaListenerContainerFactoryVideoFrameExtracted() {
+        return createFactory(VideoFrameExtractedEvent.class);
+    }
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SourceFrameExtractedEvent>> kafkaListenerContainerFactorySourceFrameExtracted() {
+        return createFactory(SourceFrameExtractedEvent.class);
     }
 }

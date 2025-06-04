@@ -3,11 +3,14 @@ package org.turron.service.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.turron.service.entity.HashEntity;
+import org.turron.service.entity.SourceEntity;
+import org.turron.service.entity.VideoEntity;
 import org.turron.service.entity.MatchEntity;
-import org.turron.service.event.FrameHashedEvent;
+import org.turron.service.event.SourceFrameHashedEvent;
+import org.turron.service.event.VideoFrameHashedEvent;
 import org.turron.service.repository.MatchRepository;
-import org.turron.service.repository.HashRepository;
+import org.turron.service.repository.SourceRepository;
+import org.turron.service.repository.VideoRepository;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,79 +20,85 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class SearchingService {
-    private final HashRepository hashRepository;
+    private final VideoRepository videoRepository;
+    private final SourceRepository sourceRepository;
     private final MatchRepository matchRepository;
 
-    public void storeHash(FrameHashedEvent event) {
-        HashEntity hashEntity = new HashEntity();
+    public void storeVideoHash(VideoFrameHashedEvent event) {
+        VideoEntity videoEntity = new VideoEntity();
 
-        hashEntity.setVideoId(event.getVideoId());
-        hashEntity.setFrameId(event.getFrameId());
-        hashEntity.setFrameHash(event.getFrameHash());
+        videoEntity.setVideoId(event.getVideoId());
+        videoEntity.setFrameId(event.getFrameId());
+        videoEntity.setFrameHash(event.getFrameHash());
 
-        hashRepository.save(hashEntity);
+        videoRepository.save(videoEntity);
+    }
+    public void storeSourceHash(SourceFrameHashedEvent event) {
+        SourceEntity sourceEntity = new SourceEntity();
+
+        sourceEntity.setSourceId(event.getSourceId());
+        sourceEntity.setFrameId(event.getFrameId());
+        sourceEntity.setFrameHash(event.getFrameHash());
+
+        sourceRepository.save(sourceEntity);
     }
 
-    public void findMostSimilarVideo(FrameHashedEvent event) {
+    public void findMostSimilarSource(VideoFrameHashedEvent event) {
         String videoId = event.getVideoId();
         Instant start = Instant.now();
-        MatchEntity entity = new MatchEntity();
+        MatchEntity match = new MatchEntity();
 
         try {
-            List<String> uploadedVideoHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(videoId))
+            List<String> videoHashes = Optional.ofNullable(videoRepository.findHashesByVideoId(videoId))
                     .orElse(Collections.emptyList());
 
-            log.info("Start searching most similar video. Uploaded hashes count: {}", uploadedVideoHashes.size());
-            if (uploadedVideoHashes.isEmpty()) {
-                log.warn("Uploaded hashes list is empty or null. Aborting search.");
+            if (videoHashes.isEmpty()) {
+                log.warn("No hashes found for video {}", videoId);
                 return;
             }
 
-            List<String> allVideoIds = Optional.ofNullable(hashRepository.findDistinctVideoIds())
+            List<String> allSourceIds = Optional.ofNullable(sourceRepository.findDistinctSourceIds())
                     .orElse(Collections.emptyList());
 
-            if (allVideoIds.isEmpty()) {
-                log.warn("No videos found in database for comparison.");
+            if (allSourceIds.isEmpty()) {
+                log.warn("No sources available in DB.");
                 return;
             }
 
             Map<String, List<Double>> matchScores = new HashMap<>();
 
-            for (String dbVideoId : allVideoIds) {
-                if (dbVideoId.equals(videoId)) continue;
-
-                List<String> dbHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(dbVideoId))
+            for (String sourceId : allSourceIds) {
+                List<String> sourceHashes = Optional.ofNullable(sourceRepository.findHashesBySourceId(sourceId))
                         .orElse(Collections.emptyList());
 
-                if (dbHashes.isEmpty() || dbHashes.size() < uploadedVideoHashes.size()) {
-                    log.debug("Insufficient hashes for video {}. Skipping.", dbVideoId);
+                if (sourceHashes.size() < videoHashes.size()) {
+                    log.debug("Skipping source {} due to insufficient hash count", sourceId);
                     continue;
                 }
 
-                List<Double> slidingDistances = calculateSlidingDistance(uploadedVideoHashes, dbHashes);
-                matchScores.put(dbVideoId, slidingDistances);
+                List<Double> distances = calculateSlidingDistance(videoHashes, sourceHashes);
+                matchScores.put(sourceId, distances);
             }
 
             Optional<VideoMatchScoring.MatchResult> bestMatch = VideoMatchScoring.findBestMatch(matchScores);
 
             if (bestMatch.isPresent()) {
                 VideoMatchScoring.MatchResult result = bestMatch.get();
-                log.info("Best match found: videoId={}, distance={}", result.videoId(), result.score());
+                log.info("Best source match: sourceId={}, score={}", result.videoId(), result.score());
 
-                entity.setVideoId(videoId);
-                entity.setMatchedVideoId(result.videoId());
-                entity.setScore(result.score());
-                matchRepository.save(entity);
-                log.info("Matched result saved!");
+                match.setVideoId(videoId);
+                match.setMatchedSourceId(result.videoId());
+                match.setScore(result.score());
+                matchRepository.save(match);
+                log.info("Match result saved successfully.");
             } else {
-                log.info("No suitable match found.");
+                log.info("No match found.");
             }
 
         } catch (Exception e) {
-            log.error("Exception during video search", e);
+            log.error("Error occurred during matching", e);
         } finally {
-            Duration duration = Duration.between(start, Instant.now());
-            log.info("Search finished in {} ms", duration.toMillis());
+            log.info("Matching completed in {} ms", Duration.between(start, Instant.now()).toMillis());
         }
     }
 

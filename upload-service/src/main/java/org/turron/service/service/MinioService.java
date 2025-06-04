@@ -50,31 +50,41 @@ public class MinioService {
         return process;
     }
 
-    public String uploadVideo(String filename, MultipartFile videoFile) {
-        log.info("Uploading video: originalFilename={}, contentType={}", videoFile.getOriginalFilename(), videoFile.getContentType());
+    public String uploadVideo(String filename, MultipartFile file) {
+        return uploadFile(filename, file, "videos", true);
+    }
 
-        if (videoFile.isEmpty() || !videoFile.getContentType().startsWith("video/")) {
-            log.warn("File is empty or not a video: {}", videoFile.getOriginalFilename());
+    public String uploadSource(String filename, MultipartFile file) {
+        return uploadFile(filename, file, "sources", false);
+    }
+
+    private String uploadFile(String filename, MultipartFile file, String folder, boolean validateDuration) {
+        log.info("Uploading file to '{}': originalFilename={}, contentType={}", folder, file.getOriginalFilename(), file.getContentType());
+
+        if (file.isEmpty() || !file.getContentType().startsWith("video/")) {
+            log.warn("File is empty or not a video: {}", file.getOriginalFilename());
             throw new IllegalArgumentException("Not a video file.");
         }
 
         File tempFile = null;
         try {
             tempFile = File.createTempFile("upload-", ".tmp");
-            videoFile.transferTo(tempFile);
+            file.transferTo(tempFile);
             log.debug("Temporary file created at {}", tempFile.getAbsolutePath());
 
-            validateVideo(tempFile);
+            if (validateDuration) {
+                validateVideo(tempFile);
+            }
 
-            String path = "videos/" + filename;
-            uploadFileToMinio(path, tempFile, videoFile.getContentType());
+            String objectPath = folder + "/" + filename;
+            uploadFileToMinio(objectPath, tempFile, file.getContentType());
 
-            log.info("Video successfully uploaded to MinIO at path: {}", path);
-            return "minio://" + bucketName + "/" + path;
+            log.info("File successfully uploaded to MinIO at path: {}", objectPath);
+            return "minio://" + bucketName + "/" + objectPath;
 
         } catch (IOException e) {
-            log.error("Failed to process video file", e);
-            throw new RuntimeException("Failed to process video file.", e);
+            log.error("Failed to process file", e);
+            throw new RuntimeException("Failed to process file.", e);
         } finally {
             if (tempFile != null && tempFile.exists()) {
                 if (tempFile.delete()) {
@@ -85,6 +95,7 @@ public class MinioService {
             }
         }
     }
+
 
     private void validateVideo(File tempFile) {
         try {

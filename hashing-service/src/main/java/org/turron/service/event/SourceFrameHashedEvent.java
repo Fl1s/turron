@@ -5,10 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class VideoUploadedEvent {
+@NoArgsConstructor
+public class SourceFrameHashedEvent {
+    private String hashId;
+    private String sourceId;
+    private String frameId;
+    private String frameHash;
     private String correlationId;
-    private String videoId;
-    private String sourceUrl;
 }

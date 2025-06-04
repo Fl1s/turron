@@ -101,30 +101,4 @@ public class PerceptualHash {
         int mid = copy.length / 2;
         return (copy.length % 2 == 0) ? (copy[mid - 1] + copy[mid]) / 2.0 : copy[mid];
     }
-
-    public int hammingDistance(String hash1, String hash2) {
-        if (hash1.length() != hash2.length()) {
-            throw new IllegalArgumentException("Hash lengths must be equal");
-        }
-        int count = 0;
-        for (int i = 0; i < hash1.length(); i++) {
-            if (hash1.charAt(i) != hash2.charAt(i)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-/*    public boolean isSimilar(String hash1, String hash2, int threshold) {
-        return hammingDistance(hash1, hash2) <= threshold;
-    }
-
-    public String computeFromBytes(byte[] data) {
-        try {
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
-            return compute(image);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read image from bytes", e);
-        }
-    }*/
 }

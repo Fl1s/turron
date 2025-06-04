@@ -9,6 +9,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.turron.service.event.SourceUploadedEvent;
 import org.turron.service.event.VideoUploadedEvent;
 
 import java.util.HashMap;
@@ -38,6 +39,18 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, VideoUploadedEvent> videoUploadedEventKafkaTemplate(
             ProducerFactory<String, VideoUploadedEvent> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public ProducerFactory<String, SourceUploadedEvent> sourceUploadedEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+
+    @Bean
+    public KafkaTemplate<String, SourceUploadedEvent> sourceUploadedEventKafkaTemplate(
+            ProducerFactory<String, SourceUploadedEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }

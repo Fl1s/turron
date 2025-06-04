@@ -5,8 +5,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,23 +15,20 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "matches")
-public class MatchEntity {
+@Table(name = "sources")
+public class SourceEntity {
     @Id
-    private String matchId;
+    private String sourceId;
 
-    private String videoId;
-    private String matchedSourceId;
-    private double score;
+    private String sourceUrl;
 
     private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
-        if (matchId == null || matchId.isEmpty()) {
-            matchId = UUID.randomUUID().toString();
+        if (sourceId == null || sourceId.isEmpty()) {
+            sourceId = UUID.randomUUID().toString();
         }
         createdAt = LocalDateTime.now();
     }
 }
-

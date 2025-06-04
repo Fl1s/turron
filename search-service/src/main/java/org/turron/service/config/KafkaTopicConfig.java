@@ -12,28 +12,31 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("video.uploaded")
                 .build();
     }
+    @Bean
+    public NewTopic sourceUploadedTopic() {
+        return TopicBuilder.name("source.uploaded")
+                .build();
+    }
 
     @Bean
-    public NewTopic frameExtractedTopic() {
+    public NewTopic videoFramesExtractedTopic() {
         return TopicBuilder.name("video.frames.extracted")
                 .build();
     }
+    @Bean
+    public NewTopic sourceFramesExtractedTopic() {
+        return TopicBuilder.name("source.frames.extracted")
+                .build();
+    }
 
     @Bean
-    NewTopic videoExtractedTopic() {
+    NewTopic videoFramesHashedTopic() {
         return TopicBuilder.name("video.frames.hashed")
                 .build();
     }
-
     @Bean
-    NewTopic videoSearchTopic() {
-        return TopicBuilder.name("video.match.search")
-                .build();
-    }
-
-    @Bean
-    NewTopic videoFoundTopic() {
-        return TopicBuilder.name("video.match.found")
+    NewTopic sourceFramesHashedTopic() {
+        return TopicBuilder.name("source.frames.hashed")
                 .build();
     }
 }

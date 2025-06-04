@@ -2,101 +2,110 @@ package org.turron.service.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.turron.service.entity.HashEntity;
+import org.turron.service.entity.SourceEntity;
+import org.turron.service.entity.VideoEntity;
 import org.turron.service.entity.MatchEntity;
-import org.turron.service.event.FrameHashedEvent;
+import org.turron.service.event.SourceFrameHashedEvent;
+import org.turron.service.event.VideoFrameHashedEvent;
 import org.turron.service.repository.MatchRepository;
-import org.turron.service.repository.HashRepository;
+import org.turron.service.repository.SourceRepository;
+import org.turron.service.repository.VideoRepository;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SearchingService {
-    private final HashRepository hashRepository;
+    private final VideoRepository videoRepository;
+    private final SourceRepository sourceRepository;
     private final MatchRepository matchRepository;
 
-    public void storeHash(FrameHashedEvent event) {
-        HashEntity hashEntity = new HashEntity();
+    @Value("${minio.buckets.uploads}")
+    private String uploadsBucket;
 
-        hashEntity.setVideoId(event.getVideoId());
-        hashEntity.setFrameId(event.getFrameId());
-        hashEntity.setFrameHash(event.getFrameHash());
+    public void storeVideoHash(VideoFrameHashedEvent event) {
+        VideoEntity videoEntity = new VideoEntity();
 
-        hashRepository.save(hashEntity);
+        videoEntity.setVideoId(event.getVideoId());
+        videoEntity.setFrameId(event.getFrameId());
+        videoEntity.setFrameHash(event.getFrameHash());
+
+        videoRepository.save(videoEntity);
     }
+    public void storeSourceHash(SourceFrameHashedEvent event) {
+        SourceEntity sourceEntity = new SourceEntity();
 
-    public void findMostSimilarVideo(FrameHashedEvent event) {
-        String videoId = event.getVideoId();
+        sourceEntity.setSourceId(event.getSourceId());
+        sourceEntity.setFrameId(event.getFrameId());
+        sourceEntity.setFrameHash(event.getFrameHash());
 
-        Instant start = Instant.now();
-        MatchEntity entity = new MatchEntity();
-        try {
-            List<String> uploadedVideoHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(videoId))
-                    .orElse(Collections.emptyList());
+        sourceRepository.save(sourceEntity);
+    }
+    public String findBestMatch(String videoId) {
+        List<String> videoHashes = Optional.ofNullable(videoRepository.findHashesByVideoId(videoId))
+                .orElse(Collections.emptyList());
 
-            log.info("Start searching most similar video. Uploaded hashes count: {}", uploadedVideoHashes.size());
-
-            if (uploadedVideoHashes.isEmpty()) {
-                log.warn("Uploaded hashes list is empty or null. Aborting search.");
-                return;
-            }
-
-            List<String> allVideoIds = Optional.ofNullable(hashRepository.findDistinctVideoIds())
-                    .orElse(Collections.emptyList());
-
-            if (allVideoIds.isEmpty()) {
-                log.warn("No videos found in database for comparison.");
-                return;
-            }
-
-            String bestVideoId = null;
-            double bestScore = Double.MAX_VALUE;
-
-            for (String dbVideoId : allVideoIds) {
-                if (dbVideoId.equals(videoId)) continue;
-
-                List<String> dbHashes = Optional.ofNullable(hashRepository.findHashesByVideoId(dbVideoId))
-                        .orElse(Collections.emptyList());
-
-                if (dbHashes.isEmpty()) {
-                    log.debug("No hashes found for video {}. Skipping.", dbVideoId);
-                    continue;
-                }
-
-                double avgDistance = HammingDistance.calculateAverageHammingDistance(uploadedVideoHashes, dbHashes);
-                log.debug("Video {} average Hamming distance: {}", dbVideoId, avgDistance);
-
-                if (avgDistance < bestScore) {
-                    bestScore = avgDistance;
-                    bestVideoId = dbVideoId;
-                }
-            }
-
-            if (bestVideoId != null) {
-                log.info("Best match found: videoId={}, distance={}", bestVideoId, bestScore);
-                entity.setVideoId(event.getVideoId());
-                entity.setMatchedVideoId(bestVideoId);
-                entity.setScore(bestScore);
-
-                matchRepository.save(entity);
-                log.info("Matched result saved!");
-            } else {
-                log.info("No suitable match found.");
-            }
-
-        } catch (Exception e) {
-            log.error("Exception during video search", e);
-        } finally {
-            Duration duration = Duration.between(start, Instant.now());
-            log.info("Search finished in {} ms", duration.toMillis());
+        if (videoHashes.isEmpty()) {
+            log.warn("No hashes found for video {}", videoId);
+            throw new IllegalArgumentException("No video hashes found");
         }
+
+        List<String> allSourceIds = Optional.ofNullable(sourceRepository.findDistinctSourceIds())
+                .orElse(Collections.emptyList());
+
+        if (allSourceIds.isEmpty()) {
+            log.warn("No sources available in DB.");
+            throw new IllegalStateException("No sources available");
+        }
+
+        Map<String, List<Double>> matchScores = new HashMap<>();
+
+        for (String sourceId : allSourceIds) {
+            List<String> sourceHashes = Optional.ofNullable(sourceRepository.findHashesBySourceId(sourceId))
+                    .orElse(Collections.emptyList());
+
+            if (sourceHashes.size() < videoHashes.size()) {
+                log.debug("Skipping source {} due to insufficient hash count", sourceId);
+                continue;
+            }
+
+            List<Double> distances = calculateSlidingDistance(videoHashes, sourceHashes);
+            matchScores.put(sourceId, distances);
+        }
+
+        return VideoMatchScoring.findBestMatch(matchScores)
+                .map(VideoMatchScoring.MatchResult::videoId)
+                .orElseThrow(() -> new IllegalStateException("No match found"));
     }
+
+    private List<Double> calculateSlidingDistance(List<String> fragmentHashes, List<String> sourceHashes) {
+        int windowSize = fragmentHashes.size();
+        int maxOffset = sourceHashes.size() - windowSize;
+
+        if (maxOffset < 0) {
+            return Collections.singletonList(Double.MAX_VALUE);
+        }
+
+        double bestScore = Double.MAX_VALUE;
+        List<Double> bestDistances = Collections.emptyList();
+
+        for (int offset = 0; offset <= maxOffset; offset++) {
+            List<String> window = sourceHashes.subList(offset, offset + windowSize);
+            List<Double> distances = HammingDistance.calculateAllDistances(fragmentHashes, window);
+            double score = VideoMatchScoring.computeTrimmedMean(distances);
+
+            if (score < bestScore) {
+                bestScore = score;
+                bestDistances = distances;
+            }
+        }
+
+        return bestDistances;
+    }
+
 }

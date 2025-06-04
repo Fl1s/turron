@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FrameExtractedEvent {
+public class VideoFrameExtractedEvent {
     private String correlationId;
     private String frameId;
     private String videoId;

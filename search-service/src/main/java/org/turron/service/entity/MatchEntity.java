@@ -21,7 +21,7 @@ public class MatchEntity {
     private String matchId;
 
     private String videoId;
-    private String matchedVideoId;
+    private String matchedSourceId;
     private double score;
 
     private LocalDateTime createdAt;

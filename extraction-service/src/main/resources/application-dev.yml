@@ -21,7 +21,7 @@ spring:
 
 minio:
   buckets:
-    videos: ${MINIO_BUCKETS_VIDEOS}
+    uploads: ${MINIO_BUCKETS_UPLOADS}
     frames: ${MINIO_BUCKETS_FRAMES}
   url: ${MINIO_URL}
   root-user: ${MINIO_ROOT_USER}

@@ -9,7 +9,5 @@ import org.turron.service.event.VideoUploadedEvent;
         componentModel = "spring"
 )
 public interface VideoMapper {
-    VideoUploadedEvent toVideoUploadedEvent(VideoEntity videoEntity);
-
     VideoDto toDto(VideoEntity entity);
 }

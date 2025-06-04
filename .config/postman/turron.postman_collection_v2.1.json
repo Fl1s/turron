@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "e97d6b40-65b5-47be-9ecb-8f1e9b6edca8",
+		"name": "turron",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28890614"
+	},
+	"item": [
+		{
+			"name": "upload-service",
+			"item": [
+				{
+					"name": "uploadVideo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/upload/video",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "uploadSource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/upload/source",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"source"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "search-service",
+			"item": [
+				{
+					"name": "best-match",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-gateway}}/api/v1/search/best-match/:videoId",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"search",
+								"best-match",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "api-gateway",
+			"value": "http://localhost:3000",
+			"type": "default"
+		}
+	]
+}

@@ -21,7 +21,6 @@ public class SearchingListener {
         log.info("Received video.frames.hashed event: {}", event);
 
         searchingService.storeVideoHash(event);
-        searchingService.findMostSimilarSource(event);
     }
     @KafkaListener(topics = "source.frames.hashed", groupId = "hashing-service",
             containerFactory = "kafkaListenerContainerFactorySourceFrameHashed")

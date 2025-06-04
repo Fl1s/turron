@@ -1,8 +1,8 @@
 package org.turron.service.service;
 
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import io.minio.errors.MinioException;
+import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -125,6 +125,35 @@ public class MinioService {
         } catch (MinioException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
             log.error("Failed to upload file to MinIO at path: {}", filePath, e);
             throw new RuntimeException("Failed to upload file to MinIO: " + e.getMessage(), e);
+        }
+    }
+    public void deleteFolder(String folderPath) {
+        try {
+            Iterable<Result<Item>> objects = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(folderPath + "/")
+                            .recursive(true)
+                            .build()
+            );
+
+            for (Result<Item> result : objects) {
+                Item item = result.get();
+                String objectName = item.objectName();
+                log.debug("Deleting object: {}", objectName);
+
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(objectName)
+                                .build()
+                );
+            }
+
+            log.info("All objects under '{}' have been deleted from bucket '{}'", folderPath, bucketName);
+        } catch (Exception e) {
+            log.error("Failed to delete folder '{}' from MinIO", folderPath, e);
+            throw new RuntimeException(e);
         }
     }
 }

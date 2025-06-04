@@ -21,7 +21,7 @@ spring:
 
 minio:
   buckets:
-    frames: ${MINIO_BUCKETS_FRAMES}
+    uploads: ${MINIO_BUCKETS_UPLOADS}
   url: ${MINIO_URL}
   root-user: ${MINIO_ROOT_USER}
   root-password: ${MINIO_ROOT_PASSWORD}

@@ -21,15 +21,40 @@ public class FrameExtractor {
             throw new RuntimeException("Failed to create temporary directory: " + outputDir.getAbsolutePath());
         }
 
-        String outputPattern = new File(outputDir, "frame-%02d.png").getAbsolutePath();
-        List<String> command = List.of(
+        extract(videoFile, outputDir, frames, true);
+
+        if (frames.isEmpty()) {
+            log.warn("No I-frames found, falling back to fps-based extraction...");
+            extract(videoFile, outputDir, frames, false);
+        }
+
+        log.info("Successfully extracted {} frames", frames.size());
+        return frames;
+    }
+
+    private void extract(File videoFile, File outputDir, List<File> frames, boolean useIFrames) {
+        String pattern = new File(outputDir, (useIFrames ? "iframe" : "fallback") + "-%02d.png").getAbsolutePath();
+        List<String> command = new ArrayList<>(List.of(
                 "ffmpeg",
-                "-i", videoFile.getAbsolutePath(),
-                "-vf", "select='eq(pict_type\\,I)',scale=320:-1",
-                "-vsync", "vfr",
+                "-i", videoFile.getAbsolutePath()
+        ));
+
+        if (useIFrames) {
+            command.addAll(List.of(
+                    "-vf", "select='eq(pict_type\\,I)',scale=320:-1",
+                    "-vsync", "vfr"
+            ));
+        } else {
+            command.addAll(List.of(
+                    "-vf", "fps=1,scale=320:-1",
+                    "-vsync", "vfr"
+            ));
+        }
+
+        command.addAll(List.of(
                 "-q:v", "2",
-                outputPattern
-        );
+                pattern
+        ));
 
         try {
             log.debug("Running ffmpeg command: {}", String.join(" ", command));
@@ -40,22 +65,18 @@ public class FrameExtractor {
             int exitCode = process.waitFor();
             if (exitCode != 0) {
                 log.error("ffmpeg exited with code {}", exitCode);
-                throw new RuntimeException("ffmpeg failed with exit code " + exitCode);
+                return;
             }
 
             File[] files = outputDir.listFiles((dir, name) -> name.endsWith(".png"));
             if (files != null) {
                 frames.addAll(List.of(files));
             }
-
-            log.info("Successfully extracted {} frames", frames.size());
-            return frames;
-
         } catch (IOException | InterruptedException e) {
             log.error("Failed to extract frames using ffmpeg", e);
-            throw new RuntimeException("Frame extraction failed", e);
         }
     }
+
 }
 
 

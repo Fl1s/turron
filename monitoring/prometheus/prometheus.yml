@@ -4,29 +4,29 @@ global:
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: [ 'prometheus:9090' ]
+      - targets: [ 'host.docker.internal:9090' ]
 
   - job_name: 'api-gateway'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'api-gateway:3000' ]
+      - targets: [ 'host.docker.internal:3000' ]
 
   - job_name: 'upload-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'upload-service:8091' ]
+      - targets: [ 'host.docker.internal:8091' ]
 
   - job_name: 'extraction-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'extraction-service:8092' ]
+      - targets: [ 'host.docker.internal:8092' ]
 
   - job_name: 'hashing-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'hashing-service:8093' ]
+      - targets: [ 'host.docker.internal:8093' ]
 
   - job_name: 'search-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'search-service:8095' ]
+      - targets: [ 'host.docker.internal:8094' ]

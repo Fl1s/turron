@@ -1,7 +1,7 @@
 <!-- Improved compatibility of back to top link -->
 <a id="readme-top"></a>
 <!--
-*** Thanks for checking out Turron, Turron, TURRON! If you have any suggestions
+*** Thanks for checking out turron, Turron, TURRON! If you have any suggestions
 *** that would make this service much(or for a bit) better, please fork the repo and create a pull request
 *** or simply open an issue with the tag *enhancement*.
 *** Don't forget to give the project a star!
@@ -27,8 +27,6 @@
     <a href="https://github.com/fl1s/turron"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/fl1s/turron">View Demo</a>
-    ·
     <a href="https://github.com/fl1s/turron/issues/new?labels=bug">Report Bug</a>
     ·
     <a href="https://github.com/fl1s/turron/issues/new?labels=enhancement">Request Feature</a>

@@ -12,9 +12,8 @@ import org.turron.service.event.VideoFrameHashedEvent;
 import org.turron.service.repository.MatchRepository;
 import org.turron.service.repository.SourceRepository;
 import org.turron.service.repository.VideoRepository;
+import org.turron.service.service.VideoMatchScoring.MatchResult;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 
 @Slf4j
@@ -24,9 +23,6 @@ public class SearchingService {
     private final VideoRepository videoRepository;
     private final SourceRepository sourceRepository;
     private final MatchRepository matchRepository;
-
-    @Value("${minio.buckets.uploads}")
-    private String uploadsBucket;
 
     public void storeVideoHash(VideoFrameHashedEvent event) {
         VideoEntity videoEntity = new VideoEntity();
@@ -77,9 +73,25 @@ public class SearchingService {
             List<Double> distances = calculateSlidingDistance(videoHashes, sourceHashes);
             matchScores.put(sourceId, distances);
         }
+        Optional<MatchResult> bestMatchOpt = VideoMatchScoring.findBestMatch(matchScores);
+
+        if (bestMatchOpt.isEmpty()) {
+            throw new IllegalStateException("No match found");
+        }
+        MatchResult bestMatch = bestMatchOpt.get();
+
+        MatchEntity matchEntity = new MatchEntity();
+        matchEntity.setVideoId(videoId);
+        matchEntity.setMatchedSourceId(bestMatch.videoId());
+        matchEntity.setScore(bestMatch.score());
+
+        matchRepository.save(matchEntity);
+        log.info("Saved match: video={} matched with source={} (score={})",
+                videoId, bestMatch.videoId(), bestMatch.score());
+
 
         return VideoMatchScoring.findBestMatch(matchScores)
-                .map(VideoMatchScoring.MatchResult::videoId)
+                .map(MatchResult::videoId)
                 .orElseThrow(() -> new IllegalStateException("No match found"));
     }
 

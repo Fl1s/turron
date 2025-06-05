@@ -17,13 +17,28 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
-
+<div align="center">  
 <h3 align="center">Turron</h3>
-
   <p align="center">
     A video-recognizer system that analyzes short video excerpts and finds highly accurate matches.
     <br />
+
+    
+<div align="center" style="display: flex; flex-direction: column; align-items: center;">
+  <div style="display: flex; gap: 40px; justify-content: center;">
+    <a href="https://github.com/user-attachments/assets/d10587cc-60a3-4ede-8c00-dcde93a03064" target="_blank">
+      <img src="https://github.com/user-attachments/assets/d10587cc-60a3-4ede-8c00-dcde93a03064" width="500"/>
+    </a>
+    <a href="https://github.com/user-attachments/assets/e94e304c-6002-47af-b290-96f551c61bdd" target="_blank">
+      <img src="https://github.com/user-attachments/assets/e94e304c-6002-47af-b290-96f551c61bdd" width="500"/>
+    </a>
+  </div>
+  <div style="margin-top: -40px;">
+    <a href="https://github.com/user-attachments/assets/ca4958fe-a8a8-47a2-a788-158ed7953d4d" target="_blank">
+      <img src="https://github.com/user-attachments/assets/ca4958fe-a8a8-47a2-a788-158ed7953d4d" width="500"/>
+    </a>
+  </div>
+</div>
     <a href="https://github.com/fl1s/turron"><strong>Explore the docs »</strong></a>
     <br />
     <br />

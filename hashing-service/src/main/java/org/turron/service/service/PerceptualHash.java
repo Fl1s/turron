@@ -8,6 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.util.Arrays;
 
+/**
+ * Utility class to compute perceptual hashes of images using Discrete Cosine Transform (DCT).
+ * Implements a variation of pHash.
+ */
 @Slf4j
 @UtilityClass
 public class PerceptualHash {
@@ -15,6 +19,12 @@ public class PerceptualHash {
     private static final int SIZE = 32;
     private static final int SMALL_SIZE = 8;
 
+    /**
+     * Computes a perceptual hash (pHash) for the given image.
+     *
+     * @param image the input image
+     * @return the binary hash string
+     */
     public String compute(BufferedImage image) {
         if (image == null) throw new IllegalArgumentException("Image cannot be null");
 
@@ -102,3 +112,4 @@ public class PerceptualHash {
         return (copy.length % 2 == 0) ? (copy[mid - 1] + copy[mid]) / 2.0 : copy[mid];
     }
 }
+

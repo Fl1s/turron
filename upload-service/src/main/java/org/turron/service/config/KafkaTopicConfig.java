@@ -8,8 +8,8 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
     @Bean
-    public NewTopic videoUploadedTopic() {
-        return TopicBuilder.name("video.uploaded")
+    public NewTopic snippetUploadedTopic() {
+        return TopicBuilder.name("snippet.uploaded")
                 .build();
     }
     @Bean
@@ -19,8 +19,8 @@ public class KafkaTopicConfig {
     }
 
     @Bean
-    public NewTopic videoFramesExtractedTopic() {
-        return TopicBuilder.name("video.frames.extracted")
+    public NewTopic snippetFramesExtractedTopic() {
+        return TopicBuilder.name("snippet.frames.extracted")
                 .build();
     }
     @Bean
@@ -30,8 +30,8 @@ public class KafkaTopicConfig {
     }
 
     @Bean
-    NewTopic videoFramesHashedTopic() {
-        return TopicBuilder.name("video.frames.hashed")
+    NewTopic snippetFramesHashedTopic() {
+        return TopicBuilder.name("snippet.frames.hashed")
                 .build();
     }
     @Bean

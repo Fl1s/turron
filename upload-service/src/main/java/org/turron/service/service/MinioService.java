@@ -14,6 +14,9 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Service for interacting with MinIO: uploading, validating, and deleting snippet/source files.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,14 @@ public class MinioService {
     @Value("${minio.bucket.name}")
     private String bucketName;
 
+    /**
+     * Creates an ffprobe process to determine video duration.
+     *
+     * @param tempFile the temporary video file
+     * @return the created {@link Process}
+     * @throws IOException if the process cannot be started
+     * @throws IllegalArgumentException if duration cannot be determined or exceeds 5 seconds
+     */
     private static @NotNull Process getProcess(File tempFile) throws IOException {
         ProcessBuilder pb = new ProcessBuilder(
                 "ffprobe",
@@ -50,14 +61,40 @@ public class MinioService {
         return process;
     }
 
-    public String uploadVideo(String filename, MultipartFile file) {
-        return uploadFile(filename, file, "videos", true);
+    /**
+     * Uploads a snippet video file and validates its duration (must not exceed 5 seconds).
+     *
+     * @param filename the target object name
+     * @param file the video file as a {@link MultipartFile}
+     * @return the MinIO URL of the uploaded file
+     * @throws RuntimeException if validation or upload fails
+     */
+    public String uploadSnippet(String filename, MultipartFile file) {
+        return uploadFile(filename, file, "snippets", true);
     }
 
+    /**
+     * Uploads a source video file without validating its duration.
+     *
+     * @param filename the target object name
+     * @param file the source file as a {@link MultipartFile}
+     * @return the MinIO URL of the uploaded file
+     * @throws RuntimeException if upload fails
+     */
     public String uploadSource(String filename, MultipartFile file) {
         return uploadFile(filename, file, "sources", false);
     }
 
+    /**
+     * Core method for uploading a file to MinIO.
+     *
+     * @param filename the target object name
+     * @param file the uploaded file
+     * @param folder the folder path prefix in the bucket
+     * @param validateDuration whether to validate video duration
+     * @return the MinIO URL of the uploaded file
+     * @throws RuntimeException if upload fails
+     */
     private String uploadFile(String filename, MultipartFile file, String folder, boolean validateDuration) {
         log.info("Uploading file to '{}': originalFilename={}, contentType={}", folder, file.getOriginalFilename(), file.getContentType());
 
@@ -97,6 +134,12 @@ public class MinioService {
     }
 
 
+    /**
+     * Validates the duration of a video file using ffprobe.
+     *
+     * @param tempFile the temporary file containing the video
+     * @throws RuntimeException if duration exceeds the limit or validation fails
+     */
     private void validateVideo(File tempFile) {
         try {
             log.debug("Validating video file duration...");
@@ -112,6 +155,14 @@ public class MinioService {
         }
     }
 
+    /**
+     * Uploads a file to MinIO under the given path.
+     *
+     * @param filePath target object path in the bucket
+     * @param file the file to upload
+     * @param contentType the MIME type of the file
+     * @throws RuntimeException if the upload fails
+     */
     private void uploadFileToMinio(String filePath, File file, String contentType) {
         try (InputStream in = new FileInputStream(file)) {
             minioClient.putObject(
@@ -127,6 +178,13 @@ public class MinioService {
             throw new RuntimeException("Failed to upload file to MinIO: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Deletes all objects under the specified prefix (simulating folder deletion).
+     *
+     * @param folderPath prefix path to delete
+     * @throws RuntimeException if deletion fails
+     */
     public void deleteFolder(String folderPath) {
         try {
             Iterable<Result<Item>> objects = minioClient.listObjects(

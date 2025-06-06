@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoUploadedEvent {
+public class SnippetUploadedEvent {
     private String correlationId;
-    private String videoId;
+    private String snippetId;
     private String sourceUrl;
 }

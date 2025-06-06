@@ -9,8 +9,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.turron.service.event.SnippetFrameExtractedEvent;
 import org.turron.service.event.SourceFrameExtractedEvent;
-import org.turron.service.event.VideoFrameExtractedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +31,14 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, VideoFrameExtractedEvent> videoFrameExtractedEventProducerFactory() {
+    public ProducerFactory<String, SnippetFrameExtractedEvent> videoFrameExtractedEventProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
 
     @Bean
-    public KafkaTemplate<String, VideoFrameExtractedEvent> videoFrameExtractedEventKafkaTemplate(
-            ProducerFactory<String, VideoFrameExtractedEvent> producerFactory) {
+    public KafkaTemplate<String, SnippetFrameExtractedEvent> videoFrameExtractedEventKafkaTemplate(
+            ProducerFactory<String, SnippetFrameExtractedEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 

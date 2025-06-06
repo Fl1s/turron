@@ -1,10 +1,6 @@
 server:
   port: 8092
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-
 spring:
   application:
     name: extraction-service

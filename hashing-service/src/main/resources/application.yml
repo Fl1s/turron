@@ -1,10 +1,6 @@
 server:
   port: 8093
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-
 spring:
   application:
     name: hashing-service

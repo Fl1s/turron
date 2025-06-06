@@ -33,9 +33,6 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-api:2.8.4'
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.4'
-
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     compileOnly 'org.projectlombok:lombok'

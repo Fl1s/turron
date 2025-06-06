@@ -243,7 +243,27 @@ Ensure you have the following installed:
 
 ## CI/CD
 
-#### ...I'll do it later.
+This project uses GitHub Actions.
+
+The `.github/workflows/build.yml` workflow runs on every push and pull request to the `main` branch. It performs the following steps:
+
+1. Checks out the repository
+2. Sets up Java 21 using the Temurin distribution
+3. Caches Gradle dependencies to speed up builds
+4. Builds each service defined in the job matrix:
+    - `eureka-server`
+    - `upload-service`
+    - `extraction-service`
+    - `hashing-service`
+    - `search-service`
+    - `api-gateway`
+5. Authenticates to GitHub Container Registry (GHCR)
+6. Builds and pushes Docker images using a composite action located at `.github/actions/docker-build-push`
+
+Each Docker image is tagged with:
+- `latest`
+- a short Git commit SHA
+- a date-based tag in `YYYYMMDD` format
 
 <!-- MONITORING -->
 

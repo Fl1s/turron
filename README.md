@@ -1,12 +1,4 @@
-<!-- Improved compatibility of back to top link -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out Turron, Turron, TURRON! If you have any suggestions
-*** that would make this service much(or for a bit) better, please fork the repo and create a pull request
-*** or simply open an issue with the tag *enhancement*.
-*** Don't forget to give the project a star!
-*** Thanks again! Now go away and create something good! =]
--->
 
 <!-- PROJECT SHIELDS -->
 [![Contributors][contributors-shield]][contributors-url]
@@ -17,18 +9,22 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
-
+<div align="center">  
 <h3 align="center">Turron</h3>
-
   <p align="center">
     A video-recognizer system that analyzes short video excerpts and finds highly accurate matches.
     <br />
+    
+https://github.com/user-attachments/assets/082547fe-5e02-41c4-94b1-57234d25d587
+
+https://github.com/user-attachments/assets/ce9a6f22-d034-4fbf-8c88-e7294c047094
+
+https://github.com/user-attachments/assets/b6b0e366-11a1-4545-9e1f-eab86db9a8e8
+
+·
     <a href="https://github.com/fl1s/turron"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/fl1s/turron">View Demo</a>
-    ·
     <a href="https://github.com/fl1s/turron/issues/new?labels=bug">Report Bug</a>
     ·
     <a href="https://github.com/fl1s/turron/issues/new?labels=enhancement">Request Feature</a>
@@ -73,10 +69,9 @@
 
 ## About The Project
 
-A video recognition system that works like Shazam — but for video. It analyzes short snippets (3–5 seconds), breaks them
+A video recognition system that works like Shazam — but for video. It analyzes short snippets (2–5 seconds), breaks them
 into keyframes, and uses perceptual hashing to identify the exact or near-exact source, even if the clip has been edited
-or altered. This preserves the full context of the snippet and enables reliable tracking of original video content
-across platforms.
+or altered. This preserves the full context of the snippet and enables reliable tracking of original video content.
 
 Key features:
 
@@ -97,30 +92,30 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 - **Eureka Server**: Manages service discovery using Netflix Eureka with `@DiscoveryClient`.
 
 - **Upload Service**: Accepts short videos via REST API, stores them in MinIO, and sends processing tasks to Kafka.
-<img width="900" alt="upload-service" src="https://github.com/user-attachments/assets/d0a6a177-1623-4d1b-b42d-4060a39a95cd" />
+<img width="900" alt="upload-service" src="https://github.com/user-attachments/assets/21d8f136-0eab-40de-9be3-21d73094c03a" />
+
 
 - **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness, and forwards frames to Kafka for hashing.
-<img width="800" alt="extraction-service" src="https://github.com/user-attachments/assets/60460e7b-3aa0-4f88-8a5f-01c0d1a7ff4e" />
+
+<img width="900" alt="extraction-first" src="https://github.com/user-attachments/assets/6d6e7850-062d-45bb-81b2-ddde60c6a0fb" />
+
+...
+
+<img width="900" alt="extraction-third" src="https://github.com/user-attachments/assets/3effd378-634a-41c2-b0c2-2cd770780647" />
+
+- **Hashing Service**: Computes pHashes for keyframes and stores it in database.
+<img width="1130" alt="hashing-first" src="https://github.com/user-attachments/assets/db3dfc52-741a-41ea-bdba-6ca57b2c4ef1" />
+...
+<img width="1269" alt="hashing-third" src="https://github.com/user-attachments/assets/5bbfea23-7659-4613-b427-4298cd9dfe6b" />
+
+- **Search Service**: Matches snippet videos to source videos using perceptual hash comparisons with sliding-window Hamming distance, storing results in database.
+<img width="999" alt="cleanup" src="https://github.com/user-attachments/assets/635f377e-6233-4a19-9e22-5d8541cbd4f0" />
 
 
-- **Hashing Service**: Computes pHashes for keyframes and stores it in PostgreSQL.
-<img width="500" alt="hashing-service" src="https://github.com/user-attachments/assets/278febdb-8aba-48ea-a765-ac4b085a9c8b" />
+<img width="1232" alt="another snippet bc previous is cleaned up" src="https://github.com/user-attachments/assets/8d11e6ca-143b-463b-be5e-10450c162156" />
 
-
-- **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in
-  Redis.
-<img width="400" alt="1and2" src="https://github.com/user-attachments/assets/e1596cbf-5db4-45e6-a962-1e36a562cf90" />
-<img width="400" alt="2and2" src="https://github.com/user-attachments/assets/51446018-c8ec-4c99-9c62-9b25c36bfdbb" />
-<img width="400" alt="empty_db" src="https://github.com/user-attachments/assets/2ef69754-328d-4150-b60d-e871a189f018" />
-<img width="400" alt="matches" src="https://github.com/user-attachments/assets/de26c5d6-1e2b-4c89-951d-6db08f4bb6f7" />
 
 - **API Gateway**: Centralized REST API endpoint managing requests, authentication, and response aggregation.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Infrastructure
-
-#### Nah...Later.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -130,7 +125,6 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 * [![Spring Boot][Spring]][Spring-url]
 * [![PostgreSQL][PostgreSQL]][PostgreSQL-url]
 * [![Kafka][Kafka]][Kafka-url]
-* [![Redis][Redis]][Redis-url]
 * [![Docker][Docker]][Docker-url]
 * [![Kubernetes][Kubernetes]][Kubernetes-url]
 * [![Prometheus][Prometheus]][Prometheus-url]
@@ -193,18 +187,113 @@ Ensure you have the following installed:
 
 ## API Endpoints
 
-#### ~Later-r.
+## Upload snippet-video
+
+**POST** `{{api-gateway}}/api/v1/upload/snippet`
+
+**Form Data:**
+
+| Field | Description    | Type       |
+|-------|----------------|------------|
+| file  | MP4 video file | file (mp4) |
+
+**Response:**
+
+```json
+{
+  "snippetId": "...",
+  "sourceUrl": "..."
+}
+```
+
+---
+
+## Upload source-video
+
+**POST** `{{api-gateway}}/api/v1/upload/source`
+
+**Form Data:**
+
+| Field | Description    | Type       |
+|-------|----------------|------------|
+| file  | MP4 video file | file (mp4) |
+
+**Response:**
+
+```json
+{
+  "sourceId": "...",
+  "sourceUrl": "..."
+}
+```
+
+---
+
+## Find best-match
+
+**GET** `{{api-gateway}}/api/v1/search/best-match/:snippetId`
+
+**Path Parameter:**
+
+| Parameter | Description      | Type   |
+|-----------|------------------|--------|
+| snippetId | Snippet video ID | string |
+
+**Response:** The matched source MP4 video file
 
 ## CI/CD
 
-#### ...I'll do it later.
+This project uses GitHub Actions.
+
+The `.github/workflows/build.yml` workflow runs on every push and pull request to the `main` branch. It performs the following steps:
+
+1. Checks out the repository
+2. Sets up Java 21 using the Temurin distribution
+3. Caches Gradle dependencies to speed up builds
+4. Builds each service defined in the job matrix:
+    - `eureka-server`
+    - `upload-service`
+    - `extraction-service`
+    - `hashing-service`
+    - `search-service`
+    - `api-gateway`
+5. Authenticates to GitHub Container Registry (GHCR)
+6. Builds and pushes Docker images using a composite action located at `.github/actions/docker-build-push`
+
+Each Docker image is tagged with:
+- `latest`
+- a short Git commit SHA
+- a date-based tag in `YYYYMMDD` format
 
 <!-- MONITORING -->
 
 ## Monitoring
 
-#### ...Umm, skip-skip-skip. Definitely not today!
+Our project includes out-of-the-box monitoring setup using **Prometheus** and **Grafana**.
 
+### How it works
+
+- Each microservice exposes metrics via Spring Boot Actuator on the `/actuator/prometheus` endpoint.
+- Prometheus scrapes these endpoints regularly to collect metrics.
+- Grafana connects to Prometheus as a data source to visualize metrics on dashboards.
+
+### Prometheus configuration
+
+Prometheus config is located at:  
+`monitoring/prometheus/prometheus.yml`
+
+### Folder structure
+
+* `monitoring/prometheus/` — Prometheus config files
+* `monitoring/grafana/` — Grafana dashboards and config files
+
+### Getting started
+
+1. Start **Prometheus** using the config from `monitoring/prometheus/prometheus.yml`(it's already configured in docker-compose).
+2. Start **Grafana** and add Prometheus as a data source (`http://localhost:9090`).
+3. Create your dashboards in Grafana or import community dashboards for Spring Boot metrics.
+4. Access your dashboards to monitor service health, performance, and custom metrics.
+5. 
 <!-- CONTRIBUTING -->
 
 ## Contributing
@@ -276,8 +365,6 @@ Project Link: [https://github.com/fl1s/turron](https://github.com/fl1s/turron)
 
 [license-url]: https://github.com/fl1s/turron/blob/main/LICENSE
 
-[product-screenshot]: images/screenshot.png
-
 [Java]: https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white
 
 [Java-url]: https://www.java.com/
@@ -293,10 +380,6 @@ Project Link: [https://github.com/fl1s/turron](https://github.com/fl1s/turron)
 [Kafka]: https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white
 
 [Kafka-url]: https://kafka.apache.org/
-
-[Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
-
-[Redis-url]: https://redis.io/
 
 [Docker]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
 

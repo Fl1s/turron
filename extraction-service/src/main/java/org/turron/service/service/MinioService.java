@@ -50,7 +50,7 @@ public class MinioService {
     }
 
     public void uploadFrame(String id, File frameFile, int frameNumber, boolean isSource) {
-        String folder = isSource ? "sources" : "videos";
+        String folder = isSource ? "sources" : "snippets";
         String objectName = String.format("%s/%s/%d.png", folder, id, frameNumber);
         log.info("Uploading frame to MinIO: bucket={}, objectName={}", framesBucket, objectName);
 

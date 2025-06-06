@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.turron.service.dto.SourceDto;
-import org.turron.service.dto.VideoDto;
+import org.turron.service.dto.SnippetDto;
 import org.turron.service.service.UploadService;
 
 @RestController
@@ -17,11 +17,12 @@ import org.turron.service.service.UploadService;
 public class UploadController {
     private final UploadService uploadService;
 
-    @PostMapping("/video")
-    public ResponseEntity<VideoDto> uploadVideo(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/snippet")
+    public ResponseEntity<SnippetDto> uploadSnippet(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.status(201)
-                .body(uploadService.uploadVideo(file));
+                .body(uploadService.uploadSnippet(file));
     }
+
     @PostMapping("/source")
     public ResponseEntity<SourceDto> uploadSource(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.status(201)

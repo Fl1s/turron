@@ -6,7 +6,3 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
-
-spring:
-  config:
-    import: file:api-gateway/.env.prod[.properties]

@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.turron.service.entity.SourceEntity;
-import org.turron.service.entity.VideoEntity;
+import org.turron.service.entity.SnippetEntity;
 import org.turron.service.event.SourceUploadedEvent;
-import org.turron.service.event.VideoUploadedEvent;
+import org.turron.service.event.SnippetUploadedEvent;
 import org.turron.service.producer.ExtractionProducer;
 import org.turron.service.repository.SourceRepository;
-import org.turron.service.repository.VideoRepository;
+import org.turron.service.repository.SnippetRepository;
 
-import javax.xml.transform.Source;
 import java.io.File;
 import java.util.List;
 
@@ -22,34 +21,34 @@ import java.util.List;
 public class ExtractionService {
 
     private final MinioService minioService;
-    private final VideoRepository videoRepository;
+    private final SnippetRepository snippetRepository;
     private final SourceRepository sourceRepository;
     private final FrameExtractor frameExtractor;
     private final ExtractionProducer producer;
 
-    public void extractFramesFromVideo(VideoUploadedEvent event) {
+    public void extractFramesFromSnippet(SnippetUploadedEvent event) {
         MDC.put("correlationId", event.getCorrelationId());
-        log.info("Starting frame extraction for video: {}", event.getVideoId());
+        log.info("Starting frame extraction for snippet: {}", event.getSnippetId());
 
         File tempVideo = minioService.downloadVideo(event.getSourceUrl());
         List<File> frames = frameExtractor.extractFrames(tempVideo);
-        log.info("Extracted {} key frames from video {}", frames.size(), event.getVideoId());
+        log.info("Extracted {} key frames from snippet {}", frames.size(), event.getSnippetId());
 
         for (int i = 0; i < frames.size(); i++) {
-            String frameId = event.getVideoId() + "-frame-" + String.format("%02d", i + 1);
-            minioService.uploadFrame(event.getVideoId(), frames.get(i), i + 1, false);
+            String frameId = event.getSnippetId() + "-frame-" + String.format("%02d", i + 1);
+            minioService.uploadFrame(event.getSnippetId(), frames.get(i), i + 1, false);
 
-            VideoEntity entity = new VideoEntity();
+            SnippetEntity entity = new SnippetEntity();
             entity.setFrameId(frameId);
-            entity.setVideoId(event.getVideoId());
-            entity.setFrameUrl("minio://frames/videos/" + event.getVideoId() + "/" + (i + 1) + ".png");
+            entity.setSnippetId(event.getSnippetId());
+            entity.setFrameUrl("minio://frames/snippets/" + event.getSnippetId() + "/" + (i + 1) + ".png");
 
-            VideoEntity saved = videoRepository.save(entity);
-            producer.sendVideoFrameExtractedEvent(event.getCorrelationId(), saved);
+            SnippetEntity saved = snippetRepository.save(entity);
+            producer.sendSnippetFrameExtractedEvent(event.getCorrelationId(), saved);
         }
 
         cleanup(tempVideo, frames);
-        log.info("Frame extraction completed for video: {}", event.getVideoId());
+        log.info("Frame extraction completed for snippet: {}", event.getSnippetId());
         MDC.clear();
     }
 

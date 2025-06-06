@@ -11,21 +11,34 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+/**
+ * Service for interacting with MinIO object storage.
+ * Responsible for downloading video files by source ID.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MinioService {
+
     private final MinioClient minioClient;
 
     @Value("${minio.buckets.uploads}")
     private String uploadsBucket;
 
+    /**
+     * Downloads a video file from the MinIO bucket using the given source ID.
+     *
+     * @param sourceId the ID of the source video to download
+     * @return a {@link File} object pointing to a temporary file containing the downloaded video
+     * @throws RuntimeException if the video cannot be downloaded
+     */
     public File downloadVideo(String sourceId) {
         String objectName = "sources/" + sourceId;
         log.info("Downloading video from MinIO: bucket='{}', object='{}'", uploadsBucket, objectName);
 
         try {
             File tempFile = File.createTempFile("video-", ".mp4");
+
             try (InputStream in = minioClient.getObject(GetObjectArgs.builder()
                     .bucket(uploadsBucket)
                     .object(objectName)
@@ -42,4 +55,3 @@ public class MinioService {
         }
     }
 }
-

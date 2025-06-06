@@ -15,12 +15,12 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "videos")
-public class VideoEntity {
+@Table(name = "snippets")
+public class SnippetEntity {
     @Id
     private String frameId;
 
-    private String videoId;
+    private String snippetId;
 
     private String frameUrl;
     private LocalDateTime createdAt;

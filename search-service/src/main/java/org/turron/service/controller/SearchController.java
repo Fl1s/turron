@@ -20,16 +20,15 @@ import java.io.FileInputStream;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/search")
 public class SearchController {
+
     private final SearchingService searchingService;
     private final MinioService minioService;
-
-    @GetMapping("/best-match/{videoId}")
-    public ResponseEntity<InputStreamResource> bestMatch(@PathVariable String videoId) {
-        File videoFile = minioService.downloadVideo(searchingService.findBestMatch(videoId));
+    @GetMapping("/best-match/{snippetId}")
+    public ResponseEntity<InputStreamResource> bestMatch(@PathVariable String snippetId) {
+        File videoFile = minioService.downloadVideo(searchingService.findBestMatch(snippetId));
 
         try {
             InputStreamResource resource = new InputStreamResource(new FileInputStream(videoFile));
-
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + videoFile.getName() + "\"")
                     .contentType(MediaTypeFactory.getMediaType(videoFile.getName())

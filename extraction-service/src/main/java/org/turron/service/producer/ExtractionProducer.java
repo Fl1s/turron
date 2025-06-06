@@ -5,38 +5,38 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.turron.service.entity.SourceEntity;
-import org.turron.service.entity.VideoEntity;
+import org.turron.service.entity.SnippetEntity;
+import org.turron.service.event.SnippetFrameExtractedEvent;
 import org.turron.service.event.SourceFrameExtractedEvent;
-import org.turron.service.event.VideoFrameExtractedEvent;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExtractionProducer {
-    private final KafkaTemplate<String, VideoFrameExtractedEvent> videoFrameExtractedEventTemplate;
+    private final KafkaTemplate<String, SnippetFrameExtractedEvent> snippetFrameExtractedEventTemplate;
     private final KafkaTemplate<String, SourceFrameExtractedEvent> sourceFrameExtractedEventTemplate;
 
-    public void sendVideoFrameExtractedEvent(String correlationId, VideoEntity extractedFrame) {
-        VideoFrameExtractedEvent event = new VideoFrameExtractedEvent(
+    public void sendSnippetFrameExtractedEvent(String correlationId, SnippetEntity extractedFrame) {
+        SnippetFrameExtractedEvent event = new SnippetFrameExtractedEvent(
                 correlationId,
                 extractedFrame.getFrameId(),
-                extractedFrame.getVideoId(),
+                extractedFrame.getSnippetId(),
                 extractedFrame.getFrameUrl()
         );
 
-        log.info("Sending VideoFrameExtractedEvent [frameId={}, videoId={}, imageUrl={}, correlationId={}] to topic 'video.frames.extracted'",
+        log.info("Sending SnippetFrameExtractedEvent [frameId={}, snippetId={}, imageUrl={}, correlationId={}] to topic 'snippet.frames.extracted'",
                 event.getFrameId(),
-                event.getVideoId(),
+                event.getSnippetId(),
                 event.getFrameUrl(),
                 event.getCorrelationId()
         );
-        log.debug("Published VideoFrameExtractedEvent: {}", event);
+        log.debug("Published SnippetFrameExtractedEvent: {}", event);
 
-        videoFrameExtractedEventTemplate
-                .send("video.frames.extracted", event)
-                .thenAccept(sendResult -> log.info("VideoFrameExtractedEvent successfully sent: {}", event))
+        snippetFrameExtractedEventTemplate
+                .send("snippet.frames.extracted", event)
+                .thenAccept(sendResult -> log.info("SnippetFrameExtractedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
-                    log.error("Failed to send VideoFrameExtractedEvent [frameId={}, correlationId={}]: {}",
+                    log.error("Failed to send SnippetFrameExtractedEvent [frameId={}, correlationId={}]: {}",
                             event.getFrameId(), event.getCorrelationId(), ex.getMessage(), ex);
                     return null;
                 });

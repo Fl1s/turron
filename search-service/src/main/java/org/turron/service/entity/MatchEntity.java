@@ -20,7 +20,7 @@ public class MatchEntity {
     @Id
     private String matchId;
 
-    private String videoId;
+    private String snippetId;
     private String matchedSourceId;
     private double score;
 

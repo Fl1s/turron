@@ -8,11 +8,8 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
 
 spring:
-  config:
-    import: file:extraction-service/.env.prod[.properties]
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
-
   datasource:
     url: ${POSTGRES_DB_URL}
     username: ${POSTGRES_PG_USERNAME}

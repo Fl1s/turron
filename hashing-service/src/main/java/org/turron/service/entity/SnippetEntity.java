@@ -15,16 +15,20 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "videos")
-public class VideoEntity {
+@Table(name = "snippets")
+public class SnippetEntity {
     @Id
     private String hashId;
 
-    private String videoId;
-    private String frameId;
-    private String frameHash;
+    private String snippetId;
 
+    private String frameId;
+
+    private String frameUrl;
+
+    private String frameHash;
     private LocalDateTime createdAt;
+
     @PrePersist
     public void prePersist() {
         if (hashId == null || hashId.isEmpty()) {

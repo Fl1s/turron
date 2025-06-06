@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.turron.service.event.SourceUploadedEvent;
-import org.turron.service.event.VideoUploadedEvent;
+import org.turron.service.event.SnippetUploadedEvent;
 import org.turron.service.service.ExtractionService;
 
 @Slf4j
@@ -14,11 +14,11 @@ import org.turron.service.service.ExtractionService;
 public class ExtractionListener {
     private final ExtractionService extractionService;
 
-    @KafkaListener(topics = "video.uploaded", groupId = "upload-service",
-            containerFactory = "kafkaListenerContainerFactoryVideoUploaded")
-    public void onVideoUploaded(VideoUploadedEvent event) {
-        log.info("Received video.uploaded event: {}", event);
-        extractionService.extractFramesFromVideo(event);
+    @KafkaListener(topics = "snippet.uploaded", groupId = "upload-service",
+            containerFactory = "kafkaListenerContainerFactorySnippetUploaded")
+    public void onSnippetUploaded(SnippetUploadedEvent event) {
+        log.info("Received snippet.uploaded event: {}", event);
+        extractionService.extractFramesFromSnippet(event);
     }
     @KafkaListener(topics = "source.uploaded", groupId = "upload-service",
             containerFactory = "kafkaListenerContainerFactorySourceUploaded")

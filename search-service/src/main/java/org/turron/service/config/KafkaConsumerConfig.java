@@ -15,7 +15,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.turron.service.event.SourceFrameHashedEvent;
-import org.turron.service.event.VideoFrameHashedEvent;
+import org.turron.service.event.SnippetFrameHashedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +49,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, VideoFrameHashedEvent>> kafkaListenerContainerFactoryVideoFrameHashed() {
-        return createFactory(VideoFrameHashedEvent.class);
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SnippetFrameHashedEvent>> kafkaListenerContainerFactorySnippetFrameHashed() {
+        return createFactory(SnippetFrameHashedEvent.class);
     }
 
     @Bean

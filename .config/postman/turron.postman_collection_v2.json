@@ -10,7 +10,7 @@
 			"name": "upload-service",
 			"item": [
 				{
-					"name": "uploadVideo",
+					"name": "uploadSnippet",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -24,7 +24,7 @@
 								}
 							]
 						},
-						"url": "http://localhost:3000/api/v1/upload/video"
+						"url": "{{api-gateway}}/api/v1/upload/snippet"
 					},
 					"response": []
 				},
@@ -43,7 +43,7 @@
 								}
 							]
 						},
-						"url": "http://localhost:3000/api/v1/upload/source"
+						"url": "{{api-gateway}}/api/v1/upload/source"
 					},
 					"response": []
 				}
@@ -61,7 +61,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-gateway}}/api/v1/search/best-match/:videoId",
+							"raw": "{{api-gateway}}/api/v1/search/best-match/:snippetId",
 							"host": [
 								"{{api-gateway}}"
 							],
@@ -70,11 +70,11 @@
 								"v1",
 								"search",
 								"best-match",
-								":videoId"
+								":snippetId"
 							],
 							"variable": [
 								{
-									"key": "videoId",
+									"key": "snippetId",
 									"value": ""
 								}
 							]

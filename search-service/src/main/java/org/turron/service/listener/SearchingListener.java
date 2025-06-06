@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.turron.service.event.SourceFrameHashedEvent;
-import org.turron.service.event.VideoFrameHashedEvent;
+import org.turron.service.event.SnippetFrameHashedEvent;
 import org.turron.service.service.SearchingService;
 
 @Slf4j
@@ -15,12 +15,12 @@ public class SearchingListener {
 
     private final SearchingService searchingService;
 
-    @KafkaListener(topics = "video.frames.hashed", groupId = "hashing-service",
-            containerFactory = "kafkaListenerContainerFactoryVideoFrameHashed")
-    public void onVideoFrameHashed(VideoFrameHashedEvent event) {
-        log.info("Received video.frames.hashed event: {}", event);
+    @KafkaListener(topics = "snippet.frames.hashed", groupId = "hashing-service",
+            containerFactory = "kafkaListenerContainerFactorySnippetFrameHashed")
+    public void onSnippetFrameHashed(SnippetFrameHashedEvent event) {
+        log.info("Received snippet.frames.hashed event: {}", event);
 
-        searchingService.storeVideoHash(event);
+        searchingService.storeSnippetHash(event);
     }
     @KafkaListener(topics = "source.frames.hashed", groupId = "hashing-service",
             containerFactory = "kafkaListenerContainerFactorySourceFrameHashed")

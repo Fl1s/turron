@@ -1,12 +1,5 @@
 <!-- Improved compatibility of back to top link -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out turron, Turron, TURRON! If you have any suggestions
-*** that would make this service much(or for a bit) better, please fork the repo and create a pull request
-*** or simply open an issue with the tag *enhancement*.
-*** Don't forget to give the project a star!
-*** Thanks again! Now go away and create something good! =]
--->
 
 <!-- PROJECT SHIELDS -->
 [![Contributors][contributors-shield]][contributors-url]
@@ -77,10 +70,9 @@ https://github.com/user-attachments/assets/ca4958fe-a8a8-47a2-a788-158ed7953d4d
 
 ## About The Project
 
-A video recognition system that works like Shazam — but for video. It analyzes short snippets (3–5 seconds), breaks them
+A video recognition system that works like Shazam — but for video. It analyzes short snippets (2–5 seconds), breaks them
 into keyframes, and uses perceptual hashing to identify the exact or near-exact source, even if the clip has been edited
-or altered. This preserves the full context of the snippet and enables reliable tracking of original video content
-across platforms.
+or altered. This preserves the full context of the snippet and enables reliable tracking of original video content.
 
 Key features:
 
@@ -107,12 +99,11 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 <img width="800" alt="extraction-service" src="https://github.com/user-attachments/assets/60460e7b-3aa0-4f88-8a5f-01c0d1a7ff4e" />
 
 
-- **Hashing Service**: Computes pHashes for keyframes and stores it in PostgreSQL.
+- **Hashing Service**: Computes pHashes for keyframes and stores it in database.
 <img width="500" alt="hashing-service" src="https://github.com/user-attachments/assets/278febdb-8aba-48ea-a765-ac4b085a9c8b" />
 
 
-- **Search Service**: Performs similarity search using Locality-Sensitive Hashing on PostgreSQL, caching results in
-  Redis.
+- **Search Service**: Matches snippet videos to source videos using perceptual hash comparisons with sliding-window Hamming distance, storing results in database.
 <img width="400" alt="1and2" src="https://github.com/user-attachments/assets/e1596cbf-5db4-45e6-a962-1e36a562cf90" />
 <img width="400" alt="2and2" src="https://github.com/user-attachments/assets/51446018-c8ec-4c99-9c62-9b25c36bfdbb" />
 <img width="400" alt="empty_db" src="https://github.com/user-attachments/assets/2ef69754-328d-4150-b60d-e871a189f018" />
@@ -134,7 +125,6 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 * [![Spring Boot][Spring]][Spring-url]
 * [![PostgreSQL][PostgreSQL]][PostgreSQL-url]
 * [![Kafka][Kafka]][Kafka-url]
-* [![Redis][Redis]][Redis-url]
 * [![Docker][Docker]][Docker-url]
 * [![Kubernetes][Kubernetes]][Kubernetes-url]
 * [![Prometheus][Prometheus]][Prometheus-url]
@@ -197,7 +187,59 @@ Ensure you have the following installed:
 
 ## API Endpoints
 
-#### ~Later-r.
+## Upload snippet-video
+
+**POST** `{{api-gateway}}/api/v1/upload/snippet`
+
+**Form Data:**
+
+| Field | Description    | Type       |
+|-------|----------------|------------|
+| file  | MP4 video file | file (mp4) |
+
+**Response:**
+
+```json
+{
+  "snippetId": "...",
+  "sourceUrl": "..."
+}
+```
+
+---
+
+## Upload source-video
+
+**POST** `{{api-gateway}}/api/v1/upload/source`
+
+**Form Data:**
+
+| Field | Description    | Type       |
+|-------|----------------|------------|
+| file  | MP4 video file | file (mp4) |
+
+**Response:**
+
+```json
+{
+  "sourceId": "...",
+  "sourceUrl": "..."
+}
+```
+
+---
+
+## Find best-match
+
+**GET** `{{api-gateway}}/api/v1/search/best-match/:snippetId`
+
+**Path Parameter:**
+
+| Parameter | Description      | Type   |
+|-----------|------------------|--------|
+| snippetId | Snippet video ID | string |
+
+**Response:** The matched source MP4 video file
 
 ## CI/CD
 
@@ -207,8 +249,31 @@ Ensure you have the following installed:
 
 ## Monitoring
 
-#### ...Umm, skip-skip-skip. Definitely not today!
+Our project includes out-of-the-box monitoring setup using **Prometheus** and **Grafana**.
 
+### How it works
+
+- Each microservice exposes metrics via Spring Boot Actuator on the `/actuator/prometheus` endpoint.
+- Prometheus scrapes these endpoints regularly to collect metrics.
+- Grafana connects to Prometheus as a data source to visualize metrics on dashboards.
+
+### Prometheus configuration
+
+Prometheus config is located at:  
+`monitoring/prometheus/prometheus.yml`
+
+### Folder structure
+
+* `monitoring/prometheus/` — Prometheus config files
+* `monitoring/grafana/` — Grafana dashboards and config files
+
+### Getting started
+
+1. Start **Prometheus** using the config from `monitoring/prometheus/prometheus.yml`(it's already configured in docker-compose).
+2. Start **Grafana** and add Prometheus as a data source (`http://localhost:9090`).
+3. Create your dashboards in Grafana or import community dashboards for Spring Boot metrics.
+4. Access your dashboards to monitor service health, performance, and custom metrics.
+5. 
 <!-- CONTRIBUTING -->
 
 ## Contributing
@@ -280,8 +345,6 @@ Project Link: [https://github.com/fl1s/turron](https://github.com/fl1s/turron)
 
 [license-url]: https://github.com/fl1s/turron/blob/main/LICENSE
 
-[product-screenshot]: images/screenshot.png
-
 [Java]: https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white
 
 [Java-url]: https://www.java.com/
@@ -297,10 +360,6 @@ Project Link: [https://github.com/fl1s/turron](https://github.com/fl1s/turron)
 [Kafka]: https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white
 
 [Kafka-url]: https://kafka.apache.org/
-
-[Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
-
-[Redis-url]: https://redis.io/
 
 [Docker]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
 

@@ -20,6 +20,7 @@ jobs:
           - upload-service
           - extraction-service
           - hashing-service
+          - search-service
           - api-gateway
     steps:
       - name: Checkout code

@@ -12,8 +12,6 @@ spring:
     multipart:
       max-file-size: 25MB
       max-request-size: 25MB
-  config:
-    import: file:upload-service/.env.prod[.properties]
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 

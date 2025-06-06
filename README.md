@@ -1,4 +1,3 @@
-<!-- Improved compatibility of back to top link -->
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
@@ -16,11 +15,11 @@
     A video-recognizer system that analyzes short video excerpts and finds highly accurate matches.
     <br />
     
-https://github.com/user-attachments/assets/d10587cc-60a3-4ede-8c00-dcde93a03064
-  
-https://github.com/user-attachments/assets/e94e304c-6002-47af-b290-96f551c61bdd
+https://github.com/user-attachments/assets/082547fe-5e02-41c4-94b1-57234d25d587
 
-https://github.com/user-attachments/assets/ca4958fe-a8a8-47a2-a788-158ed7953d4d
+https://github.com/user-attachments/assets/ce9a6f22-d034-4fbf-8c88-e7294c047094
+
+https://github.com/user-attachments/assets/b6b0e366-11a1-4545-9e1f-eab86db9a8e8
 
 ·
     <a href="https://github.com/fl1s/turron"><strong>Explore the docs »</strong></a>
@@ -93,29 +92,30 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 - **Eureka Server**: Manages service discovery using Netflix Eureka with `@DiscoveryClient`.
 
 - **Upload Service**: Accepts short videos via REST API, stores them in MinIO, and sends processing tasks to Kafka.
-<img width="900" alt="upload-service" src="https://github.com/user-attachments/assets/d0a6a177-1623-4d1b-b42d-4060a39a95cd" />
+<img width="900" alt="upload-service" src="https://github.com/user-attachments/assets/21d8f136-0eab-40de-9be3-21d73094c03a" />
+
 
 - **Frame Extraction Service**: Extracts 5-10 keyframes from videos using FFmpeg, normalizes orientation for robustness, and forwards frames to Kafka for hashing.
-<img width="800" alt="extraction-service" src="https://github.com/user-attachments/assets/60460e7b-3aa0-4f88-8a5f-01c0d1a7ff4e" />
 
+<img width="900" alt="extraction-first" src="https://github.com/user-attachments/assets/6d6e7850-062d-45bb-81b2-ddde60c6a0fb" />
+
+...
+
+<img width="900" alt="extraction-third" src="https://github.com/user-attachments/assets/3effd378-634a-41c2-b0c2-2cd770780647" />
 
 - **Hashing Service**: Computes pHashes for keyframes and stores it in database.
-<img width="500" alt="hashing-service" src="https://github.com/user-attachments/assets/278febdb-8aba-48ea-a765-ac4b085a9c8b" />
-
+<img width="1130" alt="hashing-first" src="https://github.com/user-attachments/assets/db3dfc52-741a-41ea-bdba-6ca57b2c4ef1" />
+...
+<img width="1269" alt="hashing-third" src="https://github.com/user-attachments/assets/5bbfea23-7659-4613-b427-4298cd9dfe6b" />
 
 - **Search Service**: Matches snippet videos to source videos using perceptual hash comparisons with sliding-window Hamming distance, storing results in database.
-<img width="400" alt="1and2" src="https://github.com/user-attachments/assets/e1596cbf-5db4-45e6-a962-1e36a562cf90" />
-<img width="400" alt="2and2" src="https://github.com/user-attachments/assets/51446018-c8ec-4c99-9c62-9b25c36bfdbb" />
-<img width="400" alt="empty_db" src="https://github.com/user-attachments/assets/2ef69754-328d-4150-b60d-e871a189f018" />
-<img width="400" alt="matches" src="https://github.com/user-attachments/assets/de26c5d6-1e2b-4c89-951d-6db08f4bb6f7" />
+<img width="999" alt="cleanup" src="https://github.com/user-attachments/assets/635f377e-6233-4a19-9e22-5d8541cbd4f0" />
+
+
+<img width="1232" alt="another snippet bc previous is cleaned up" src="https://github.com/user-attachments/assets/8d11e6ca-143b-463b-be5e-10450c162156" />
+
 
 - **API Gateway**: Centralized REST API endpoint managing requests, authentication, and response aggregation.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Infrastructure
-
-#### Nah...Later.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

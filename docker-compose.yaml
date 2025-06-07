@@ -1,4 +1,119 @@
 services:
+  eureka-server:
+    image: ghcr.io/fl1s/turron/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_HOSTNAME: eureka-server
+    depends_on:
+#      - redis
+      - postgres
+
+  api-gateway:
+    image: ghcr.io/fl1s/turron/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+
+  upload-service:
+    image: ghcr.io/fl1s/turron/upload-service:latest
+    container_name: upload-service
+    ports:
+      - "8091:8091"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/uploads
+      POSTGRES_PG_USERNAME: admin
+      POSTGRES_PG_PASSWORD: secret
+      POSTGRES_PG_DRIVER: org.postgresql.Driver
+      MINIO_BUCKET_NAME: uploads
+      MINIO_URL: http://minio:9000
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    depends_on:
+      - minio
+      - eureka-server
+      - postgres
+
+  extraction-service:
+    image: ghcr.io/fl1s/turron/extraction-service:latest
+    container_name: extraction-service
+    ports:
+      - "8092:8092"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/frames
+      POSTGRES_PG_USERNAME: admin
+      POSTGRES_PG_PASSWORD: secret
+      POSTGRES_PG_DRIVER: org.postgresql.Driver
+      MINIO_BUCKETS_UPLOADS: uploads
+      MINIO_BUCKETS_FRAMES: frames
+      MINIO_URL: http://minio:9000
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    depends_on:
+      - eureka-server
+      - kafka
+      - postgres
+
+  hashing-service:
+    image: ghcr.io/fl1s/turron/hashing-service:latest
+    container_name: hashing-service
+    ports:
+      - "8093:8093"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/hashes
+      POSTGRES_PG_USERNAME: admin
+      POSTGRES_PG_PASSWORD: secret
+      POSTGRES_PG_DRIVER: org.postgresql.Driver
+      MINIO_BUCKETS_FRAMES: frames
+      MINIO_URL: http://minio:9000
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    depends_on:
+      - eureka-server
+      - postgres
+
+  search-service:
+    image: ghcr.io/fl1s/turron/search-service:latest
+    container_name: search-service
+    ports:
+      - "8094:8094"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/searches
+      POSTGRES_PG_USERNAME: admin
+      POSTGRES_PG_PASSWORD: secret
+      POSTGRES_PG_DRIVER: org.postgresql.Driver
+      MINIO_BUCKETS_UPLOADS: uploads
+      MINIO_URL: http://minio:9000
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    depends_on:
+      - eureka-server
+      - postgres
+
   zookeeper:
     image: wurstmeister/zookeeper:latest
     container_name: zookeeper
@@ -56,14 +171,15 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
-  redis:
-    image: redis:latest
-    container_name: redis
-    volumes:
-      - redis_data:/data/cache
-    ports:
-      - "6379:6379"
-    command: [ "redis-server" ]
+  # Will be added in v1.2-1.4
+  #  redis:
+  #    image: redis:latest
+  #    container_name: redis
+  #    volumes:
+  #      - redis_data:/data/cache
+  #    ports:
+  #      - "6379:6379"
+  #    command: [ "redis-server" ]
 
   prometheus:
     image: prom/prometheus:latest
@@ -97,8 +213,8 @@ volumes:
     driver: local
   postgres_data:
     driver: local
-  redis_data:
-    driver: local
+#  redis_data:
+#    driver: local
 
 networks:
   monitoring:

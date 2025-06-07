@@ -33,6 +33,7 @@ services:
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/uploads
       POSTGRES_PG_USERNAME: admin
       POSTGRES_PG_PASSWORD: secret
@@ -56,6 +57,7 @@ services:
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/frames
       POSTGRES_PG_USERNAME: admin
       POSTGRES_PG_PASSWORD: secret
@@ -80,6 +82,7 @@ services:
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/hashes
       POSTGRES_PG_USERNAME: admin
       POSTGRES_PG_PASSWORD: secret
@@ -102,6 +105,7 @@ services:
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/searches
       POSTGRES_PG_USERNAME: admin
       POSTGRES_PG_PASSWORD: secret

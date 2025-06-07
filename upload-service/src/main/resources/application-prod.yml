@@ -8,6 +8,10 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
 
 spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: ${HIBERNATE_DIALECT}
   servlet:
     multipart:
       max-file-size: 25MB

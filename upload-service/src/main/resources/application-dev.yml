@@ -10,8 +10,8 @@ eureka:
 spring:
   servlet:
     multipart:
-      max-file-size: 25MB
-      max-request-size: 25MB
+      max-file-size: 150MB
+      max-request-size: 150MB
   config:
     import: file:upload-service/.env.dev[.properties]
   kafka:

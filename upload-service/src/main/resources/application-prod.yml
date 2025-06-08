@@ -10,16 +10,20 @@ eureka:
 spring:
   servlet:
     multipart:
-      max-file-size: 25MB
-      max-request-size: 25MB
+      # These properties configure the maximum allowed size for file uploads;
+      # max-file-size: the maximum size of a single uploaded file;
+      # max-request-size: the maximum size of the entire multipart/form-data request;
+      max-file-size: 125MB
+      max-request-size: 125MB
+  jpa:
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM}
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
-
   datasource:
-    url: ${POSTGRES_DB_URL}
-    username: ${POSTGRES_PG_USERNAME}
-    password: ${POSTGRES_PG_PASSWORD}
-    driver-class-name: ${POSTGRES_PG_DRIVER}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
 
 minio:
   bucket:

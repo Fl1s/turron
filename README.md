@@ -33,7 +33,7 @@ https://github.com/user-attachments/assets/b6b0e366-11a1-4545-9e1f-eab86db9a8e8
 
 <!-- SKILL ICONS -->
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=java,spring,postgres,kafka,redis,docker,kubernetes,prometheus,grafana,gradle,postman,git" />
+  <img src="https://skillicons.dev/icons?i=java,spring,postgres,kafka,docker,kubernetes,prometheus,grafana,gradle,postman,git" />
 </p>
 
 <!-- TABLE OF CONTENTS -->
@@ -79,7 +79,8 @@ Key features:
 * Accurate source identification via perceptual hashing tolerant to modifications.
 * Optimized for quick, precise matching of short video fragments.
 * Scalable microservices architecture built to handle heavy traffic without performance loss.
-* Instant search results thanks to Redis caching.
+
+[//]: # (* Instant search results thanks to Redis caching.)
 
 [//]: # (* Open and extensible API for easy integration and community-driven improvements &#40;coming soon&#41;.)
 
@@ -147,7 +148,7 @@ Ensure you have the following installed:
 * Gradle
 * Docker and Docker Compose
 * kubectl (for prod environment)
-* PostgreSQL, Kafka, Redis, MinIO (or use Docker Compose)
+* PostgreSQL, Kafka, MinIO (or use Docker Compose)
   ```sh
   java --version
   gradle --version
@@ -166,7 +167,8 @@ Ensure you have the following installed:
    ```
 3. Build all microservices with Gradle:
    ```sh
-   ./gradlew build
+   cd /microservice-name
+   ./gradlew clean build
    ```
 4. Start the dev environment with Docker Compose:
    ```sh
@@ -176,7 +178,7 @@ Ensure you have the following installed:
    ```sh
    docker ps
    ```
-6. (Optional) For prod, apply Kubernetes manifests:
+6. (Will be added soon! In v1.2-v1.4) For prod, apply Kubernetes manifests:
    ```sh
    kubectl apply -f k8s/
    ```
@@ -293,7 +295,6 @@ Prometheus config is located at:
 2. Start **Grafana** and add Prometheus as a data source (`http://localhost:9090`).
 3. Create your dashboards in Grafana or import community dashboards for Spring Boot metrics.
 4. Access your dashboards to monitor service health, performance, and custom metrics.
-5. 
 <!-- CONTRIBUTING -->
 
 ## Contributing

@@ -10,18 +10,6 @@ services:
     depends_on:
       - postgres
 
-  api-gateway:
-    image: ghcr.io/fl1s/turron/api-gateway:latest
-    container_name: api-gateway
-    ports:
-      - "3000:3000"
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-    depends_on:
-      - eureka-server
-
   upload-service:
     image: ghcr.io/fl1s/turron/upload-service:latest
     container_name: upload-service
@@ -119,6 +107,19 @@ services:
       - kafka
       - postgres
 
+  api-gateway:
+    image: ghcr.io/fl1s/turron/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+
+
   kafka:
     container_name: kafka
     image: bitnami/kafka:latest
@@ -151,6 +152,20 @@ services:
     volumes:
       - ~/minio/data:/data
     command: server --console-address :9001 /data
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set myminio http://minio:9000 admin secret123;
+      mc mb -p myminio/uploads;
+      mc mb -p myminio/frames;
+      mc ls myminio;
+      exit 0;
+      "
 
   postgres:
     image: postgres:latest

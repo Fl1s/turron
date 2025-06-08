@@ -4,6 +4,11 @@ COPY build/libs/*.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract
 
 FROM eclipse-temurin:21-jre
+
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /application
 
 COPY --from=builder /extracted/dependencies/ ./

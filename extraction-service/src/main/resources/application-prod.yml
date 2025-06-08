@@ -11,14 +11,14 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: ${HIBERNATE_DIALECT}
+        dialect: ${SPRING_JPA_DATABASE_PLATFORM}
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
   datasource:
-    url: ${POSTGRES_DB_URL}
-    username: ${POSTGRES_PG_USERNAME}
-    password: ${POSTGRES_PG_PASSWORD}
-    driver-class-name: ${POSTGRES_PG_DRIVER}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
 
 minio:
   buckets:

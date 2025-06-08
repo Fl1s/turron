@@ -54,14 +54,14 @@ services:
       - "8092:8092"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/frames
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/frames
-      POSTGRES_PG_USERNAME: admin
-      POSTGRES_PG_PASSWORD: secret
-      POSTGRES_PG_DRIVER: org.postgresql.Driver
       MINIO_BUCKETS_UPLOADS: uploads
       MINIO_BUCKETS_FRAMES: frames
       MINIO_URL: http://minio:9000
@@ -79,14 +79,14 @@ services:
       - "8093:8093"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hashes
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/hashes
-      POSTGRES_PG_USERNAME: admin
-      POSTGRES_PG_PASSWORD: secret
-      POSTGRES_PG_DRIVER: org.postgresql.Driver
       MINIO_BUCKETS_FRAMES: frames
       MINIO_URL: http://minio:9000
       MINIO_ROOT_USER: admin
@@ -102,14 +102,14 @@ services:
       - "8094:8094"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/searches
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       EUREKA_INSTANCE_HOSTNAME: eureka-server
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      POSTGRES_DB_URL: jdbc:postgresql://postgres:5432/searches
-      POSTGRES_PG_USERNAME: admin
-      POSTGRES_PG_PASSWORD: secret
-      POSTGRES_PG_DRIVER: org.postgresql.Driver
       MINIO_BUCKETS_UPLOADS: uploads
       MINIO_URL: http://minio:9000
       MINIO_ROOT_USER: admin
@@ -125,6 +125,8 @@ services:
       ALLOW_ANONYMOUS_LOGIN: "yes"
     ports:
       - "2181:2181"
+    volumes:
+      - zookeeper_data:/bitnami/zookeeper
 
   kafka:
     container_name: kafka
@@ -144,6 +146,8 @@ services:
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
     depends_on:
       - zookeeper
+    volumes:
+      - kafka_data:/bitnami/kafka
 
   minio:
     image: minio/minio
@@ -164,9 +168,12 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=users
+      - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
+    volumes:
+      - ./.config/initdb:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
   # Will be added in v1.2-1.4

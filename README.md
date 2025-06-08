@@ -178,7 +178,7 @@ Ensure you have the following installed:
    ```sh
    docker ps
    ```
-6. (Will be added soon!) For prod, apply Kubernetes manifests:
+6. (Will be added soon! In v1.2-v1.4) For prod, apply Kubernetes manifests:
    ```sh
    kubectl apply -f k8s/
    ```
@@ -295,7 +295,6 @@ Prometheus config is located at:
 2. Start **Grafana** and add Prometheus as a data source (`http://localhost:9090`).
 3. Create your dashboards in Grafana or import community dashboards for Spring Boot metrics.
 4. Access your dashboards to monitor service health, performance, and custom metrics.
-5. 
 <!-- CONTRIBUTING -->
 
 ## Contributing

@@ -22,7 +22,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_INSTANCE_HOSTNAME: upload-service
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_BUCKET_NAME: uploads
@@ -46,7 +46,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_INSTANCE_HOSTNAME: extraction-service
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_BUCKETS_UPLOADS: uploads
@@ -71,7 +71,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_INSTANCE_HOSTNAME: hashing-service
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_BUCKETS_FRAMES: frames
@@ -95,7 +95,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_INSTANCE_HOSTNAME: search-service
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_BUCKETS_UPLOADS: uploads
@@ -118,7 +118,10 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
     depends_on:
       - eureka-server
-
+      - upload-service
+      - extraction-service
+      - hashing-service
+      - search-service
 
   kafka:
     container_name: kafka

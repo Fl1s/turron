@@ -22,7 +22,7 @@ public class CleanupService {
      */
     @Scheduled(fixedRate = 600_000)
     public void cleanupVideos() {
-        log.info("Starting cleanup for table 'videos'...");
+        log.info("Starting cleanup for table 'snippets'...");
         try {
             snippetRepository.deleteAll();
             log.info("Cleanup completed: all records and files removed.");

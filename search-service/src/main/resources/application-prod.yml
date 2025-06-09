@@ -8,6 +8,10 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
 
 spring:
+  cache:
+    type: ${SPRING_CACHE_TYPE}
+    redis:
+      time-to-live: ${SPRING_CACHE_REDIS_TIME_TO_LIVE}
   jpa:
     properties:
       hibernate:
@@ -19,6 +23,10 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
 
 minio:
   buckets:

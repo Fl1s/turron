@@ -7,50 +7,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Utility class for calculating Hamming distances between hash strings.
+ * Utility class for calculating Hamming distances between pHash values.
  */
 @UtilityClass
 public class HammingDistance {
 
     /**
-     * Calculates the Hamming distance between two strings of equal length.
+     * Calculates the Hamming distance between two 64-bit hashes using XOR and bit count.
      *
-     * @param hash1 the first hash string
-     * @param hash2 the second hash string
-     * @return the number of differing characters
-     * @throws IllegalArgumentException if the lengths of the input strings are not equal
+     * @param hash1 the first hash as a long
+     * @param hash2 the second hash as a long
+     * @return the number of differing bits
      */
-    public int hammingDistance(String hash1, String hash2) {
-        if (hash1.length() != hash2.length()) {
-            throw new IllegalArgumentException("Hash lengths must be equal");
-        }
-
-        int count = 0;
-        for (int i = 0; i < hash1.length(); i++) {
-            if (hash1.charAt(i) != hash2.charAt(i)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Calculates the Hamming distances between two lists of hash strings.
-     *
-     * @param hashes1 the first list of hashes
-     * @param hashes2 the second list of hashes
-     * @return a list of distances (one for each pair of hashes at the same index)
-     */
-    public List<Double> calculateAllDistances(List<String> hashes1, List<String> hashes2) {
-        int len = Math.min(hashes1.size(), hashes2.size());
-        if (len == 0) return Collections.singletonList(Double.MAX_VALUE);
-
-        List<Double> distances = new ArrayList<>(len);
-        for (int i = 0; i < len; i++) {
-            int d = hammingDistance(hashes1.get(i), hashes2.get(i));
-            distances.add((double) d);
-        }
-        return distances;
+    public int hammingDistance(long hash1, long hash2) {
+        return Long.bitCount(hash1 ^ hash2);
     }
 }
-

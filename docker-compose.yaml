@@ -95,6 +95,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_CACHE_TYPE: redis
+      SPRING_CACHE_REDIS_TIME_TO_LIVE: 600000
       EUREKA_INSTANCE_HOSTNAME: search-service
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
@@ -135,7 +139,8 @@ services:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      # KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092" #dev
+      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" #prod
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -184,6 +189,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    volumes:
+      - redis_data:/data/cache
+    ports:
+      - "6379:6379"
+    command: [ "redis-server" ]
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -213,6 +227,8 @@ volumes:
   kafka_data:
     driver: local
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:

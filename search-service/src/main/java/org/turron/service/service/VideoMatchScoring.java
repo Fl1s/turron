@@ -10,25 +10,6 @@ import java.util.*;
  */
 @UtilityClass
 public class VideoMatchScoring {
-
-    /**
-     * Finds the best match (i.e., source video) from the provided match scores.
-     *
-     * @param matchScores a map of source video IDs to lists of Hamming distances
-     * @return an {@link Optional} containing the best match, or empty if no match found
-     */
-    public Optional<MatchResult> findBestMatch(Map<String, List<Double>> matchScores) {
-        return matchScores.entrySet().stream()
-                .map(entry -> {
-                    String snippetId = entry.getKey();
-                    List<Double> scores = entry.getValue();
-                    double trimmedMean = computeTrimmedMean(scores);
-                    return new MatchResult(snippetId, trimmedMean);
-                })
-                .sorted(Comparator.comparingDouble(MatchResult::score))
-                .findFirst();
-    }
-
     /**
      * Computes a trimmed mean (average) of the given scores, excluding the top and bottom 10%.
      *

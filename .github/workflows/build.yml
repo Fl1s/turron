@@ -1,4 +1,4 @@
-name: Build & Push
+name: Build & Deploy
 
 permissions:
   contents: read
@@ -6,12 +6,14 @@ permissions:
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -52,7 +54,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push image
+      - name: Build & Push Docker image (dev)
+        if: github.event_name == 'pull_request'
         uses: ./.github/actions/docker-build-push
         with:
           service: ${{ matrix.service }}
+          env: dev
+          push: 'true'
+
+      - name: Build & Push Docker image (prod)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: ./.github/actions/docker-build-push
+        with:
+          service: ${{ matrix.service }}
+          env: prod
+          push: 'true'

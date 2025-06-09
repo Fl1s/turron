@@ -48,6 +48,14 @@ jobs:
           cd ${{ matrix.service }}
           ./gradlew clean build
 
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Docker image (dev)
         if: github.ref != 'refs/heads/main' || github.event_name == 'pull_request'
         uses: ./.github/actions/docker-build-push
@@ -63,11 +71,3 @@ jobs:
           service: ${{ matrix.service }}
           env: prod
           push: 'true'
-
-      - name: Login to GHCR
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}

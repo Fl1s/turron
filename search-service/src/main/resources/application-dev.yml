@@ -8,6 +8,10 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
 
 spring:
+  cache:
+    type: ${SPRING_CACHE_TYPE}
+    redis:
+      time-to-live: ${SPRING_CACHE_REDIS_TIME_TO_LIVE}
   config:
     import: file:search-service/.env.dev[.properties]
   kafka:
@@ -18,6 +22,10 @@ spring:
     username: ${POSTGRES_PG_USERNAME}
     password: ${POSTGRES_PG_PASSWORD}
     driver-class-name: ${POSTGRES_PG_DRIVER}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
 
 minio:
   buckets:

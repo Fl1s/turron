@@ -7,8 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Utility class for calculating Hamming distances between pHash values represented as long integers.
- * Much faster than comparing binary strings. Welcome to the 21st century.
+ * Utility class for calculating Hamming distances between pHash values.
  */
 @UtilityClass
 public class HammingDistance {

@@ -11,6 +11,8 @@ import org.turron.service.event.SnippetFrameHashedEvent;
 import org.turron.service.repository.MatchRepository;
 import org.turron.service.repository.SourceRepository;
 import org.turron.service.repository.SnippetRepository;
+import org.turron.service.service.cache.SnippetCacheService;
+import org.turron.service.service.cache.SourceCacheService;
 
 import java.util.*;
 
@@ -22,10 +24,11 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class SearchingService {
-
-    private final SnippetRepository snippetRepository;
     private final SourceRepository sourceRepository;
+    private final SnippetRepository snippetRepository;
     private final MatchRepository matchRepository;
+    private final SnippetCacheService snippetCacheService;
+    private final SourceCacheService sourceCacheService;
 
     /**
      * Stores a frame hash associated with a specific snippet video.
@@ -38,6 +41,8 @@ public class SearchingService {
         snippetEntity.setFrameId(event.getFrameId());
         snippetEntity.setFrameHash(event.getFrameHash());
         snippetRepository.save(snippetEntity);
+
+        snippetCacheService.evict(event.getSnippetId());
     }
 
     /**
@@ -51,6 +56,9 @@ public class SearchingService {
         sourceEntity.setFrameId(event.getFrameId());
         sourceEntity.setFrameHash(event.getFrameHash());
         sourceRepository.save(sourceEntity);
+
+        sourceCacheService.evict(event.getSourceId());
+        sourceCacheService.evictSourceIdCache();
     }
 
     /**
@@ -66,15 +74,12 @@ public class SearchingService {
      * @throws IllegalStateException    if no sources exist or no match is found
      */
     public String findBestMatch(String snippetId) {
-        List<Long> snippetHashes = snippetRepository.findHashesBySnippetId(snippetId).stream()
-                .map(this::parseHashToLong)
-                .toList();
-
+        List<Long> snippetHashes = snippetCacheService.getHashes(snippetId);
         if (snippetHashes.isEmpty()) {
             throw new IllegalArgumentException("No snippet hashes found");
         }
 
-        List<String> allSourceIds = sourceRepository.findDistinctSourceIds();
+        List<String> allSourceIds = sourceCacheService.getAllSourceIds();
         if (allSourceIds.isEmpty()) {
             throw new IllegalStateException("No sources available");
         }
@@ -82,9 +87,7 @@ public class SearchingService {
         PriorityQueue<VideoMatchScoring.MatchResult> topMatches = new PriorityQueue<>(5, Comparator.comparingDouble(VideoMatchScoring.MatchResult::score).reversed());
 
         allSourceIds.parallelStream().forEach(sourceId -> {
-            List<Long> sourceHashes = sourceRepository.findHashesBySourceId(sourceId).stream()
-                    .map(this::parseHashToLong)
-                    .toList();
+            List<Long> sourceHashes = sourceCacheService.getHashes(sourceId);
 
             if (sourceHashes.size() < snippetHashes.size()) return;
 
@@ -159,9 +162,5 @@ public class SearchingService {
         }
 
         return bestDistances.isEmpty() ? List.of(Double.MAX_VALUE) : bestDistances;
-    }
-
-    private long parseHashToLong(String bString) {
-        return Long.parseUnsignedLong(bString, 2);
     }
 }

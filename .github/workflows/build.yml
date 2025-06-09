@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - main
-      - '**'
   pull_request:
     branches:
       - main
@@ -49,23 +48,22 @@ jobs:
           ./gradlew clean build
 
       - name: Login to GHCR
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image (dev)
-        if: github.ref != 'refs/heads/main' || github.event_name == 'pull_request'
+      - name: Build & Push Docker image (dev)
+        if: github.event_name == 'pull_request'
         uses: ./.github/actions/docker-build-push
         with:
           service: ${{ matrix.service }}
           env: dev
           push: 'true'
 
-      - name: Build Docker image (prod)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      - name: Build & Push Docker image (prod)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: ./.github/actions/docker-build-push
         with:
           service: ${{ matrix.service }}

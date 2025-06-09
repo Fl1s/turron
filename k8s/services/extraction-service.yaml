@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: extraction-service
+  namespace: turron-app
+  labels:
+    app: extraction-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: extraction-service
+  template:
+    metadata:
+      labels:
+        app: extraction-service
+    spec:
+      containers:
+        - name: extraction-service
+          image: ghcr.io/fl1s/turron/extraction-service:latest
+          ports:
+            - containerPort: 8092
+          envFrom:
+            - configMapRef:
+                name: turron-config
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/frames
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: extraction-service
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8092
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8092
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: extraction-service
+  namespace: turron-app
+spec:
+  ports:
+    - port: 8092
+      targetPort: 8092
+  selector:
+    app: extraction-service

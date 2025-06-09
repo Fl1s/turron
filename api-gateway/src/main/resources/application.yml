@@ -22,12 +22,18 @@ spring:
   threads:
     virtual:
       enabled: true
+  codec:
+    max-in-memory-size: 125MB
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
+      httpclient:
+        response-timeout: 60s
+        max-header-size: 16KB
+        max-initial-line-length: 65536
 
 resilience4j:
   retry:
@@ -49,7 +55,7 @@ resilience4j:
   timelimiter:
     configs:
       default:
-        timeout-duration: 3s
+        timeout-duration: 60s
 
 management:
   endpoints:

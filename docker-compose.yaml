@@ -95,7 +95,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_DATA_REDIS_HOST: localhost
+      SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_CACHE_TYPE: redis
       SPRING_CACHE_REDIS_TIME_TO_LIVE: 600000

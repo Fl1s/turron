@@ -1,4 +1,4 @@
-name: Build & Push
+name: Build & Deploy
 
 permissions:
   contents: read
@@ -6,9 +6,12 @@ permissions:
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - '**'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-test:
@@ -45,39 +48,26 @@ jobs:
           cd ${{ matrix.service }}
           ./gradlew clean build
 
-      - name: Build Docker image
+      - name: Build Docker image (dev)
+        if: github.ref != 'refs/heads/main' || github.event_name == 'pull_request'
         uses: ./.github/actions/docker-build-push
         with:
           service: ${{ matrix.service }}
-          push: 'false'
+          env: dev
+          push: 'true'
 
-  push-to-registry:
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service:
-          - eureka-server
-          - upload-service
-          - extraction-service
-          - hashing-service
-          - search-service
-          - api-gateway
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Build Docker image (prod)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: ./.github/actions/docker-build-push
+        with:
+          service: ${{ matrix.service }}
+          env: prod
+          push: 'true'
 
       - name: Login to GHCR
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push Docker image
-        uses: ./.github/actions/docker-build-push
-        with:
-          service: ${{ matrix.service }}
-          push: 'true'

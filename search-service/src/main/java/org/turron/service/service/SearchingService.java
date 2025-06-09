@@ -54,52 +54,58 @@ public class SearchingService {
     }
 
     /**
-     * Finds the best matching source video for the given input snippet ID.
+     * Finds the best matching source video for a given snippet ID.
+     * <p>
+     * Loads snippet hashes, converts to long, then scans all sources in parallel.
+     * Calculates similarity using sliding window with early break on bad scores.
+     * Maintains top-5 matches sorted by score and persists the best one.
      *
-     * @param snippetId the ID of the input snippet video
-     * @return the ID of the best matching source video
-     * @throws IllegalArgumentException if no hashes are found for the input video
-     * @throws IllegalStateException if no sources are available or no match is found
+     * @param snippetId the ID of the snippet video to find a match for
+     * @return the source ID with the best match
+     * @throws IllegalArgumentException if no snippet hashes are found
+     * @throws IllegalStateException    if no sources exist or no match is found
      */
     public String findBestMatch(String snippetId) {
-        List<String> snippetHashes = Optional.ofNullable(snippetRepository.findHashesBySnippetId(snippetId))
-                .orElse(Collections.emptyList());
+        List<Long> snippetHashes = snippetRepository.findHashesBySnippetId(snippetId).stream()
+                .map(this::parseHashToLong)
+                .toList();
 
         if (snippetHashes.isEmpty()) {
-            log.warn("No hashes found for snippet {}", snippetId);
             throw new IllegalArgumentException("No snippet hashes found");
         }
 
-        List<String> allSourceIds = Optional.ofNullable(sourceRepository.findDistinctSourceIds())
-                .orElse(Collections.emptyList());
-
+        List<String> allSourceIds = sourceRepository.findDistinctSourceIds();
         if (allSourceIds.isEmpty()) {
-            log.warn("No sources available in DB.");
             throw new IllegalStateException("No sources available");
         }
 
-        Map<String, List<Double>> matchScores = new HashMap<>();
+        PriorityQueue<VideoMatchScoring.MatchResult> topMatches = new PriorityQueue<>(5, Comparator.comparingDouble(VideoMatchScoring.MatchResult::score).reversed());
 
-        for (String sourceId : allSourceIds) {
-            List<String> sourceHashes = Optional.ofNullable(sourceRepository.findHashesBySourceId(sourceId))
-                    .orElse(Collections.emptyList());
+        allSourceIds.parallelStream().forEach(sourceId -> {
+            List<Long> sourceHashes = sourceRepository.findHashesBySourceId(sourceId).stream()
+                    .map(this::parseHashToLong)
+                    .toList();
 
-            if (sourceHashes.size() < snippetHashes.size()) {
-                log.debug("Skipping source {} due to insufficient hash count", sourceId);
-                continue;
+            if (sourceHashes.size() < snippetHashes.size()) return;
+
+            List<Double> distances = calculateSlidingDistanceWithEarlyExit(snippetHashes, sourceHashes);
+            double score = VideoMatchScoring.computeTrimmedMean(distances);
+
+            synchronized (topMatches) {
+                if (topMatches.size() < 5 || score < topMatches.peek().score()) {
+                    topMatches.offer(new VideoMatchScoring.MatchResult(sourceId, score));
+                    if (topMatches.size() > 5) topMatches.poll();
+                }
             }
+        });
 
-            List<Double> distances = calculateSlidingDistance(snippetHashes, sourceHashes);
-            matchScores.put(sourceId, distances);
-        }
-
-        Optional<VideoMatchScoring.MatchResult> bestMatchOpt = VideoMatchScoring.findBestMatch(matchScores);
-
-        if (bestMatchOpt.isEmpty()) {
+        if (topMatches.isEmpty()) {
             throw new IllegalStateException("No match found");
         }
 
-        VideoMatchScoring.MatchResult bestMatch = bestMatchOpt.get();
+        VideoMatchScoring.MatchResult bestMatch = topMatches.stream()
+                .min(Comparator.comparingDouble(VideoMatchScoring.MatchResult::score))
+                .get();
 
         MatchEntity matchEntity = new MatchEntity();
         matchEntity.setSnippetId(snippetId);
@@ -108,42 +114,54 @@ public class SearchingService {
 
         matchRepository.save(matchEntity);
 
-        log.info("Saved match: snippet={} matched with source={} (score={})",
-                snippetId, bestMatch.snippetId(), bestMatch.score());
-
         return bestMatch.snippetId();
     }
 
     /**
-     * Calculates the best alignment of the input hashes over a sliding window of the source hashes.
-     * Used to compare sequences of hashes with different starting positions.
+     * Compares input hashes to source hashes over sliding windows,
+     * with early exit when partial mean distance exceeds threshold.
      *
-     * @param fragmentHashes the hash sequence of the input snippet video
-     * @param sourceHashes the hash sequence of a candidate source video
-     * @return the list of distances representing the best sliding window match
+     * @param fragmentHashes hashes of snippet video converted to longs
+     * @param sourceHashes   hashes of candidate source video converted to longs
+     * @return list of distances for best sliding window alignment, or MAX_VALUE if none found
      */
-    private List<Double> calculateSlidingDistance(List<String> fragmentHashes, List<String> sourceHashes) {
+    private List<Double> calculateSlidingDistanceWithEarlyExit(List<Long> fragmentHashes, List<Long> sourceHashes) {
         int windowSize = fragmentHashes.size();
         int maxOffset = sourceHashes.size() - windowSize;
-
-        if (maxOffset < 0) {
-            return Collections.singletonList(Double.MAX_VALUE);
-        }
 
         double bestScore = Double.MAX_VALUE;
         List<Double> bestDistances = Collections.emptyList();
 
         for (int offset = 0; offset <= maxOffset; offset++) {
-            List<String> window = sourceHashes.subList(offset, offset + windowSize);
-            List<Double> distances = HammingDistance.calculateAllDistances(fragmentHashes, window);
-            double score = VideoMatchScoring.computeTrimmedMean(distances);
+            List<Double> distances = new ArrayList<>();
+            boolean skipWindow = false;
 
+            for (int i = 0; i < windowSize; i++) {
+                int dist = HammingDistance.hammingDistance(fragmentHashes.get(i), sourceHashes.get(offset + i));
+                distances.add((double) dist);
+
+                if (i >= 3) {
+                    double partialMean = distances.subList(0, i + 1).stream().mapToDouble(Double::doubleValue).average().orElse(Double.MAX_VALUE);
+                    if (partialMean > 20.0) {
+                        skipWindow = true;
+                        break;
+                    }
+                }
+            }
+
+            if (skipWindow) continue;
+
+            double score = VideoMatchScoring.computeTrimmedMean(distances);
             if (score < bestScore) {
                 bestScore = score;
                 bestDistances = distances;
             }
         }
 
-        return bestDistances;
+        return bestDistances.isEmpty() ? List.of(Double.MAX_VALUE) : bestDistances;
+    }
+
+    private long parseHashToLong(String bString) {
+        return Long.parseUnsignedLong(bString, 2);
     }
 }

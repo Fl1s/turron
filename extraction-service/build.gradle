@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.turron'
-version = '1.0'
+version = '1.2'
 
 java {
     toolchain {

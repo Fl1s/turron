@@ -1,6 +1,6 @@
 name: docker-build-push
 
-description: Builds and pushes docker image to ghcr
+description: Builds and optionally pushes docker image to ghcr
 
 inputs:
   service:
@@ -12,6 +12,9 @@ inputs:
   project:
     description: project-name
     default: turron
+  push:
+    description: push images to registry (true/false)
+    default: 'false'
 
 runs:
   using: "composite"
@@ -30,6 +33,7 @@ runs:
         docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$SHORT_SHA -t $IMAGE_NAME:$DATE_TAG .
 
     - name: Docker push
+      if: ${{ inputs.push == 'true' }}
       shell: bash
       run: |
         docker push $IMAGE_NAME:latest

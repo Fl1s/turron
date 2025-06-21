@@ -70,7 +70,7 @@ public class MinioService {
      */
     public String generatePreSignedUrl(String objectName) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            String url = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .bucket(uploadsBucket)
                             .object(objectName)
@@ -78,6 +78,7 @@ public class MinioService {
                             .expiry(3600, TimeUnit.SECONDS)
                             .build()
             );
+            return url.replace("minio", "localhost");
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

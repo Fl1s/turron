@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eureka-server-config
+  labels:
+    app: eureka-server
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  EUREKA_HOSTNAME: "eureka-server"

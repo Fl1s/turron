@@ -35,7 +35,7 @@ public class UploadProducer {
         );
 
         snippetUploadedEventTemplate
-                .send("snippet.uploaded", event)
+                .send("snippet.uploaded", event.getSnippetId(), event)
                 .thenAccept(sendResult -> log.info("SnippetUploadedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send SnippetUploadedEvent [snippetId={}, correlationId={}]: {}",
@@ -59,7 +59,7 @@ public class UploadProducer {
         );
 
         sourceUploadedEventTemplate
-                .send("source.uploaded", event)
+                .send("source.uploaded", event.getSourceId(), event)
                 .thenAccept(sendResult -> log.info("SourceUploadedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send SourceUploadedEvent [sourceId={}, correlationId={}]: {}",

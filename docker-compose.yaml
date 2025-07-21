@@ -25,8 +25,8 @@ services:
       EUREKA_INSTANCE_HOSTNAME: upload-service
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      MINIO_BUCKET_NAME: uploads
       MINIO_URL: http://minio:9000
+      MINIO_BUCKET_NAME: uploads
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: secret123
     depends_on:
@@ -104,6 +104,7 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_BUCKETS_UPLOADS: uploads
       MINIO_URL: http://minio:9000
+      MINIO_PUBLIC_URL: http://localhost:9000
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: secret123
     depends_on:

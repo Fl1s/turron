@@ -13,23 +13,34 @@ spec:
         app: extraction-service
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "8091"
+        prometheus.io/port: "8092"
         prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
         - name: extraction-service
-          image: ghcr.io/fl1s/turron/extraction-service:latest
+          image: ghcr.io/fl1s/turron/extraction-service:v1.2
           ports:
             - containerPort: 8092
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: "300m"
+              memory: "384Mi"
             limits:
-              cpu: "500m"
+              cpu: "600m"
               memory: "512Mi"
           envFrom:
             - configMapRef:
                 name: extraction-service-config
             - secretRef:
                 name: extraction-service-secret
+      initContainers:
+        - name: wait-for-eureka
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z eureka-server 8761; do
+                echo "Waiting for Eureka server..."
+                sleep 5
+              done

@@ -1,38 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: upload-service
+  name: api-gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: upload-service
+      app: api-gateway
   template:
     metadata:
       labels:
-        app: upload-service
+        app: api-gateway
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "8091"
+        prometheus.io/port: "3000"
         prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
-        - name: upload-service
-          image: ghcr.io/fl1s/turron/upload-service:v1.2
+        - name: api-gateway
+          image: ghcr.io/fl1s/turron/api-gateway:v1.2
           ports:
-            - containerPort: 8091
+            - containerPort: 3000
           resources:
             requests:
-              cpu: "300m"
-              memory: "384Mi"
-            limits:
-              cpu: "600m"
+              cpu: "500m"
               memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
           envFrom:
             - configMapRef:
-                name: upload-service-config
-            - secretRef:
-                name: upload-service-secret
+                name: api-gateway-config
       initContainers:
         - name: wait-for-eureka
           image: busybox

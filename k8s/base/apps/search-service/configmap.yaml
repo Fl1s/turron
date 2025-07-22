@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: search-service-config
+  labels:
+    app: search-service
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/searches"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+  SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.PostgreSQLDialect"
+  SPRING_DATA_REDIS_HOST: "redis"
+  SPRING_DATA_REDIS_PORT: "6379"
+  SPRING_CACHE_TYPE: "redis"
+  SPRING_CACHE_REDIS_TIME_TO_LIVE: "600000"
+  EUREKA_INSTANCE_HOSTNAME: "search-service"
+  EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: "http://eureka-server:8761/eureka/"
+  KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  MINIO_BUCKETS_UPLOADS: "uploads"
+  MINIO_URL: "http://minio:9000"
+  MINIO_PUBLIC_URL: "http://localhost:9000"

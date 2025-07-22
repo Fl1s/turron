@@ -14,9 +14,16 @@ spec:
     spec:
       containers:
         - name: eureka-server
-          image: ghcr.io/fl1s/turron/eureka-server:latest
+          image: ghcr.io/fl1s/turron/eureka-server:v1.2
           ports:
             - containerPort: 8761
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "300m"
+              memory: "512Mi"
           envFrom:
             - configMapRef:
                 name: eureka-server-config

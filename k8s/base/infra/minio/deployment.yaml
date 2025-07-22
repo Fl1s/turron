@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      initContainers:
+        - name: minio-init
+          image: minio/mc
+          command:
+            - /bin/sh
+            - -c
+            - |
+              sleep 5
+              mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+              mc mb -p myminio/uploads
+              mc mb -p myminio/frames
+          envFrom:
+            - secretRef:
+                name: minio-secret
+      containers:
+        - name: minio
+          image: minio/minio
+          args: ["server", "--console-address", ":9001", "/data"]
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          envFrom:
+            - secretRef:
+                name: minio-secret
+          volumeMounts:
+            - name: minio
+              mountPath: /data
+      volumes:
+        - name: minio
+          persistentVolumeClaim:
+            claimName: minio-pvc

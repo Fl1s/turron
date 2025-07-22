@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: upload-service
+  name: search-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: upload-service
+      app: search-service
   template:
     metadata:
       labels:
-        app: upload-service
+        app: search-service
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "8091"
+        prometheus.io/port: "8094"
         prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
-        - name: upload-service
-          image: ghcr.io/fl1s/turron/upload-service:v1.2
+        - name: search-service
+          image: ghcr.io/fl1s/turron/search-service:v1.2
           ports:
-            - containerPort: 8091
+            - containerPort: 8094
           resources:
             requests:
               cpu: "300m"
@@ -30,9 +30,9 @@ spec:
               memory: "512Mi"
           envFrom:
             - configMapRef:
-                name: upload-service-config
+                name: search-service-config
             - secretRef:
-                name: upload-service-secret
+                name: search-service-secret
       initContainers:
         - name: wait-for-eureka
           image: busybox

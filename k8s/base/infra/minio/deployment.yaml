@@ -12,20 +12,6 @@ spec:
       labels:
         app: minio
     spec:
-      initContainers:
-        - name: minio-init
-          image: minio/mc
-          command:
-            - /bin/sh
-            - -c
-            - |
-              sleep 5
-              mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
-              mc mb -p myminio/uploads
-              mc mb -p myminio/frames
-          envFrom:
-            - secretRef:
-                name: minio-secret
       containers:
         - name: minio
           image: minio/minio

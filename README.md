@@ -1,19 +1,22 @@
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Apache 2.0 License][license-shield]][license-url]
+<p align="center">
+  
+  [![Contributors][contributors-shield]][contributors-url]
+  [![Forks][forks-shield]][forks-url]
+  [![Stargazers][stars-shield]][stars-url]
+  [![Issues][issues-shield]][issues-url]
+  [![Apache 2.0 License][license-shield]][license-url]
+  
+</p>
 
 <!-- PROJECT LOGO -->
-<br />
+
 <div align="center">  
-<h3 align="center">Turron</h3>
-  <p align="center">
-    A video-recognizer system that analyzes short video excerpts and finds highly accurate matches.
-    <br />
+<p align="center">
+  <img width="480" height="480" alt="turron-logo-readme" src="https://github.com/user-attachments/assets/d0ba8800-3067-4f7c-a554-19aac4833c7b" />
+</p>
     
 https://github.com/user-attachments/assets/082547fe-5e02-41c4-94b1-57234d25d587
 

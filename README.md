@@ -241,7 +241,13 @@ Ensure you have the following installed:
 |-----------|------------------|--------|
 | snippetId | Snippet video ID | string |
 
-**Response:** The matched source MP4 video file
+**Response:**
+
+```json
+{
+  "downloadUrl": "..."
+}
+```
 
 ## CI/CD
 

@@ -1,5 +1,10 @@
 package org.turron.service.service;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import io.minio.*;
 import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Path;
 
 @Slf4j
 @Service
@@ -16,36 +22,35 @@ public class MinioService {
 
     private final MinioClient minioClient;
 
-    @Value("${minio.buckets.uploads}")
-    private String uploadsBucket;
-
     @Value("${minio.buckets.frames}")
     private String framesBucket;
 
     public File downloadVideo(String sourceUrl) {
         try {
-            String prefix = "minio://" + uploadsBucket + "/";
-            if (!sourceUrl.startsWith(prefix)) {
-                throw new IllegalArgumentException("sourceUrl does not start with expected prefix: " + prefix);
-            }
-            String path = sourceUrl.replace(prefix, "");
-            log.info("Downloading video from MinIO: {}", path);
+            if (sourceUrl.startsWith("http://") || sourceUrl.startsWith("https://")) {
+                log.info("Downloading video from HTTP URL: {}", sourceUrl);
 
-            File tempFile = File.createTempFile("video-", ".mp4");
-            try (InputStream in = minioClient.getObject(GetObjectArgs.builder()
-                    .bucket(uploadsBucket)
-                    .object(path)
-                    .build());
-                 FileOutputStream out = new FileOutputStream(tempFile)) {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(sourceUrl))
+                        .GET()
+                        .build();
 
-                in.transferTo(out);
+                File tempFile = File.createTempFile("video-", ".mp4");
+                HttpResponse<Path> response = client.send(request, HttpResponse.BodyHandlers.ofFile(tempFile.toPath()));
+
+                if (response.statusCode() != 200) {
+                    throw new RuntimeException("Failed to download video, HTTP status: " + response.statusCode());
+                }
+
                 log.info("Video downloaded to temporary file: {}", tempFile.getAbsolutePath());
                 return tempFile;
+            } else {
+                throw new IllegalArgumentException("Unsupported sourceUrl scheme: " + sourceUrl);
             }
-
         } catch (Exception e) {
-            log.error("Failed to download video from MinIO", e);
-            throw new RuntimeException("Failed to download video from MinIO", e);
+            log.error("Failed to download video from sourceUrl: {}", sourceUrl, e);
+            throw new RuntimeException("Failed to download video from sourceUrl: " + sourceUrl, e);
         }
     }
 

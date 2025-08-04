@@ -1,0 +1,14 @@
+appName: api-gateway
+namespace: turron
+
+
+configmap:
+  name: api-gateway-config
+  data:
+    SPRING_PROFILES_ACTIVE: "prod"
+    EUREKA_INSTANCE_HOSTNAME: "eureka-server"
+    EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: "http://eureka-server:8761/eureka/"
+
+image:
+  name: ghcr.io/fl1s/turron/api-gateway
+  tag: v1.2

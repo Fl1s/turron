@@ -202,8 +202,7 @@ Ensure you have the following installed:
 
 ```json
 {
-  "snippetId": "...",
-  "sourceUrl": "..."
+  "snippetId": "..."
 }
 ```
 
@@ -223,8 +222,7 @@ Ensure you have the following installed:
 
 ```json
 {
-  "sourceId": "...",
-  "sourceUrl": "..."
+  "sourceId": "..."
 }
 ```
 

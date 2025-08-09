@@ -42,7 +42,7 @@ public class MinioConfig {
                 .build();
 
         return MinioClient.builder()
-                .endpoint(minioUrl)
+                .endpoint(minioPublicUrl)
                 .credentials(accessKey, secretKey)
                 .httpClient(okHttpClient)
                 .build();

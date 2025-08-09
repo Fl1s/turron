@@ -33,9 +33,14 @@ public class MinioConfig {
     @Bean
     @Qualifier("publicMinioClient")
     public MinioClient publicMinioClient() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("minio", 9000)))
+                .build();
+
         return MinioClient.builder()
-                .endpoint(minioPublicUrl)
+                .endpoint(minioUrl)
                 .credentials(accessKey, secretKey)
+                .httpClient(okHttpClient)
                 .build();
     }
 }

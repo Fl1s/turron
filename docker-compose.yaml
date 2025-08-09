@@ -1,6 +1,6 @@
 services:
   eureka-server:
-    image: ghcr.io/fl1s/turron/eureka-server:dev-20250809
+    image: ghcr.io/fl1s/turron/eureka-server:v1.3
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -11,7 +11,7 @@ services:
       - postgres
 
   upload-service:
-    image: ghcr.io/fl1s/turron/upload-service:dev-20250809
+    image: ghcr.io/fl1s/turron/upload-service:v1.3
     container_name: upload-service
     ports:
       - "8091:8091"
@@ -36,7 +36,7 @@ services:
       - postgres
 
   extraction-service:
-    image: ghcr.io/fl1s/turron/extraction-service:dev-20250809
+    image: ghcr.io/fl1s/turron/extraction-service:v1.3
     container_name: extraction-service
     ports:
       - "8092:8092"
@@ -61,7 +61,7 @@ services:
       - postgres
 
   hashing-service:
-    image: ghcr.io/fl1s/turron/hashing-service:dev-20250809
+    image: ghcr.io/fl1s/turron/hashing-service:v1.3
     container_name: hashing-service
     ports:
       - "8093:8093"
@@ -85,7 +85,7 @@ services:
       - postgres
 
   search-service:
-    image: ghcr.io/fl1s/turron/search-service:dev-20250809
+    image: ghcr.io/fl1s/turron/search-service:v1.3
     container_name: search-service
     ports:
       - "8094:8094"
@@ -113,7 +113,7 @@ services:
       - postgres
 
   api-gateway:
-    image: ghcr.io/fl1s/turron/api-gateway:dev-20250809
+    image: ghcr.io/fl1s/turron/api-gateway:v1.3
     container_name: api-gateway
     ports:
       - "3000:3000"

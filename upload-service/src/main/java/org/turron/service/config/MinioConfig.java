@@ -6,6 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.net.Proxy;
+import okhttp3.OkHttpClient;
+import java.net.InetSocketAddress;
+
 @Configuration
 public class MinioConfig {
 

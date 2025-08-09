@@ -17,12 +17,12 @@
 <p align="center">
   <img width="480" height="480" alt="turron-logo-readme" src="https://github.com/user-attachments/assets/d0ba8800-3067-4f7c-a554-19aac4833c7b" />
 </p>
-    
-https://github.com/user-attachments/assets/082547fe-5e02-41c4-94b1-57234d25d587
 
-https://github.com/user-attachments/assets/ce9a6f22-d034-4fbf-8c88-e7294c047094
+https://github.com/user-attachments/assets/8bf90c7a-ce68-4d38-a140-e363fc421395
 
-https://github.com/user-attachments/assets/b6b0e366-11a1-4545-9e1f-eab86db9a8e8
+https://github.com/user-attachments/assets/5651a9fb-029d-4126-b192-ba42ca269a5d
+
+https://github.com/user-attachments/assets/db4aef2f-349c-499e-bcb6-a3aac1d57e1a
 
 ·
     <a href="https://github.com/fl1s/turron"><strong>Explore the docs »</strong></a>
@@ -181,10 +181,6 @@ Ensure you have the following installed:
    ```sh
    docker ps
    ```
-6. (Will be added soon! In v1.2-v1.4) For prod, apply Kubernetes manifests:
-   ```sh
-   kubectl apply -f k8s/
-   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -244,7 +240,13 @@ Ensure you have the following installed:
 |-----------|------------------|--------|
 | snippetId | Snippet video ID | string |
 
-**Response:** The matched source MP4 video file
+**Response:**
+
+```json
+{
+  "downloadUrl": "..."
+}
+```
 
 ## CI/CD
 

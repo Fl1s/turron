@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.concurrent.TimeUnit;
+import io.minio.http.Method;
 
 import java.io.*;
 import java.security.InvalidKeyException;
@@ -86,6 +88,30 @@ public class MinioService {
     }
 
     /**
+     * Generates a temporary presigned URL for accessing an object in the MinIO bucket.
+     *
+     * @param objectPath      the path to the object inside the bucket (e.g., "snippets/uuid.mp4")
+     * @param durationInDays  the validity period of the URL, in days (maximum 7)
+     * @return the generated presigned URL as a {@link String}, valid for the specified duration
+     * @throws RuntimeException if URL generation fails or parameters are invalid
+     */
+    public String generatePresignedUrl(String objectPath, int durationInDays) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectPath)
+                            .method(Method.GET)
+                            .expiry((int) TimeUnit.DAYS.toSeconds(durationInDays))
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to generate presigned URL for: {}", objectPath, e);
+            throw new RuntimeException("Failed to generate presigned URL", e);
+        }
+    }
+
+    /**
      * Core method for uploading a file to MinIO.
      *
      * @param filename the target object name
@@ -117,7 +143,7 @@ public class MinioService {
             uploadFileToMinio(objectPath, tempFile, file.getContentType());
 
             log.info("File successfully uploaded to MinIO at path: {}", objectPath);
-            return "minio://" + bucketName + "/" + objectPath;
+            return generatePresignedUrl(objectPath, 7);
 
         } catch (IOException e) {
             log.error("Failed to process file", e);

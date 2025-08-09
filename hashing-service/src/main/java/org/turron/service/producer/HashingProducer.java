@@ -34,7 +34,7 @@ public class HashingProducer {
         );
 
         snippetHashedEventTemplate
-                .send("snippet.frames.hashed", event)
+                .send("snippet.frames.hashed", event.getSnippetId(), event)
                 .thenAccept(sendResult -> log.info("SnippetFrameHashedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send SnippetFrameHashedEvent [snippetId={}, correlationId={}]: {}",
@@ -60,7 +60,7 @@ public class HashingProducer {
         );
 
         sourceHashedEventTemplate
-                .send("source.frames.hashed", event)
+                .send("source.frames.hashed", event.getSourceId(),  event)
                 .thenAccept(sendResult -> log.info("SourceFrameHashedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send SourceFrameHashedEvent [sourceId={}, correlationId={}]: {}",

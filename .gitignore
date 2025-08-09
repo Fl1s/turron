@@ -37,3 +37,6 @@ out/
 ### VS Code ###
 .vscode/
 .DS_Store
+
+### My ###
+/k8s

@@ -33,7 +33,7 @@ public class ExtractionProducer {
         log.debug("Published SnippetFrameExtractedEvent: {}", event);
 
         snippetFrameExtractedEventTemplate
-                .send("snippet.frames.extracted", event)
+                .send("snippet.frames.extracted", event.getSnippetId() , event)
                 .thenAccept(sendResult -> log.info("SnippetFrameExtractedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send SnippetFrameExtractedEvent [frameId={}, correlationId={}]: {}",
@@ -58,7 +58,7 @@ public class ExtractionProducer {
         log.debug("Published SourceFrameExtractedEvent: {}", event);
 
         sourceFrameExtractedEventTemplate
-                .send("source.frames.extracted", event)
+                .send("source.frames.extracted", event.getSourceId(), event)
                 .thenAccept(sendResult -> log.info("SourceFrameExtractedEvent successfully sent: {}", event))
                 .exceptionally(ex -> {
                     log.error("Failed to send SourceFrameExtractedEvent [frameId={}, correlationId={}]: {}",

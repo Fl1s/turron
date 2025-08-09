@@ -26,6 +26,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_URL: http://minio:9000
+      MINIO_PUBLIC_URL: http://localhost:9000
       MINIO_BUCKET_NAME: uploads
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: secret123
@@ -103,8 +104,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MINIO_BUCKETS_UPLOADS: uploads
-      MINIO_URL: http://minio:9000
-      MINIO_PUBLIC_URL: http://localhost:9000
+      MINIO_URL: http://localhost:9000
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: secret123
     depends_on:
@@ -140,8 +140,8 @@ services:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092" #dev
-      # KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" #prod
+      # KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092" #dev
+      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" #prod
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -159,7 +159,8 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: secret123
     volumes:
-      - ~/minio/data:/data
+#      - ~/minio/data:/data
+      - minio_data:/data
     command: server --console-address :9001 /data
 
   minio-init:
@@ -230,6 +231,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  minio_data:
     driver: local
 
 networks:

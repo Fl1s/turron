@@ -6,6 +6,7 @@ import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +22,21 @@ import java.security.NoSuchAlgorithmException;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MinioService {
 
-    private final MinioClient minioClient;
+    private final MinioClient internalMinioClient;
+    private final MinioClient publicMinioClient;
 
     @Value("${minio.bucket.name}")
     private String bucketName;
+
+    public MinioService(
+            @Qualifier("internalMinioClient") MinioClient internalMinioClient,
+            @Qualifier("publicMinioClient") MinioClient publicMinioClient
+    ) {
+        this.internalMinioClient = internalMinioClient;
+        this.publicMinioClient = publicMinioClient;
+    }
 
     /**
      * Creates an ffprobe process to determine video duration.
@@ -97,7 +106,7 @@ public class MinioService {
      */
     public String generatePresignedUrl(String objectPath, int durationInDays) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            return publicMinioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .bucket(bucketName)
                             .object(objectPath)
@@ -191,7 +200,7 @@ public class MinioService {
      */
     private void uploadFileToMinio(String filePath, File file, String contentType) {
         try (InputStream in = new FileInputStream(file)) {
-            minioClient.putObject(
+            internalMinioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
                             .object(filePath)
@@ -213,7 +222,7 @@ public class MinioService {
      */
     public void deleteFolder(String folderPath) {
         try {
-            Iterable<Result<Item>> objects = minioClient.listObjects(
+            Iterable<Result<Item>> objects = internalMinioClient.listObjects(
                     ListObjectsArgs.builder()
                             .bucket(bucketName)
                             .prefix(folderPath + "/")
@@ -226,7 +235,7 @@ public class MinioService {
                 String objectName = item.objectName();
                 log.debug("Deleting object: {}", objectName);
 
-                minioClient.removeObject(
+                internalMinioClient.removeObject(
                         RemoveObjectArgs.builder()
                                 .bucket(bucketName)
                                 .object(objectName)

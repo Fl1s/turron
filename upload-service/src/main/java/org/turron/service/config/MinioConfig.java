@@ -1,19 +1,19 @@
 package org.turron.service.config;
 
 import io.minio.MinioClient;
-import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.net.InetSocketAddress;
-import java.net.Proxy;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Configuration
 public class MinioConfig {
 
     @Value("${minio.url}")
     private String minioUrl;
+
+    @Value("${minio.public-url}")
+    private String minioPublicUrl;
 
     @Value("${minio.root-user}")
     private String accessKey;
@@ -22,15 +22,20 @@ public class MinioConfig {
     private String secretKey;
 
     @Bean
-    public MinioClient minioClient() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("minio", 9000)))
-                .build();
-
+    @Qualifier("internalMinioClient")
+    public MinioClient internalMinioClient() {
         return MinioClient.builder()
                 .endpoint(minioUrl)
                 .credentials(accessKey, secretKey)
-                .httpClient(okHttpClient)
+                .build();
+    }
+
+    @Bean
+    @Qualifier("publicMinioClient")
+    public MinioClient publicMinioClient() {
+        return MinioClient.builder()
+                .endpoint(minioPublicUrl)
+                .credentials(accessKey, secretKey)
                 .build();
     }
 }

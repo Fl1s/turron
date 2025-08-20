@@ -125,15 +125,8 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 
 ### Built With
 
-* [![Java][Java]][Java-url]
-* [![Spring Boot][Spring]][Spring-url]
-* [![PostgreSQL][PostgreSQL]][PostgreSQL-url]
-* [![Kafka][Kafka]][Kafka-url]
-* [![Docker][Docker]][Docker-url]
-* [![Kubernetes][Kubernetes]][Kubernetes-url]
-* [![Prometheus][Prometheus]][Prometheus-url]
-* [![Grafana][Grafana]][Grafana-url]
-* [![Gradle][Gradle]][Gradle-url]
+* [![Java][Java]][Java-url] [![Gradle][Gradle]][Gradle-url] [![Spring Boot][Spring]][Spring-url] [![PostgreSQL][PostgreSQL]][PostgreSQL-url] [![Kafka][Kafka]][Kafka-url]
+* [![Docker][Docker]][Docker-url] [![Kubernetes][Kubernetes]][Kubernetes-url] [![Prometheus][Prometheus]][Prometheus-url] [![Grafana][Grafana]][Grafana-url]
 
 <p align="right"> Built With(<a href="#readme-top">back to top</a>)</p>
 

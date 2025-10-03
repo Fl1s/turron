@@ -2,8 +2,8 @@ services:
   nginx:
     image: nginx:stable-alpine
     ports:
-      - "8000:8000"
-      - "8000:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - './.config/nginx/nginx.conf:/etc/nginx/nginx.conf'
     depends_on:
@@ -20,7 +20,6 @@ services:
     image: ghcr.io/fl1s/turron/client:dev-20251003
     ports:
       - "3010:3010"
-      - "3010:443"
     networks:
       - program
 
@@ -167,26 +166,27 @@ services:
 
   kafka:
     container_name: kafka
-    image: bitnami/kafka:latest
+    image: apache/kafka:latest
     restart: on-failure
     ports:
       - "9092:9092"
     environment:
       KAFKA_KRAFT_MODE: "true"
-      KAFKA_CFG_PROCESS_ROLES: "broker,controller"
-      KAFKA_CFG_NODE_ID: 1
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
-      KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092" #dev
-#      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" #prod
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
-      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092" # dev
+      # KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" # prod
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
-      - kafka_data:/bitnami/kafka
+      - kafka_data:/kafka/data
     networks:
       - program
+
 
   minio:
     image: minio/minio

@@ -31,5 +31,6 @@ minio:
   buckets:
     uploads: ${MINIO_BUCKETS_UPLOADS}
   url: ${MINIO_URL}
+  public-url: ${MINIO_PUBLIC_URL}
   root-user: ${MINIO_ROOT_USER}
   root-password: ${MINIO_ROOT_PASSWORD}

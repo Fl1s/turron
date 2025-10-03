@@ -24,6 +24,7 @@ jobs:
           - hashing-service
           - search-service
           - api-gateway
+          - client
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

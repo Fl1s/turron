@@ -1,4 +1,29 @@
 services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "8000:8000"
+      - "8000:443"
+    volumes:
+      - './.config/nginx/nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - eureka-server
+      - upload-service
+      - extraction-service
+      - hashing-service
+      - search-service
+      - client
+    networks:
+    - program
+
+  client:
+    image: ghcr.io/fl1s/turron/client:dev-20251003
+    ports:
+      - "3010:3010"
+      - "3010:443"
+    networks:
+      - program
+
   eureka-server:
     image: ghcr.io/fl1s/turron/eureka-server:v1.3
     container_name: eureka-server
@@ -9,6 +34,8 @@ services:
       EUREKA_HOSTNAME: eureka-server
     depends_on:
       - postgres
+    networks:
+      - program
 
   upload-service:
     image: ghcr.io/fl1s/turron/upload-service:v1.3
@@ -34,6 +61,8 @@ services:
       - minio
       - eureka-server
       - postgres
+    networks:
+      - program
 
   extraction-service:
     image: ghcr.io/fl1s/turron/extraction-service:v1.3
@@ -59,6 +88,8 @@ services:
       - eureka-server
       - kafka
       - postgres
+    networks:
+      - program
 
   hashing-service:
     image: ghcr.io/fl1s/turron/hashing-service:v1.3
@@ -83,6 +114,8 @@ services:
       - eureka-server
       - kafka
       - postgres
+    networks:
+      - program
 
   search-service:
     image: ghcr.io/fl1s/turron/search-service:v1.3
@@ -111,6 +144,8 @@ services:
       - eureka-server
       - kafka
       - postgres
+    networks:
+      - program
 
   api-gateway:
     image: ghcr.io/fl1s/turron/api-gateway:v1.3
@@ -127,6 +162,8 @@ services:
       - extraction-service
       - hashing-service
       - search-service
+    networks:
+      - program
 
   kafka:
     container_name: kafka
@@ -148,6 +185,8 @@ services:
       ALLOW_PLAINTEXT_LISTENER: "yes"
     volumes:
       - kafka_data:/bitnami/kafka
+    networks:
+      - program
 
   minio:
     image: minio/minio
@@ -162,6 +201,8 @@ services:
 #      - ~/minio/data:/data
       - minio_data:/data
     command: server --console-address :9001 /data
+    networks:
+      - program
 
   minio-init:
     image: minio/mc
@@ -176,6 +217,8 @@ services:
       mc ls myminio;
       exit 0;
       "
+    networks:
+      - program
 
   postgres:
     image: postgres:latest
@@ -190,6 +233,8 @@ services:
       - ./.config/initdb:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - program
 
   redis:
     image: redis:latest
@@ -199,6 +244,8 @@ services:
     ports:
       - "6379:6379"
     command: [ "redis-server" ]
+    networks:
+      - program
 
   prometheus:
     image: prom/prometheus:latest
@@ -236,5 +283,6 @@ volumes:
     driver: local
 
 networks:
+  program:
   monitoring:
     driver: bridge

@@ -36,6 +36,17 @@ services:
     networks:
       - program
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./.config/cloudflared:/etc/cloudflared:ro
+    depends_on:
+      - nginx
+    networks:
+      - program
 
   client:
     image: ghcr.io/fl1s/turron/client:dev-20251003

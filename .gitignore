@@ -40,3 +40,4 @@ out/
 
 ### My ###
 /k8s
+./config/cloudflare

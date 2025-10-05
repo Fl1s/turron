@@ -7,8 +7,6 @@ services:
       - "443:443"
     volumes:
       - ./.config/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./.config/certbot/www:/var/www/certbot
-      - ./.config/certbot/conf:/etc/letsencrypt
     depends_on:
       - eureka-server
       - upload-service
@@ -20,13 +18,15 @@ services:
     networks:
     - program
 
-  certbot:
-    image: certbot/dns-cloudflare
-    container_name: certbot
-    volumes:
-      - ./.config/certbot/conf:/etc/letsencrypt
-      - ./.config/certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email {YOUR_EMAIL} -d {YOUR_DOMAIN} --agree-tos 
+  cloudflare:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --url http://nginx:80
+    environment:
+      TUNNEL_TOKEN: ${YOUR_TUNNEL_TOKEN}
+    depends_on:
+      - nginx
     networks:
       - program
 

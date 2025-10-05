@@ -1,6 +1,7 @@
 services:
   nginx:
     image: nginx:stable-alpine
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
@@ -20,36 +21,18 @@ services:
     - program
 
   certbot:
-    image: certbot/certbot
+    image: certbot/dns-cloudflare
     container_name: certbot
     volumes:
-      - ./.config/certbot/www:/var/www/certbot
       - ./.config/certbot/conf:/etc/letsencrypt
-    entrypoint: >
-      /bin/sh -c "
-      trap exit TERM;
-      while :; do
-        certbot renew --webroot -w /var/www/certbot;
-        docker exec nginx nginx -s reload;
-        sleep 12h & wait $${!};
-      done;"
-    networks:
-      - program
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
-    volumes:
-      - ./.config/cloudflared:/etc/cloudflared:ro
-    depends_on:
-      - nginx
+      - ./.config/certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email {YOUR_EMAIL} -d {YOUR_DOMAIN} --agree-tos 
     networks:
       - program
 
   client:
     image: ghcr.io/fl1s/turron/client:dev-20251003
+    container_name: client
     ports:
       - "3010:3010"
     networks:

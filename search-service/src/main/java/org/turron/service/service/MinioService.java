@@ -18,16 +18,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MinioService {
 
-    private final MinioClient minioClient;
-
     @Value("${minio.buckets.uploads}")
     private String uploadsBucket;
 
-    @Value("${minio.url}")
-    private String internalUrl;
-
     @Value("${minio.public-url}")
     private String publicUrl;
+
+    @Value("${minio.root-user}")
+    private String accessKey;
+
+    @Value("${minio.root-password}")
+    private String secretKey;
 
     /**
      * Generates a pre-signed URL for accessing an object in MinIO.
@@ -41,16 +42,18 @@ public class MinioService {
      */
     public String generatePreSignedUrl(String objectName) {
         try {
-            String url = minioClient.getPresignedObjectUrl(
+            MinioClient presignClient = MinioClient.builder()
+                    .endpoint(publicUrl)
+                    .credentials(accessKey, secretKey)
+                    .build();
+
+            return presignClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .bucket(uploadsBucket)
                             .object(objectName)
                             .method(Method.GET)
                             .expiry(3600, TimeUnit.SECONDS)
-                            .build()
-            );
-
-            return url/*.replace(internalUrl, publicUrl)*/;
+                            .build());
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

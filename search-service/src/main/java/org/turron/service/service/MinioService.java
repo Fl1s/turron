@@ -50,7 +50,7 @@ public class MinioService {
                             .build()
             );
 
-            return url.replace(internalUrl, publicUrl);
+            return url/*.replace(internalUrl, publicUrl)*/;
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

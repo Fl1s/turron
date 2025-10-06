@@ -24,6 +24,9 @@ public class MinioService {
     @Value("${minio.buckets.uploads}")
     private String uploadsBucket;
 
+    @Value("${minio.public-url}")
+    private String publicUrl;
+
     /**
      * Generates a pre-signed URL for accessing an object in MinIO.
      * <p>
@@ -36,17 +39,20 @@ public class MinioService {
      */
     public String generatePreSignedUrl(String pathPrefix, String objectName) {
         try {
-            String fullObjectPath = pathPrefix +"/"+ objectName;
+            String fullObjectPath = pathPrefix + "/" + objectName;
 
-            GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
-                    .method(Method.GET)
-                    .bucket(uploadsBucket)
-                    .object(fullObjectPath)
-                    .expiry(1, TimeUnit.HOURS)
-                    .region("us-east-1")
-                    .build();
+            String presignedUrl = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(uploadsBucket)
+                            .object(fullObjectPath)
+                            .expiry(1, TimeUnit.HOURS)
+                            .build()
+            );
 
-            return minioClient.getPresignedObjectUrl(args);
+            return presignedUrl
+                    .replace("http://minio:9000", publicUrl)
+                    .replace("https://minio:9000", publicUrl);
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

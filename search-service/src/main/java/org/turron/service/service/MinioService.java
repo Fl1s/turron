@@ -4,6 +4,7 @@ import io.minio.MinioClient;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.http.Method;
 
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,6 @@ public class MinioService {
     public String generatePreSignedUrl(String pathPrefix, String objectName) {
         try {
             String fullObjectPath = pathPrefix + "/" + objectName;
-
             String presignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
@@ -50,11 +50,16 @@ public class MinioService {
                             .build()
             );
 
-            return presignedUrl
-                    .replace("http://minio:9000", publicUrl)
-                    .replace("https://minio:9000", publicUrl)
-                    .replace("http://localhost:9000", publicUrl)
-                    .replace("https://localhost:9000", publicUrl);
+            URI original = new URI(presignedUrl);
+            URI replaced = new URI(
+                    "https",
+                    "s3.fablewhirl.pw",
+                    original.getPath(),
+                    original.getQuery(),
+                    null
+            );
+
+            return replaced.toString();
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

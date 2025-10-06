@@ -21,7 +21,7 @@ public class SearchController {
     @GetMapping(value = "/best-match/{snippetId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> bestMatch(@PathVariable String snippetId) {
         return ResponseEntity.ok(Map.of("downloadUrl",
-                minioService.generatePreSignedUrl("sources/" +
+                minioService.generatePreSignedUrl("sources/",
                         searchingService.findBestMatch(snippetId))));
     }
 }

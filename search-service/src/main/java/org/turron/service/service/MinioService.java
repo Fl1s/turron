@@ -3,7 +3,9 @@ package org.turron.service.service;
 import io.minio.MinioClient;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.http.Method;
+
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,22 +19,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
+    MinioClient minioClient;
 
     @Value("${minio.buckets.uploads}")
     private String uploadsBucket;
 
-    @Value("${minio.public-url}")
-    private String publicUrl;
-
-    @Value("${minio.root-user}")
-    private String accessKey;
-
-    @Value("${minio.root-password}")
-    private String secretKey;
-
     /**
      * Generates a pre-signed URL for accessing an object in MinIO.
-     *
+     * <p>
      * The URL provides temporary public access to the specified object using HTTP GET,
      * valid for 1 hour (3600 seconds).
      *
@@ -40,20 +34,19 @@ public class MinioService {
      * @return a pre-signed URL string to access the object
      * @throws RuntimeException if URL generation fails
      */
-    public String generatePreSignedUrl(String objectName) {
+    public String generatePreSignedUrl(String pathPrefix, String objectName) {
         try {
-            MinioClient presignClient = MinioClient.builder()
-                    .endpoint(publicUrl)
-                    .credentials(accessKey, secretKey)
+            String fullObjectPath = pathPrefix +"/"+ objectName;
+
+            GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
+                    .method(Method.GET)
+                    .bucket(uploadsBucket)
+                    .object(fullObjectPath)
+                    .expiry(1, TimeUnit.HOURS)
+                    .region("us-east-1")
                     .build();
 
-            return presignClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .bucket(uploadsBucket)
-                            .object(objectName)
-                            .method(Method.GET)
-                            .expiry(3600, TimeUnit.SECONDS)
-                            .build());
+            return minioClient.getPresignedObjectUrl(args);
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

@@ -12,7 +12,7 @@ import java.net.Proxy;
 @Configuration
 public class MinioConfig {
 
-    @Value("${minio.public-url}")
+    @Value("${minio.url}")
     private String minioUrl;
 
     @Value("${minio.root-user}")

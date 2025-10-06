@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
-    MinioClient minioClient;
+    private final MinioClient minioClient;
 
     @Value("${minio.buckets.uploads}")
     private String uploadsBucket;
@@ -52,7 +52,9 @@ public class MinioService {
 
             return presignedUrl
                     .replace("http://minio:9000", publicUrl)
-                    .replace("https://minio:9000", publicUrl);
+                    .replace("https://minio:9000", publicUrl)
+                    .replace("http://localhost:9000", publicUrl)
+                    .replace("https://localhost:9000", publicUrl);
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

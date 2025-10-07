@@ -53,7 +53,7 @@ public class MinioService {
             URI original = new URI(presignedUrl);
             URI replaced = new URI(
                     "https",
-                    "s3.fablewhirl.pw",
+                    "s3.turron.pw",
                     original.getPath(),
                     original.getQuery(),
                     null

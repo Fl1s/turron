@@ -30,13 +30,13 @@ services:
     networks:
       - program
 
-  client:
-    image: ghcr.io/fl1s/turron/client:${CLIENT_TAG}
-    container_name: client
-    ports:
-      - "3010:3010"
-    networks:
-      - program
+#  client:
+#    image: ghcr.io/fl1s/turron/client:${CLIENT_TAG}
+#    container_name: client
+#    ports:
+#      - "3010:3010"
+#    networks:
+#      - program
 
   eureka-server:
     image: ghcr.io/fl1s/turron/eureka-server:${EUREKA_TAG}

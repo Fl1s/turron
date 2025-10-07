@@ -291,6 +291,15 @@ Prometheus config is located at:
 2. Start **Grafana** and add Prometheus as a data source (`http://localhost:9090`).
 3. Create your dashboards in Grafana or import community dashboards for Spring Boot metrics.
 4. Access your dashboards to monitor service health, performance, and custom metrics.
+
+## Cloudflare (optional)
+1. In Zero Trust you need to go to network -> tunnels, then create a new tunnel with the name of your domain.
+2. Get the token and put its value in the field `CLOUDFLARED_TUNNEL_TOKEN` in .config/secrets/.env.prod.
+3. In `published application routes`, set root route to nginx:80
+4. Also, don't forget to set the minio subdomain (s3.yourdomain) and route to nginx:80.
+5. In `Additional application settings -> HTTP settings` set `HTTP Host header` value `minio:9000`
+6. In `.config/nginx/nginx.conf` change `server_name` to your domain and subdomain.
+
 <!-- CONTRIBUTING -->
 
 ## Contributing

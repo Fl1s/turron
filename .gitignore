@@ -40,3 +40,6 @@ out/
 
 ### My ###
 /k8s
+.config/secrets/.env.dev
+.config/secrets/.env.prod
+

@@ -3,7 +3,10 @@ package org.turron.service.service;
 import io.minio.MinioClient;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.http.Method;
+
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,15 +20,17 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
-
     private final MinioClient minioClient;
 
     @Value("${minio.buckets.uploads}")
     private String uploadsBucket;
 
+    @Value("${minio.public-url}")
+    private String publicUrl;
+
     /**
      * Generates a pre-signed URL for accessing an object in MinIO.
-     *
+     * <p>
      * The URL provides temporary public access to the specified object using HTTP GET,
      * valid for 1 hour (3600 seconds).
      *
@@ -33,16 +38,28 @@ public class MinioService {
      * @return a pre-signed URL string to access the object
      * @throws RuntimeException if URL generation fails
      */
-    public String generatePreSignedUrl(String objectName) {
+    public String generatePreSignedUrl(String pathPrefix, String objectName) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            String fullObjectPath = pathPrefix + "/" + objectName;
+            String presignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
-                            .bucket(uploadsBucket)
-                            .object(objectName)
                             .method(Method.GET)
-                            .expiry(3600, TimeUnit.SECONDS)
+                            .bucket(uploadsBucket)
+                            .object(fullObjectPath)
+                            .expiry(1, TimeUnit.HOURS)
                             .build()
             );
+
+            URI original = new URI(presignedUrl);
+            URI replaced = new URI(
+                    "https",
+                    "s3.turron.pw",
+                    original.getPath(),
+                    original.getQuery(),
+                    null
+            );
+
+            return replaced.toString();
         } catch (Exception e) {
             log.error("Failed to generate pre-signed URL for {}", objectName, e);
             throw new RuntimeException("Could not generate pre-signed URL", e);

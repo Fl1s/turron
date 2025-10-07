@@ -16,7 +16,7 @@ services:
       - client
       - minio
     networks:
-    - program
+      - program
 
   cloudflare:
     image: cloudflare/cloudflared:latest
@@ -24,14 +24,14 @@ services:
     restart: unless-stopped
     command: tunnel --no-autoupdate run --url http://nginx:80
     environment:
-      TUNNEL_TOKEN: ${YOUR_TUNNEL_TOKEN}
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
       - nginx
     networks:
       - program
 
   client:
-    image: ghcr.io/fl1s/turron/client:dev-20251003
+    image: ghcr.io/fl1s/turron/client:${CLIENT_TAG}
     container_name: client
     ports:
       - "3010:3010"
@@ -39,38 +39,38 @@ services:
       - program
 
   eureka-server:
-    image: ghcr.io/fl1s/turron/eureka-server:v1.3
+    image: ghcr.io/fl1s/turron/eureka-server:${EUREKA_TAG}
     container_name: eureka-server
     ports:
       - "8761:8761"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      EUREKA_HOSTNAME: eureka-server
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      EUREKA_HOSTNAME: ${EUREKA_HOSTNAME}
     depends_on:
       - postgres
     networks:
       - program
 
   upload-service:
-    image: ghcr.io/fl1s/turron/upload-service:v1.3
+    image: ghcr.io/fl1s/turron/upload-service:${UPLOAD_TAG}
     container_name: upload-service
     ports:
       - "8091:8091"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/uploads
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: secret
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/uploads
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_JPA_DATABASE_PLATFORM: ${SPRING_JPA_DATABASE_PLATFORM}
       EUREKA_INSTANCE_HOSTNAME: upload-service
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      MINIO_URL: http://minio:9000
-      MINIO_PUBLIC_URL: http://localhost:9000
-      MINIO_BUCKET_NAME: uploads
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: secret123
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      MINIO_URL: ${MINIO_URL}
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_UPLOADS}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     depends_on:
       - minio
       - eureka-server
@@ -79,25 +79,25 @@ services:
       - program
 
   extraction-service:
-    image: ghcr.io/fl1s/turron/extraction-service:v1.3
+    image: ghcr.io/fl1s/turron/extraction-service:${EXTRACTION_TAG}
     container_name: extraction-service
     ports:
       - "8092:8092"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/frames
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: secret
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/frames
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_JPA_DATABASE_PLATFORM: ${SPRING_JPA_DATABASE_PLATFORM}
       EUREKA_INSTANCE_HOSTNAME: extraction-service
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      MINIO_BUCKETS_UPLOADS: uploads
-      MINIO_BUCKETS_FRAMES: frames
-      MINIO_URL: http://minio:9000
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: secret123
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      MINIO_BUCKETS_UPLOADS: ${MINIO_BUCKET_UPLOADS}
+      MINIO_BUCKETS_FRAMES: ${MINIO_BUCKET_FRAMES}
+      MINIO_URL: ${MINIO_URL}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     depends_on:
       - eureka-server
       - kafka
@@ -106,24 +106,24 @@ services:
       - program
 
   hashing-service:
-    image: ghcr.io/fl1s/turron/hashing-service:v1.3
+    image: ghcr.io/fl1s/turron/hashing-service:${HASHING_TAG}
     container_name: hashing-service
     ports:
       - "8093:8093"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hashes
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: secret
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/hashes
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_JPA_DATABASE_PLATFORM: ${SPRING_JPA_DATABASE_PLATFORM}
       EUREKA_INSTANCE_HOSTNAME: hashing-service
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      MINIO_BUCKETS_FRAMES: frames
-      MINIO_URL: http://minio:9000
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: secret123
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      MINIO_BUCKETS_FRAMES: ${MINIO_BUCKET_FRAMES}
+      MINIO_URL: ${MINIO_URL}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     depends_on:
       - eureka-server
       - kafka
@@ -132,28 +132,29 @@ services:
       - program
 
   search-service:
-    image: ghcr.io/fl1s/turron/search-service:v1.3
+    image: ghcr.io/fl1s/turron/search-service:${SEARCH_TAG}
     container_name: search-service
     ports:
       - "8094:8094"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/searches
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: secret
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_DATA_REDIS_HOST: redis
-      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/searches
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_JPA_DATABASE_PLATFORM: ${SPRING_JPA_DATABASE_PLATFORM}
+      SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+      SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
       SPRING_CACHE_TYPE: redis
       SPRING_CACHE_REDIS_TIME_TO_LIVE: 600000
       EUREKA_INSTANCE_HOSTNAME: search-service
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      MINIO_BUCKETS_UPLOADS: uploads
-      MINIO_URL: http://localhost:9000
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: secret123
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      MINIO_BUCKETS_UPLOADS: ${MINIO_BUCKET_UPLOADS}
+      MINIO_URL: ${MINIO_URL}
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     depends_on:
       - eureka-server
       - kafka
@@ -162,14 +163,14 @@ services:
       - program
 
   api-gateway:
-    image: ghcr.io/fl1s/turron/api-gateway:v1.3
+    image: ghcr.io/fl1s/turron/api-gateway:${GATEWAY_TAG}
     container_name: api-gateway
     ports:
       - "3000:3000"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      EUREKA_INSTANCE_HOSTNAME: ${EUREKA_HOSTNAME}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
     depends_on:
       - eureka-server
       - upload-service
@@ -191,8 +192,7 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      # KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092" # dev
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" # prod
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://${KAFKA_ADVERTISED_LISTENER}"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
@@ -202,18 +202,18 @@ services:
     networks:
       - program
 
-
   minio:
-    image: minio/minio
+    image: quay.io/minio/minio:latest
     container_name: minio
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: secret123
+      MINIO_SERVER_URL: ${MINIO_PUBLIC_URL}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_PUBLIC_URL}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
-#      - ~/minio/data:/data
       - minio_data:/data
     command: server --console-address :9001 /data
     networks:
@@ -226,9 +226,9 @@ services:
     entrypoint: >
       /bin/sh -c "
       sleep 5;
-      mc alias set myminio http://minio:9000 admin secret123;
-      mc mb -p myminio/uploads;
-      mc mb -p myminio/frames;
+      mc alias set myminio ${MINIO_URL} ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      mc mb -p myminio/${MINIO_BUCKET_UPLOADS};
+      mc mb -p myminio/${MINIO_BUCKET_FRAMES};
       mc ls myminio;
       exit 0;
       "
@@ -239,9 +239,9 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -262,38 +262,36 @@ services:
     networks:
       - program
 
-#  prometheus:
-#    image: prom/prometheus:latest
-#    container_name: prometheus
-#    volumes:
-#      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#    ports:
-#      - "9090:9090"
-#    networks:
-#      - monitoring
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    container_name: grafana
-#    ports:
-#      - "3001:3000"
-#    links:
-#      - prometheus:prometheus
-#    volumes:
-#      - ./monitoring/grafana:/var/lib/grafana
-#    environment:
-#      GF_SECURITY_ADMIN_USER: "admin"
-#      GF_SECURITY_ADMIN_PASSWORD: "secret"
-#    networks:
-#      - monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    links:
+      - prometheus:prometheus
+    volumes:
+      - ./monitoring/grafana:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASS}
+    networks:
+      - monitoring
 
 volumes:
   kafka_data:
   postgres_data:
   redis_data:
   minio_data:
-  .config_certbot_conf:
-  .config_certbot_www:
 
 networks:
   program:

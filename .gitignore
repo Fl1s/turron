@@ -40,4 +40,6 @@ out/
 
 ### My ###
 /k8s
-./config/cloudflare
+.config/secrets/.env.dev
+.config/secrets/.env.prod
+

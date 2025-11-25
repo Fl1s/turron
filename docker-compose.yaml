@@ -13,7 +13,7 @@ services:
       - extraction-service
       - hashing-service
       - search-service
-      - client
+#      - client
       - minio
     networks:
       - program

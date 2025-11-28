@@ -1,4 +1,20 @@
 services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    volumes:
+      - ./gitlab-runner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CI_SERVER_URL: ${CI_SERVER_URL}
+      REGISTRATION_TOKEN: ${REGISTRATION_TOKEN}
+      RUNNER_NAME: server-runner
+      RUNNER_EXECUTOR: shell
+      DOCKER_TLS_CERTDIR: ""
+    networks:
+      - program
+
   nginx:
     image: nginx:stable-alpine
     container_name: nginx

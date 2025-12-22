@@ -13,11 +13,12 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         service:
+          - nginx
           - eureka-server
           - upload-service
           - extraction-service
@@ -30,14 +31,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 21
-        if: matrix.service != 'client'
+        if: matrix.service != 'client' && matrix.service != 'nginx'
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
       - name: Cache Gradle dependencies
-        if: matrix.service != 'client'
+        if: matrix.service != 'client' && matrix.service != 'nginx'
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
@@ -46,7 +47,7 @@ jobs:
             gradle-
 
       - name: Cache Node modules
-        if: matrix.service == 'client'
+        if: matrix.service != 'client' && matrix.service != 'nginx'
         uses: actions/cache@v4
         with:
           path: client/node_modules

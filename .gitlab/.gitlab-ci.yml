@@ -8,17 +8,22 @@ variables:
   PROJECT_GROUP: "fl1s/turron"
   DOCKER_TLS_CERTDIR: ""
 
+before_script:
+  - mkdir -p .config/secrets .config/nginx
+  - cp ${PROD_ENV_FILE} .config/secrets/.env.prod
+  - cp ${INIT_DBS_SQL} .config/initdb/init_dbs.sql
+
 package:
   stage: package
   image: gradle:8.13
   script:
-    - echo "[checking for services...]"
+    - echo "[building services...]"
     - |
       for service in $(find . -maxdepth 2 -name "build.gradle" -exec dirname {} \;); do
-        echo "[building $service]";
-        cd $service;
-        ./gradlew clean build;
-        cd -;
+        echo "[building $service]"
+        cd $service
+        ./gradlew clean build
+        cd -
       done
   artifacts:
     paths:
@@ -28,59 +33,51 @@ package:
 docker-build:
   stage: docker
   image: docker:latest
-  services:
-    - docker:dind
-  dependencies:
-    - package
+  variables:
+    DOCKER_HOST: unix:///var/run/docker.sock
+    DOCKER_TLS_CERTDIR: ""
   script:
-    - echo "[logging in to registry...]"
+    - echo "[login]"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
-    # [tags]
+    - echo "[enable buildx]"
+    - docker buildx create --use --driver docker-container
+
     - SHORT_SHA=${CI_COMMIT_SHA:0:7}
     - DATE_TAG=$(date +%Y%m%d)
+
     - |
       if [ "$CI_COMMIT_BRANCH" == "main" ]; then
         VERSION=$(cat .config/VERSION 2>/dev/null || echo "v1.0")
-        TAGS="$VERSION $VERSION-latest"
+        TAGS="$VERSION $VERSION-latest latest"
       else
         TAGS="dev-$SHORT_SHA dev-$DATE_TAG dev-latest"
       fi
 
-    # [build&push]
     - |
       for service in $(find . -maxdepth 1 -type d -not -path "."); do
         if [ -f "$service/Dockerfile" ]; then
           IMAGE_NAME="$CI_REGISTRY_IMAGE/${service##./}"
-          echo "[building image $IMAGE_NAME with tags $TAGS]"
-          docker build -t "$IMAGE_NAME:latest" $([ "$CI_COMMIT_BRANCH" != "main" ] && echo "-t $IMAGE_NAME:dev-$SHORT_SHA") "$service"
+          echo "[building: $IMAGE_NAME]"
 
-          for tag in $TAGS; do
-            docker tag "$IMAGE_NAME:latest" "$IMAGE_NAME:$tag"
-            docker push "$IMAGE_NAME:$tag"
-          done
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -t "$IMAGE_NAME:latest" \
+            $(for tag in $TAGS; do echo -t "$IMAGE_NAME:$tag"; done) \
+            --push \
+            "$service"
         fi
       done
 
 deploy:
   stage: deploy
-  dependencies:
-    - docker-build
   image: docker:latest
-  services:
-    - docker:dind
+  variables:
+    DOCKER_HOST: unix:///var/run/docker.sock
+    DOCKER_TLS_CERTDIR: ""
   script:
     - echo "[logging in to registry...]"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
-    # [pull]
-    - docker pull $CI_REGISTRY_IMAGE/upload-service:$UPLOAD_TAG
-    - docker pull $CI_REGISTRY_IMAGE/extraction-service:$EXTRACTION_TAG
-    - docker pull $CI_REGISTRY_IMAGE/hashing-service:$HASHING_TAG
-    - docker pull $CI_REGISTRY_IMAGE/search-service:$SEARCH_TAG
-    - docker pull $CI_REGISTRY_IMAGE/api-gateway:$GATEWAY_TAG
-    - docker pull $CI_REGISTRY_IMAGE/eureka-server:$EUREKA_TAG
-
-    # [update]
-    - docker-compose --env-file .config/secrets/.env.prod -f ./docker-compose.yaml up -d
-    - docker-compose --env-file .config/secrets/.env.prod -f ./docker-compose.yaml ps
+    - echo "[deploy]"
+    - docker-compose --env-file .config/secrets/.env.prod -f docker-compose.yaml up -d

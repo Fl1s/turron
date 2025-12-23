@@ -83,6 +83,39 @@ jobs:
             ${{ matrix.service }}/build/distributions
             ${{ matrix.service }}/dist
 
+  push_infra:
+    runs-on: ubuntu-latest
+    needs: build-infra
+    strategy:
+      matrix:
+        infra:
+          - nginx
+          - postgres
+          # - client
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Docker image (dev)
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/docker-build-push
+        with:
+          service: ${{ matrix.infra }}
+          env: dev
+          push: 'true'
+
+      - name: Build & Push Docker image (prod)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: ./.github/actions/docker-build-push
+        with:
+          service: ${{ matrix.infra }}
+          env: prod
+          push: 'true'
+
   push_service:
     runs-on: ubuntu-latest
     needs: build_service

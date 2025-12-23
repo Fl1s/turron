@@ -16,7 +16,7 @@ services:
       - program
 
   nginx:
-    image: nginx:stable-alpine
+    image: ghcr.io/fl1s/turron/nginx:${NGINX_TAG}
     container_name: nginx
     ports:
       - "80:80"

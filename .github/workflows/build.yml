@@ -102,8 +102,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.service }}-build
-          path: ${{ matrix.service }}/build
-          run-id: ${{ github.event.workflow_run.id }}
+          path: ${{ matrix.service }}
 
       - name: Login to GHCR
         uses: docker/login-action@v3

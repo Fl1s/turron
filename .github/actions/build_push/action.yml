@@ -1,28 +1,28 @@
-name: docker-build-push
+name: "[build_push]"
 
-description: Builds and pushes Docker image to GHCR
+description: "[builds_pushes docker image to ghcr]"
 
 inputs:
   service:
-    description: Service name
+    description: "[service name]"
     required: true
   registry:
-    description: Container registry
+    description: "[container registry]"
     default: ghcr.io
   project:
-    description: Project name
+    description: "[project name]"
     default: turron
   push:
-    description: Push images to registry (true/false)
+    description: "[push images to registry (true/false)]"
     default: 'false'
   env:
-    description: Environment (dev/prod)
+    description: "[environment (dev/prod)]"
     default: 'dev'
 
 runs:
   using: "composite"
   steps:
-    - name: Set image tags
+    - name: "[set image tags]"
       shell: bash
       run: |
         echo "IMAGE_NAME=${{ inputs.registry }}/fl1s/${{ inputs.project }}/${{ inputs.service }}" >> $GITHUB_ENV
@@ -35,13 +35,13 @@ runs:
           echo "VERSION_TAG=dev-$SHORT_SHA" >> $GITHUB_ENV
         fi
 
-    - name: Docker build
+    - name: "[docker build]"
       shell: bash
       run: |
         cd ${{ inputs.service }}
         docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION_TAG -t $IMAGE_NAME:dev-$DATE_TAG .
 
-    - name: Docker push
+    - name: "[docker push]"
       if: ${{ inputs.push == 'true' }}
       shell: bash
       run: |

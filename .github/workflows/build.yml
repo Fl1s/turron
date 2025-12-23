@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: "[package]"
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ on:
       - main
 
 jobs:
-  build-infra:
+  build_infra:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build infra ${{ matrix.infra }}
+      - name: "[build infra]"
         run: |
           cd ${{ matrix.infra }}
           docker build -t ${{ matrix.infra }} .
@@ -43,28 +43,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java 21
+      - name: "[setup java]"
         if: matrix.service != 'client'
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Cache Gradle
+      - name: "[cache gradle]"
         if: matrix.service != 'client'
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
           key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      - name: Cache Node modules
+      - name: "[cache node modules]"
         if: matrix.service == 'client'
         uses: actions/cache@v4
         with:
           path: client/node_modules
           key: node-${{ hashFiles('client/package-lock.json') }}
 
-      - name: Build service
+      - name: "[build service]"
         run: |
           cd ${{ matrix.service }}
           if [ "${{ matrix.service }}" == "client" ]; then
@@ -74,7 +74,7 @@ jobs:
             ./gradlew clean build
           fi
 
-      - name: Upload build artifact
+      - name: "[upload build artifact]"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.service }}-build
@@ -85,7 +85,7 @@ jobs:
 
   push_infra:
     runs-on: ubuntu-latest
-    needs: build-infra
+    needs: build_infra
     strategy:
       matrix:
         infra:
@@ -93,24 +93,24 @@ jobs:
           - postgres
           # - client
     steps:
-      - name: Login to GHCR
+      - name: "[login to ghcr]"
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Docker image (dev)
+      - name: "[build_push (dev)]"
         if: github.event_name == 'pull_request'
-        uses: ./.github/actions/docker-build-push
+        uses: ./.github/actions/build_push
         with:
           service: ${{ matrix.infra }}
           env: dev
           push: 'true'
 
-      - name: Build & Push Docker image (prod)
+      - name: "[build_push (release)]"
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: ./.github/actions/docker-build-push
+        uses: ./.github/actions/build_push
         with:
           service: ${{ matrix.infra }}
           env: prod
@@ -131,30 +131,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download build artifact
+      - name: "[download build artifact]"
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.service }}-build
           path: ${{ matrix.service }}
 
-      - name: Login to GHCR
+      - name: "[login to ghcr]"
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Docker image (dev)
+      - name: "[build_push (dev)]"
         if: github.event_name == 'pull_request'
-        uses: ./.github/actions/docker-build-push
+        uses: ./.github/actions/build_push
         with:
           service: ${{ matrix.service }}
           env: dev
           push: 'true'
 
-      - name: Build & Push Docker image (prod)
+      - name: "[build_push (release)]"
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: ./.github/actions/docker-build-push
+        uses: ./.github/actions/build_push
         with:
           service: ${{ matrix.service }}
           env: prod

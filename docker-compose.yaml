@@ -250,7 +250,7 @@ services:
       - program
 
   postgres:
-    image: postgres:latest
+    image: ghcr.io/fl1s/turron/postgres:${POSTGRES_TAG}
     container_name: postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -259,8 +259,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.config/initdb:/docker-entrypoint-initdb.d
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     restart: unless-stopped
     networks:
       - program

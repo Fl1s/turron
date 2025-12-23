@@ -1,0 +1,50 @@
+name: build_push_infra
+
+description: "[builds_pushes infra image to ghcr]"
+
+inputs:
+  infra:
+    description: "[infra name]"
+    required: true
+  registry:
+    description: "[container registry]"
+    default: ghcr.io
+  project:
+    description: "[project name]"
+    default: turron
+  push:
+    description: "[push images to registry (true/false)]"
+    default: 'false'
+  env:
+    description: "[environment (dev/prod)]"
+    default: 'dev'
+
+runs:
+  using: "composite"
+  steps:
+    - name: "[set image tags]"
+      shell: bash
+      run: |
+        echo "IMAGE_NAME=${{ inputs.registry }}/fl1s/${{ inputs.project }}/${{ inputs.infra }}" >> $GITHUB_ENV
+        echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        echo "DATE_TAG=$(date +%Y%m%d)" >> $GITHUB_ENV
+        if [ "${{ inputs.env }}" = "prod" ]; then
+          VERSION=$(cat .config/VERSION 2>/dev/null || echo "v1.0")
+          echo "VERSION_TAG=$VERSION" >> $GITHUB_ENV
+        else
+          echo "VERSION_TAG=dev-$SHORT_SHA" >> $GITHUB_ENV
+        fi
+
+    - name: "[docker build]"
+      shell: bash
+      run: |
+        cd ${{ inputs.infra }}
+        docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION_TAG -t $IMAGE_NAME:dev-$DATE_TAG .
+
+    - name: "[docker push]"
+      if: ${{ inputs.push == 'true' }}
+      shell: bash
+      run: |
+        docker push $IMAGE_NAME:latest
+        docker push $IMAGE_NAME:$VERSION_TAG
+        docker push $IMAGE_NAME:dev-$DATE_TAG

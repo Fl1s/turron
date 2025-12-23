@@ -1,6 +1,6 @@
-name: build_push
+name: build_push_service
 
-description: "[builds_pushes docker image to ghcr]"
+description: "[builds_pushes service image to ghcr]"
 
 inputs:
   service:

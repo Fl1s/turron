@@ -102,17 +102,17 @@ jobs:
 
       - name: "[build_push (dev)]"
         if: github.event_name == 'pull_request'
-        uses: ./.github/actions/build_push
+        uses: ./.github/actions/build_push_infra
         with:
-          service: ${{ matrix.infra }}
+          infra: ${{ matrix.infra }}
           env: dev
           push: 'true'
 
       - name: "[build_push (release)]"
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: ./.github/actions/build_push
+        uses: ./.github/actions/build_push_infra
         with:
-          service: ${{ matrix.infra }}
+          infra: ${{ matrix.infra }}
           env: prod
           push: 'true'
 
@@ -146,7 +146,7 @@ jobs:
 
       - name: "[build_push (dev)]"
         if: github.event_name == 'pull_request'
-        uses: ./.github/actions/build_push
+        uses: ./.github/actions/build_push_service
         with:
           service: ${{ matrix.service }}
           env: dev
@@ -154,7 +154,7 @@ jobs:
 
       - name: "[build_push (release)]"
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: ./.github/actions/build_push
+        uses: ./.github/actions/build_push_service
         with:
           service: ${{ matrix.service }}
           env: prod

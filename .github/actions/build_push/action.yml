@@ -1,4 +1,4 @@
-name: "[build_push]"
+name: build_push
 
 description: "[builds_pushes docker image to ghcr]"
 

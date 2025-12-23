@@ -56,6 +56,7 @@ jobs:
             node-
 
       - name: Build service ${{ matrix.service }}
+        if: matrix.service != 'nginx'
         run: |
           cd ${{ matrix.service }}
           if [ "${{ matrix.service }}" == "client" ]; then

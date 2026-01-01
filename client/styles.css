@@ -36,6 +36,14 @@ header div nav a {
     padding: 5px;
 }
 
+#lang_selector {
+    appearance: none;
+    background-color: white;
+    font-size: large;
+    font-family: Monocraft, serif;
+    padding: 5px;
+  }
+
 #extra {
     color: white;
     background-color: black;
@@ -196,6 +204,5 @@ header div nav a {
     border-color: white;
     border-style: dashed;
     display: inline-block;
-    text-align: left;
     box-sizing: border-box;
 }

@@ -11,25 +11,26 @@ body {
 }
 
 #title_icon {
-    width: clamp(400px, 6vw, 600px);
-    height: auto;
     display: block;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin-inline: auto;
     background-color: white;
-    border-width: 10px;
-    border-style: dashed;
-    border-color: black;
+    border: 10px dashed black;
+    box-sizing: border-box;
 }
 
 header div nav {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+    text-align: center;
+    gap: 25px;
     margin-top: 20px;
+
     margin-bottom: 20px;
 }
 
 header div nav a {
+    display: inline-block;
     background-color: white;
     font-size: large;
     font-family: Monocraft, serif;

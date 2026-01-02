@@ -64,22 +64,22 @@ dropAreas.forEach(area => {
 });
 
 
-async function loadLocale(lang = 'en') {
-    try {
-        const res = await fetch(`locales/${lang}.json`);
-        const translations = await res.json();
+// async function loadLocale(lang = 'en') {
+//     try {
+//         const res = await fetch(`locales/${lang}.json`);
+//         const translations = await res.json();
+//
+//         document.querySelectorAll('[i18n]').forEach(el => {
+//             const key = el.getAttribute('i18n');
+//             if (translations[key]) el.textContent = translations[key];
+//         });
+//     } catch (err) {
+//         console.error('Error loading translations:', err);
+//     }
+// }
 
-        document.querySelectorAll('[i18n]').forEach(el => {
-            const key = el.getAttribute('i18n');
-            if (translations[key]) el.textContent = translations[key];
-        });
-    } catch (err) {
-        console.error('Error loading translations:', err);
-    }
-}
-
-const lang = navigator.language.startsWith('ru') ? 'ru' : 'en';
-loadLocale(lang);
+// const lang = navigator.language.startsWith('ru') ? 'ru' : 'en';
+// loadLocale(lang);
 
 const API_GATEWAY = 'https://turron.pw';
 

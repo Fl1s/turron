@@ -137,6 +137,12 @@ dropAreas.forEach(area => {
 async function handleFileUpload(area, file) {
     if (!file) return;
 
+    if (file.size > 100 * 1024 * 1024) {
+        alert('[File too large! Max allowed size is 100 MB!!!]');
+        area.textContent = '[file too big!]';
+        return;
+    }
+
     if (file.type !== 'video/mp4') {
         alert('[only MP4 videos are supported!!! >=[ ]');
         return;

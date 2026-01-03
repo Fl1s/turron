@@ -32,14 +32,24 @@ function wrapWordsPreservingLinks(element) {
     });
 }
 
-wrapWordsPreservingLinks(document.getElementById('extra'));
-wrapWordsPreservingLinks(document.getElementById('about'));
-wrapWordsPreservingLinks(document.getElementById('ans_1'));
-wrapWordsPreservingLinks(document.getElementById('ans_2'));
-wrapWordsPreservingLinks(document.getElementById('ans_3'));
-wrapWordsPreservingLinks(document.getElementById('ans_4'));
-wrapWordsPreservingLinks(document.getElementById('ans_5'));
-wrapWordsPreservingLinks(document.getElementById('ans_6'));
+document.addEventListener('DOMContentLoaded', () => {
+    wrapWordsPreservingLinks(document.getElementById('extra'));
+    wrapWordsPreservingLinks(document.getElementById('about'));
+    wrapWordsPreservingLinks(document.getElementById('ans_1'));
+    wrapWordsPreservingLinks(document.getElementById('ans_2'));
+    wrapWordsPreservingLinks(document.getElementById('ans_3'));
+    wrapWordsPreservingLinks(document.getElementById('ans_4'));
+    wrapWordsPreservingLinks(document.getElementById('ans_5'));
+    wrapWordsPreservingLinks(document.getElementById('ans_6'));
+
+    wrapWordsPreservingLinks(document.getElementById('ans_1_1'));
+    wrapWordsPreservingLinks(document.getElementById('ans_2_2'));
+    wrapWordsPreservingLinks(document.getElementById('ans_3_3'));
+    wrapWordsPreservingLinks(document.getElementById('ans_4_4'));
+    wrapWordsPreservingLinks(document.getElementById('ans_5_5'));
+    wrapWordsPreservingLinks(document.getElementById('ans_6_6'));
+});
+
 
 const dropAreas = document.querySelectorAll('.drag-drop');
 

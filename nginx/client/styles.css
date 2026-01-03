@@ -61,7 +61,7 @@ header div nav a {
     font-size: large;
 }
 
-#extra a, #faq a {
+#extra a, #faq a, #tou a {
     display: inline-block;
     margin: 1px;
     padding: 1px 3px;
@@ -79,7 +79,7 @@ header div nav a {
     margin-bottom: 20px;
 }
 
-#about .word, #faq dl dd .word {
+#about .word, #faq dl dd .word, #tou dl dd .word {
     display: inline-block;
     margin: 1px;
     padding: 1px 3px;

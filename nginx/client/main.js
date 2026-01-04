@@ -33,7 +33,7 @@ function wrapWordsPreservingLinks(element) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    wrapWordsPreservingLinks(document.getElementById('extra'));
+    wrapWordsPreservingLinks(document.getElementById('home'));
     wrapWordsPreservingLinks(document.getElementById('about'));
     wrapWordsPreservingLinks(document.getElementById('ans_1'));
     wrapWordsPreservingLinks(document.getElementById('ans_2'));

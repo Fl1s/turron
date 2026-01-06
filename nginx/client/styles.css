@@ -1,0 +1,244 @@
+@font-face {
+    font-family: "Monocraft";
+    src: url("font/Monocraft.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+}
+
+
+body {
+    background: url("gif/background.gif");
+}
+
+#title_icon {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin-inline: auto;
+    background-color: white;
+    border: 10px dashed black;
+    box-sizing: border-box;
+}
+
+header div nav {
+    text-align: center;
+    gap: 25px;
+    margin-top: 20px;
+
+    margin-bottom: 20px;
+}
+
+header div nav a {
+    display: inline-block;
+    background-color: white;
+    font-size: large;
+    font-family: Monocraft, serif;
+    padding: 5px;
+}
+
+#lang_selector {
+    appearance: none;
+    background-color: white;
+    font-size: large;
+    font-family: Monocraft, serif;
+    padding: 5px;
+  }
+
+#home, #extra {
+    color: white;
+    background-color: black;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#home .word {
+    display: inline-block;
+    margin: 1px;
+    padding: 1px 3px;
+    background-color: blueviolet;
+    font-family: Monocraft, serif;
+    font-size: large;
+}
+
+#home a, #faq a, #tou a {
+    display: inline-block;
+    margin: 1px;
+    padding: 1px 3px;
+    background-color: blueviolet;
+    color: #00f7ff;
+    cursor: pointer;
+    font-family: Monocraft, serif;
+    font-size: large;
+}
+
+#about {
+    color: white;
+    background-color: black;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#about .word, #faq dl dd .word, #tou dl dd .word {
+    display: inline-block;
+    margin: 1px;
+    padding: 1px 3px;
+    color: white;
+    background-color: blueviolet;
+    font-family: Monocraft, serif;
+    font-size: large;
+}
+
+
+.answer_block {
+    padding: 20px;
+    display: inline-block;
+    background-color: black;
+    margin: 10px;
+}
+
+.upload-wrapper {
+    display: inline-block;
+}
+
+.section_h2 {
+    display: inline-block;
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: blue;
+    text-decoration: underline;
+    background-color: white;
+    font-size: 22px;
+    font-weight: normal;
+    font-family: Monocraft, serif;
+    padding: 5px;
+}
+
+.label, dl dt, .headers {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 10px;
+    color: white;
+    border-style: dashed;
+    border-width: 7px;
+    border-color: white;
+    background-color: blueviolet;
+    font-family: Monocraft, serif;
+    font-size: large;
+    width: auto;
+}
+
+.headers {
+    font-weight: normal;
+}
+
+/*#faq img {*/
+/*    display: inline-block;*/
+/*    width: 5%;*/
+/*    margin-bottom: -30px;*/
+/*    border-style: dashed;*/
+/*    border-color: white;*/
+/*    border-width: 7px;*/
+/*}*/
+
+.upload-wrapper {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+.drag-drop {
+    display: block;
+    width: clamp(300px, 6vw, 300px);
+    height: 300px;
+    margin: 0 auto;
+    background-color: white;
+    border: 10px dashed black;
+    text-align: center;
+    line-height: 300px;
+    font-family: Monocraft, serif;
+    font-size: large;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.drag-drop.dragover {
+    background-color: #e0e0e0;
+    border-color: blueviolet;
+}
+
+#search {
+    position: relative;
+}
+
+.input_line {
+    display: inline-block;
+    width: 50%;
+    max-width: 600px;
+    margin-left: 0;
+    color: white;
+    box-sizing: border-box;
+    background-color: white;
+    text-align: left;
+    font-family: Monocraft, serif;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+#video_id {
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    border-width: 8px;
+    padding: 10px;
+    background-color: blueviolet;
+    font-size: medium;
+    color: white;
+    border-color: white;
+    box-sizing: border-box;
+    border-style: solid;
+    font-family: Monocraft, serif;
+    vertical-align: middle;
+}
+
+#load-video {
+    display: inline-block;
+    width: 40%;
+    max-width: 170px;
+    height: auto;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+
+.player {
+    width: 100%;
+    max-width: 800px;
+    margin-left: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+    background-color: blueviolet;
+}
+
+#video {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    border-width: 7px;
+    border-color: white;
+    border-style: dashed;
+    display: inline-block;
+    box-sizing: border-box;
+}

@@ -55,11 +55,10 @@ public class MinioService {
             }
             double duration = Double.parseDouble(durationStr);
             log.debug("Video duration: {} seconds", duration);
-            if (duration > 5.0) {
-                throw new IllegalArgumentException("Video is longer than 5 seconds.");
-            }
+//            if (duration > 5.0) {
+//                throw new IllegalArgumentException("Video is longer than 5 seconds.");
+//            }
         }
-
         return process;
     }
 
@@ -165,6 +164,9 @@ public class MinioService {
      *
      * @param tempFile the temporary file containing the video
      * @throws RuntimeException if duration exceeds the limit or validation fails
+
+     * Now does absolutely nothing bc I decided not to validate snippets
+     * (its just annoying, why should I crop 1.5seconds in my 6.5secs snippet)
      */
     private void validateVideo(File tempFile) {
         try {

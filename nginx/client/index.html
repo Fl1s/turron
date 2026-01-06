@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <title>Turron</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="description"
+          content="Turron is a Shazam for video - an opensource video recognition system that identifies original video sources from short clips using perceptual hashing;">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Fl1s">
+    <link rel="canonical" href="https://turron.pw">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Turron - Shazam for video">
+    <meta property="og:description"
+          content="Turron is an open-source video recognition system. Identify original video sources from short snippets using perceptual hashing">
+    <meta property="og:url" content="https://turron.pw">
+    <meta property="og:image" content="https://turron.pw/img/title_icon.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Turron - Shazam for video">
+    <meta name="twitter:description"
+          content="Turron is an open-source video recognition system. Identify original video sources from short snippets using perceptual hashing">
+    <meta name="twitter:image" content="https://turron.pw/img/title_icon.png">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header id="header">
+    <div>
+        <img src="img/title_icon.png" alt="Turron_icon" id="title_icon">
+
+        <nav>
+            <a href="#home_h2">Home</a>
+            <a href="#about_h2">About</a>
+            <a href="#upload_h2">Upload</a>
+            <a href="#search_h2">Search</a>
+            <a href="#faq_h2">FAQ</a>
+            <a href="#tou_h2">ToU</a>
+        </nav>
+    </div>
+</header>
+<main id="main">
+    <p class="sr-only">
+        Turron is a Shazam for video and an open-source video recognition tool.
+    </p>
+    <h2 class="section_h2" id="home_h2">Home</h2>
+    <br>
+    <h1 class="headers">Shazam for video</h1>
+    <section id="home">- Identify the original source of any video using a short snippet! Its free and opensource project! You could check our <a href="https://github.com/Fl1s/turron">github</a>
+        and submit bugs in <a href="https://github.com/Fl1s/turron/issues/new">here</a>!
+    </section>
+    <h2 class="section_h2" id="about_h2">About</h2>
+    <section id="about">- A video recognition system that works like Shazam - but for video. It analyzes short snippets
+        (2-5 seconds), breaks them into keyframes, and uses perceptual hashing to identify the exact or near-exact
+        source, even if the clip has been edited or altered. This preserves the full context of the snippet and enables
+        reliable tracking of original video content. NO AI!</section>
+    <label class="section_h2" id="upload_h2">Upload</label>
+    <section id="upload">
+        <div class="upload-wrapper" id="wrapper_snippet">
+            <div class="label">Snippet</div>
+            <div class="drag-drop" id="upload_snippet">Drop snippet here</div>
+        </div>
+
+        <div class="upload-wrapper" id="wrapper_source">
+            <div class="label">Source</div>
+            <div class="drag-drop" id="upload_source">Drop source here</div>
+        </div>
+    </section>
+    <label class="section_h2" id="search_h2">Search</label>
+    <section id="search">
+        <label for="video_id"></label>
+        <div class="input_line">
+            <input type="text" id="video_id"
+                   placeholder="Enter snippetId"
+                   class="id_input">
+        </div>
+        <button id="load-video" class="label">Enter</button>
+        <br>
+        <div class="player">
+            <video id="video" controls>
+                <source src="#" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <br>
+        <a id="download" href="#" download class="label">Download Video</a>
+    </section>
+    <label class="section_h2" id="faq_h2">FAQ</label>
+    <section id="faq">
+        <dl>
+            <dt>How long did the development take? Is it still ongoing?</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_1">- For the core logic, about a couple of weeks. Months to force myself to keep working on it; Yes! development continues to this day, and I plan to add integration with Jellyfin;</dd>
+            </div>
+            <br>
+            <!--            <img src="gif/drunk.gif">-->
+            <dt>What kind of videos does Turron work with?</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_2">- With any in mp4 format;</dd>
+            </div>
+            <br>
+            <dt>Does Turron require an internet connection to work?</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_3">- If you're reading this, then yes, it's a browser page >:]. If you're deploying on
+                    your own server, then no internet connection is required;</dd>
+            </div>
+            <br>
+            <dt>Is there a limit on the size or length of videos?</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_4">- It is on the official server, but you can configure or remove it entirely on
+                    your own :3;</dd>
+            </div>
+            <br>
+            <dt>What should I do if the video does not load or displays an error?</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_5">- Try refreshing the page, otherwise contact me in discord "fl1s";</dd>
+            </div>
+            <br>
+            <dt>Where can I find the deployment quickstart?</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_6">- In the <a href="https://github.com/Fl1s/turron/blob/main/README.md">readme</a> of the repository;</dd>
+            </div>
+            <br>
+        </dl>
+    </section>
+    <label class="section_h2" id="tou_h2">Terms of Use</label>
+    <section id="tou">
+        <dl>
+            <dt>File storage</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_1_1">- Videos uploaded by users are stored on the server for the purpose of search and analysis by the algorithm. Original files are never publicly distributed; only algorithmic results may be accessed by users;</dd>
+            </div>
+            <br>
+            <dt>User responsibility</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_2_2">- Users are fully responsible for the content they upload. Users agree not to upload materials protected by copyright without the rights holders permission;</dd>
+            </div>
+            <br>
+            <dt>Search results</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_3_3">- Results generated by the algorithm may be available for download. They are intended solely for analysis or preview of uploaded fragments and are not meant for mass distribution or as a source of full video files;</dd>
+            </div>
+            <br>
+            <dt>Removal upon rights holder request</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_4_4">- If a rights holder identifies uploaded material that infringes their copyright, they may submit a removal request to email <a href="mailto:commercialfl1s@gmail.com">"commercialfl1s@gmail.com"</a>. All infringing files will be removed promptly;</dd>
+            </div>
+            <br>
+            <dt>Free and opensource</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_5_5">- Turron is a free service with opensource code. The service is not monetized and does not contain advertising, reducing the risk of commercial exploitation of uploaded content;</dd>
+            </div>
+            <br>
+            <dt>Usage restrictions</dt>
+            <br>
+            <div class="answer_block">
+                <dd id="ans_6_6">- The service does not guarantee access to full original video files. Any use of search results for illegal distribution, commercial purposes, or copyright infringement is strictly prohibited;</dd>
+            </div>
+            <br>
+        </dl>
+    </section>
+</main>
+<!--<footer id="footer">-->
+<!--</footer>-->
+</body>
+<script src="main.js"></script>
+</html>

@@ -1,19 +1,33 @@
 services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    volumes:
+      - ./gitlab-runner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CI_SERVER_URL: ${CI_SERVER_URL}
+      REGISTRATION_TOKEN: ${REGISTRATION_TOKEN}
+      RUNNER_NAME: server-runner
+      RUNNER_EXECUTOR: shell
+      DOCKER_TLS_CERTDIR: ""
+    networks:
+      - program
+
   nginx:
-    image: nginx:stable-alpine
+    image: ghcr.io/fl1s/turron/nginx:${NGINX_TAG}
     container_name: nginx
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - ./.config/nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - eureka-server
       - upload-service
       - extraction-service
       - hashing-service
       - search-service
-      - client
+#      - client
       - minio
     networks:
       - program
@@ -236,7 +250,7 @@ services:
       - program
 
   postgres:
-    image: postgres:latest
+    image: ghcr.io/fl1s/turron/postgres:${POSTGRES_TAG}
     container_name: postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -245,8 +259,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.config/initdb:/docker-entrypoint-initdb.d
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     restart: unless-stopped
     networks:
       - program

@@ -24,10 +24,12 @@ https://github.com/user-attachments/assets/5651a9fb-029d-4126-b192-ba42ca269a5d
 
 https://github.com/user-attachments/assets/db4aef2f-349c-499e-bcb6-a3aac1d57e1a
 
+<p align="center">
+  .
+  <a href="#quickstart"><strong>Quickstart</strong></a>
+</p>
+
 ·
-    <a href="https://github.com/fl1s/turron"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
     <a href="https://github.com/fl1s/turron/issues/new?labels=bug">Report Bug</a>
     ·
     <a href="https://github.com/fl1s/turron/issues/new?labels=enhancement">Request Feature</a>
@@ -44,10 +46,9 @@ https://github.com/user-attachments/assets/db4aef2f-349c-499e-bcb6-a3aac1d57e1a
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#about-the-project">About</a>
       <ul>
         <li><a href="#microservices">Microservices</a></li>
-        <li><a href="#infrastructure">Infrastructure</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -128,11 +129,44 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
 * [![Java][Java]][Java-url] [![Gradle][Gradle]][Gradle-url] [![Spring Boot][Spring]][Spring-url] [![PostgreSQL][PostgreSQL]][PostgreSQL-url] [![Kafka][Kafka]][Kafka-url]
 * [![Docker][Docker]][Docker-url] [![Kubernetes][Kubernetes]][Kubernetes-url] [![Prometheus][Prometheus]][Prometheus-url] [![Grafana][Grafana]][Grafana-url]
 
-<p align="right"> Built With(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<a id="quickstart"></a>
+## Quickstart
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/fl1s/turron.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd turron
+   ```
+3. Create .env.dev file from the .env.example:
+   ```sh
+   cd .config/secrets
+   ```
+   bash / zsh / powerShell
+   ```bash
+   cp .env.example .env.dev
+   ```
+   cmd
+   ```cmd
+   copy .env.example .env.dev
+   ```
+4. Start the dev environment with Docker Compose:
+   ```sh
+   docker-compose --env-file .env.dev up
+   ```
+5. Verify services are running:
+   ```sh
+   docker ps
+   ```
+6. Go to the <a href="#api">API Endpoints</a>
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## Getting Started (advanced)
 
 Set up Turron locally using Docker Compose for the dev environment or deploy to Kubernetes for production.
 
@@ -163,7 +197,7 @@ Ensure you have the following installed:
    ```
 3. Build all microservices with Gradle:
    ```sh
-   cd /microservice-name
+   cd microservice-name
    ./gradlew clean build
    ```
 4. Start the dev environment with Docker Compose:
@@ -173,11 +207,12 @@ Ensure you have the following installed:
 5. Verify services are running:
    ```sh
    docker ps
-   ```
+   ```   
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- API ENDPOINTS -->
+<a id="api"></a>
 
 ## API Endpoints
 

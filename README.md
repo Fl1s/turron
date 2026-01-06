@@ -156,7 +156,7 @@ Turron is structured into 6 microservices, each with bounded responsibilities:
    ```
 4. Start the dev environment with Docker Compose:
    ```sh
-   docker-compose --env-file .config/secrets.env.dev up
+   docker-compose --env-file .config/secrets/.env.dev up
    ```
 5. Verify services are running:
    ```sh

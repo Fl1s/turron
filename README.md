@@ -15,7 +15,7 @@
 
 <div align="center">  
 <p align="center">
-  <img width="480" height="480" alt="turron-logo-readme" src="https://github.com/user-attachments/assets/d0ba8800-3067-4f7c-a554-19aac4833c7b" />
+  <img width="480" height="320" alt="turron-logo-readme" src="https://github.com/user-attachments/assets/d0ba8800-3067-4f7c-a554-19aac4833c7b" />
 </p>
 
 https://github.com/user-attachments/assets/8bf90c7a-ce68-4d38-a140-e363fc421395

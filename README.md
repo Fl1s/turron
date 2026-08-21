@@ -79,7 +79,7 @@ or altered. This preserves the full context of the snippet and enables reliable 
 
 Key features:
 
-* Upload full video snippets, not just images — automatic extraction of keyframes for context-aware matching.
+* Upload full video snippets, not just images; automatic extraction of keyframes for context-aware matching.
 * Accurate source identification via perceptual hashing tolerant to modifications.
 * Optimized for quick, precise matching of short video fragments.
 * Scalable microservices architecture built to handle heavy traffic without performance loss.

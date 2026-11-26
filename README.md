@@ -73,16 +73,19 @@ https://github.com/user-attachments/assets/db4aef2f-349c-499e-bcb6-a3aac1d57e1a
 
 ## About The Project
 
-A video recognition system that works like Shazam — but for video. It analyzes short snippets (2–5 seconds), breaks them
-into keyframes, and uses perceptual hashing to identify the exact or near-exact source, even if the clip has been edited
+A video recognition system that works like Shazam, but for video. It analyzes short snippets (2–5 seconds), breaks them
+into keyframes and uses perceptual hashing to identify the exact (or near-exact) source, even if the clip has been edited
 or altered. This preserves the full context of the snippet and enables reliable tracking of original video content.
 
-Key features:
+Features:
 
-* Upload full video snippets, not just images; automatic extraction of keyframes for context-aware matching.
-* Accurate source identification via perceptual hashing tolerant to modifications.
-* Optimized for quick, precise matching of short video fragments.
-* Scalable microservices architecture built to handle heavy traffic without performance loss.
+(1) Upload full video snippets (automatic extraction of keyframes for context-aware matching)
+
+(2) Accurate source identification via perceptual hashing tolerant to modifications
+
+(3) Optimized for quick and precise matching of short video fragments
+
+(4) Scalable microservices architecture built to handle heavy traffic without performance loss
 
 [//]: # (* Instant search results thanks to Redis caching.)
 
